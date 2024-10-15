@@ -1,6 +1,7 @@
 package com.pingping.share.domain
 
 import com.pingping.global.entity.BaseTimeEntity
+import com.pingping.member.domain.NonMember
 import jakarta.persistence.*
 
 @Entity
