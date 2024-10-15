@@ -4,10 +4,12 @@ import com.pingping.member.application.NonMemberService
 import com.pingping.member.dto.request.NonMemberLoginRequest
 import com.pingping.global.common.CommonResponse
 import com.pingping.member.dto.response.NonMemberLoginResponse
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
+@Tag(name = "비회원")
 @RestController
 @RequestMapping("/non-member")
 class NonMemberController(
