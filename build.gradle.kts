@@ -29,14 +29,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0")
 
     // logger
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
-
-    // Spring Kafka
-    implementation("org.springframework.kafka:spring-kafka")
 
     // Spring Cloud
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
@@ -57,6 +56,14 @@ dependencies {
 
     // MongoDB
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
+    // Redis
+    implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+    // JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+    implementation("io.jsonwebtoken:jjwt-impl:0.12.5")
+    implementation("io.jsonwebtoken:jjwt-jackson:0.12.5")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")

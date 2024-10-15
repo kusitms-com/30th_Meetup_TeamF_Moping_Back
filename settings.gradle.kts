@@ -1,1 +1,1 @@
-rootProject.name = "ping-service"
+rootProject.name = "pingping-BE"
