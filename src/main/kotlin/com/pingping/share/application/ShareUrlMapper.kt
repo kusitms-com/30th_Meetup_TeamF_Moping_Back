@@ -8,22 +8,11 @@ import org.springframework.stereotype.Component
 @Component
 class ShareUrlMapper {
 
-    // Request DTO -> Entity 변환
     fun toEntity(request: ShareUrlRequest, url: String): ShareUrl {
-        return ShareUrl(
-            url = url,
-            eventName = request.eventName,
-            neighborhood = request.neighborhood
-        )
+        return ShareUrl(url, request.eventName, request.neighborhood)
     }
 
-    // Entity -> Response DTO 변환
     fun toResponse(entity: ShareUrl): ShareUrlResponse {
-        return ShareUrlResponse(
-            id = entity.id,
-            shareUrl = entity.url,
-            eventName = entity.eventName,
-            neighborhood = entity.neighborhood
-        )
+        return ShareUrlResponse(entity.id, entity.url, entity.eventName, entity.neighborhood)
     }
 }
