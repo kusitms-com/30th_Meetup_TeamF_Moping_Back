@@ -37,9 +37,6 @@ dependencies {
     // logger
     implementation("io.github.oshai:kotlin-logging-jvm:7.0.0")
 
-    // Spring Cloud
-    implementation("org.springframework.cloud:spring-cloud-starter-openfeign")
-
     // Jackson & Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
