@@ -4,16 +4,16 @@ import com.pingping.global.exception.CustomException
 import com.pingping.global.exception.ExceptionContent
 import com.pingping.member.domain.repository.NonMemberRepository
 import com.pingping.member.dto.request.NonMemberLoginRequest
+import com.pingping.member.dto.response.NonMemberLoginResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
+@Transactional(readOnly = true)
 class NonMemberService(
     private val nonMemberRepository: NonMemberRepository
 ) {
-
-    @Transactional(readOnly = true)
-    fun loginNonMember(request: NonMemberLoginRequest): Boolean {
+    fun loginNonMember(request: NonMemberLoginRequest): NonMemberLoginResponse {
         // URL ID와 name으로 NonMember 조회
         val nonMember = nonMemberRepository.findByShareUrlIdAndName(
             urlId = request.urlId,
@@ -25,6 +25,6 @@ class NonMemberService(
             throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
         }
 
-        return true
+        return NonMemberLoginResponse(nonMemberId = nonMember.id)
     }
 }

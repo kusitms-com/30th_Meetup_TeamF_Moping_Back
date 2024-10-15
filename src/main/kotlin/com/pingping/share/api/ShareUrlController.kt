@@ -23,7 +23,7 @@ class ShareUrlController(
         val response = shareUrlService.createShareUrl(request)
 
         return ResponseEntity.ok(
-            CommonResponse.of(status = HttpStatus.OK, message = "공유 URL이 성공적으로 생성되었습니다.", data = response)
+            CommonResponse.of(HttpStatus.OK, "공유 URL이 성공적으로 생성되었습니다.", response)
         )
     }
 
