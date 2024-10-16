@@ -18,12 +18,14 @@ class NonMemberService(
     private val nonMemberMapper: NonMemberMapper
 ) {
     fun loginNonMember(request: NonMemberLoginRequest): NonMemberLoginResponse {
-        // URL ID와 name으로 NonMember 조회
-        val nonMember = nonMemberRepository.findByShareUrlIdAndName(request.shareUrlId, request.name)
-            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+        // 비밀번호 형식 검사 (4자리 숫자)
+        validatePassword(request.password)
 
-        // 비밀번호가 존재한다면 비교
-        if (request.password != null && request.password != nonMember.password) {
+        val nonMember = nonMemberRepository.findById(request.nonMemberId)
+            .orElseThrow { CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND) }
+
+        // 비밀번호가 일치하는지 비교
+        if (request.password != nonMember.password) {
             throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
         }
 
@@ -32,19 +34,29 @@ class NonMemberService(
 
     @Transactional
     fun createNonMember(request: NonMemberCreateRequest): Long {
-        // ShareUrl 존재 여부 확인
+        // 비밀번호 형식 검사 (4자리 숫자)
+        validatePassword(request.password)
+
         val shareUrl = shareUrlRepository.findById(request.shareUrlId)
-            .orElseThrow { CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND) }
+            .orElseThrow { CustomException(ExceptionContent.INVALID_SHARE_URL) }
 
         // shareUrlId과 name으로 비회원 존재 여부 확인
         nonMemberRepository.findByShareUrlIdAndName(request.shareUrlId, request.name)?.let {
             throw CustomException(ExceptionContent.NON_MEMBER_ALREADY_EXISTS)
         }
 
+        // NonMember 엔티티 생성 및 저장
         val nonMember = nonMemberMapper.toEntity(request, shareUrl)
         val savedNonMember = nonMemberRepository.save(nonMember)
 
         return savedNonMember.id
+    }
+
+    // 비밀번호 유효성 검증 로직
+    private fun validatePassword(password: String) {
+        if (!password.matches(Regex("\\d{4}"))) {
+            throw CustomException(ExceptionContent.INVALID_PASSWORD_FORMAT)
+        }
     }
 
 }

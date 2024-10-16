@@ -10,6 +10,7 @@ class NonMember(
     @Column(nullable = false)
     val name: String,
 
+    @Column(nullable = false)
     val password: String,
 
     @ManyToOne(fetch = FetchType.LAZY)
