@@ -10,6 +10,6 @@ class NonMemberMapper {
 
     // NonMemberCreateRequest -> NonMember 엔티티 변환
     fun toEntity(request: NonMemberCreateRequest, shareUrl: ShareUrl): NonMember {
-        return NonMember(request.name, request.password ?: "", shareUrl)
+        return NonMember(request.name, request.password, shareUrl)
     }
 }
