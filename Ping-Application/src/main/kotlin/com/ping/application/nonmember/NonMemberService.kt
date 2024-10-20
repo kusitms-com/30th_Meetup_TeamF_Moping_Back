@@ -2,12 +2,11 @@ package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.request.NonMemberCreateRequest
 import com.ping.client.navermap.NaverMapClient
-import com.ping.common.util.UrlUtil
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
+import com.ping.common.util.UrlUtil
 import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
