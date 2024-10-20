@@ -1,4 +1,4 @@
-package com.ping.common.entity
+package com.ping.infra.nonmember.domain.jpa.common
 
 import jakarta.persistence.EntityListeners
 import jakarta.persistence.MappedSuperclass
@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener::class)
-abstract class BaseTimeEntity: BaseEntity() {
+abstract class BaseTimeEntity {
 
     @CreatedDate
     var createdAt: LocalDateTime? = null
