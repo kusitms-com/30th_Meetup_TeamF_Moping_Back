@@ -1,4 +1,4 @@
-package com.ping.infra.nonmember.domain.jpa
+package com.ping.infra.nonmember.domain.jpa.common
 
 import org.springframework.boot.autoconfigure.domain.EntityScan
 import org.springframework.context.annotation.Configuration

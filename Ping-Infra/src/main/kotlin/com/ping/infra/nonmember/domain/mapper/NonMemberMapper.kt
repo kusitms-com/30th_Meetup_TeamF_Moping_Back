@@ -1,26 +1,21 @@
 package com.ping.infra.nonmember.domain.mapper
 
-import com.ping.domain.nonmember.aggregate.NonMember
+import com.ping.domain.nonmember.aggregate.NonMemberDomain
 import com.ping.infra.nonmember.domain.jpa.entity.NonMemberEntity
 
-class NonMemberMapper {
-    companion object {
+object NonMemberMapper {
 
-        fun toDomain(nonMemberEntity: NonMemberEntity): NonMember {
-            return NonMember(
-                nonMemberEntity.id,
-                nonMemberEntity.name,
-                nonMemberEntity.password,
-                nonMemberEntity.shareUrl.toDomain()
-            )
-        }
+    fun toDomain(nonMemberEntity: NonMemberEntity) = NonMemberDomain(
+        nonMemberEntity.id,
+        nonMemberEntity.name,
+        nonMemberEntity.password,
+        ShareUrlMapper.toDomain(nonMemberEntity.shareUrl)
+    )
 
-        fun toEntity(nonMember: NonMember): NonMemberEntity {
-            return NonMemberEntity(
-                nonMember.name,
-                nonMember.password,
-                ShareUrlMapper.toEntity(nonMember.shareUrl)
-            )
-        }
-    }
+    fun toEntity(nonMemberDomain: NonMemberDomain) = NonMemberEntity(
+        nonMemberDomain.id,
+        nonMemberDomain.name,
+        nonMemberDomain.password,
+        ShareUrlMapper.toEntity(nonMemberDomain.shareUrlDomain)
+    )
 }

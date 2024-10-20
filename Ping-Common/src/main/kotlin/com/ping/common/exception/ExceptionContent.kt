@@ -8,7 +8,6 @@ enum class ExceptionContent(
     val errorNum: Int,
     val message: String
 ) {
-
     //user
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER", 1, "해당 사용자를 찾을 수 없습니다."),
 
@@ -19,6 +18,9 @@ enum class ExceptionContent(
     INVALID_PASSWORD_FORMAT(HttpStatus.BAD_REQUEST, "NONMEMBER",4,"비밀번호는 4자리 숫자여야 합니다."),
 
     // ShareUrl 관련 예외
-    INVALID_SHARE_URL(HttpStatus.NOT_FOUND, "SHARE URL",1,"유효하지 않은 공유 URL입니다.")
+    INVALID_SHARE_URL(HttpStatus.NOT_FOUND, "SHARE URL",1,"유효하지 않은 공유 URL입니다."),
 
+    //북마크 관련 예외
+    INVALID_BOOKMARK_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",1,"북마크를 불러올 수 없습니다"),
+    INVALID_STORE_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",2,"가게 정보를 불러올 수 없습니다")
 }

@@ -1,28 +1,24 @@
 package com.ping.infra.nonmember.domain.jpa.entity
 
-import com.ping.common.entity.BaseTimeEntity
-import com.ping.domain.nonmember.aggregate.ShareUrl
+import com.ping.infra.nonmember.domain.jpa.common.BaseTimeEntity
 import jakarta.persistence.*
 
 @Entity(name = "share_url")
-@Table
 class ShareUrlEntity(
-    @Column(name = "url", nullable = false)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long,
+
+    @Column(nullable = false)
     val url: String,
 
-    @Column(name = "event_name", nullable = false)
+    @Column(nullable = false)
     val eventName: String,
 
-    @Column(name = "neighborhood", nullable = false)
+    @Column(nullable = false)
     val neighborhood: String,
 
-) : BaseTimeEntity() {
-    fun toDomain(): ShareUrl {
-       return ShareUrl(
-           id = this.id,
-           url = this.url,
-           eventName = this.eventName,
-           neighborhood = this.neighborhood
-       )
-    }
-}
+    @Column(nullable = false)
+    val uuid: String
+
+) : BaseTimeEntity()

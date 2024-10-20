@@ -1,7 +1,7 @@
 package com.ping.domain.nonmember.repository
 
-import com.ping.domain.nonmember.aggregate.ShareUrl
+import com.ping.domain.nonmember.aggregate.ShareUrlDomain
 
 interface ShareUrlRepository {
-    fun findById(id: Long): ShareUrl?
+    fun findByUuid(uuid: String): ShareUrlDomain?
 }

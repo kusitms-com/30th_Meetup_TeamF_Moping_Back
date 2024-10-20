@@ -1,9 +1,9 @@
 package com.ping.domain.nonmember.repository
 
-import com.ping.domain.nonmember.aggregate.NonMember
+import com.ping.domain.nonmember.aggregate.NonMemberDomain
 
 interface NonMemberRepository {
-    fun findByShareUrlIdAndName(shareUrlId: Long, name: String) : NonMember?
+    fun findByShareUrlIdAndName(shareUrlId: Long, name: String) : NonMemberDomain?
 
-    fun save(nonMember: NonMember): NonMember
+    fun save(nonMemberDomain: NonMemberDomain): NonMemberDomain
 }

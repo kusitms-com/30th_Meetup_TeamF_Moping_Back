@@ -3,20 +3,17 @@ package com.ping.infra.nonmember.domain.jpa.entity
 import com.ping.infra.nonmember.domain.jpa.common.BaseTimeEntity
 import jakarta.persistence.*
 
-@Entity(name = "non_member")
-@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["name", "share_url_id"])])
-class NonMemberEntity(
+@Entity(name = "non_member_place")
+@Table(uniqueConstraints = [UniqueConstraint(columnNames = ["non_member_id", "sid"])])
+class NonMemberPlaceEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long,
 
-    @Column(nullable = false)
-    val name: String,
-
-    @Column(nullable = false)
-    val password: String,
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    val shareUrl: ShareUrlEntity
+    val nonMember: NonMemberEntity,
+
+    @Column(nullable = false)
+    val sid: String
 ) : BaseTimeEntity()
