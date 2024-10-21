@@ -1,6 +1,7 @@
 package com.ping.application.nonmember
 
-import com.ping.application.nonmember.dto.request.NonMemberCreateRequest
+import com.ping.application.nonmember.dto.CreateNonMember
+import com.ping.application.nonmember.dto.GetAllNonMemberPings
 import com.ping.client.navermap.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
@@ -23,7 +24,7 @@ class NonMemberService(
 ) {
 
     @Transactional
-    fun createNonMemberPings(request: NonMemberCreateRequest) {
+    fun createNonMemberPings(request: CreateNonMember.Request) {
         //이름 공백, 특수문자, 숫자 불가
         validateName(request.name)
         // 비밀번호 형식 검사 (4자리 숫자)
