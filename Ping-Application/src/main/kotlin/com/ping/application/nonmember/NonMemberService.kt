@@ -66,7 +66,8 @@ class NonMemberService(
                         py = bookmark.py,
                         sid = bookmark.sid,
                         address = bookmark.address,
-                        mcidName = bookmark.mcidName
+                        mcidName = bookmark.mcidName,
+                        url = it
                     )
                 }
             })
@@ -85,7 +86,8 @@ class NonMemberService(
                     py = bookmark.py,
                     sid = bookmark.sid,
                     address = bookmark.address,
-                    mcidName = bookmark.mcidName
+                    mcidName = bookmark.mcidName,
+                    url = it
                 )
             })
         bookmarkRepository.saveAll(bookmarks)

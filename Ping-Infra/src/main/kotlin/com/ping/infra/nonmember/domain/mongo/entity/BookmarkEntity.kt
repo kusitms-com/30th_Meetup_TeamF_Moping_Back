@@ -15,4 +15,5 @@ data class BookmarkEntity(
     val sid: String,
     val address: String,
     val mcidName: String,
+    val url: String
 ): BaseTimeMongoEntity()

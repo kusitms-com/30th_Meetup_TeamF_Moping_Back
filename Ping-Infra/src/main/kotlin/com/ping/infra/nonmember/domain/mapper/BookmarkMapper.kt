@@ -11,7 +11,8 @@ object BookmarkMapper {
         bookmarkEntity.py,
         bookmarkEntity.sid,
         bookmarkEntity.address,
-        bookmarkEntity.mcidName
+        bookmarkEntity.mcidName,
+        bookmarkEntity.url
     )
 
     fun toEntity(bookmarkDomain: BookmarkDomain) = BookmarkEntity(
@@ -20,6 +21,7 @@ object BookmarkMapper {
         bookmarkDomain.py,
         bookmarkDomain.sid,
         bookmarkDomain.address,
-        bookmarkDomain.mcidName
+        bookmarkDomain.mcidName,
+        bookmarkDomain.url
     )
 }
