@@ -24,6 +24,8 @@ class NonMemberService(
 
     @Transactional
     fun createNonMemberPings(request: NonMemberCreateRequest) {
+        //이름 공백, 특수문자, 숫자 불가
+        validateName(request.name)
         // 비밀번호 형식 검사 (4자리 숫자)
         validatePassword(request.password)
 
@@ -87,6 +89,13 @@ class NonMemberService(
             })
         bookmarkRepository.saveAll(bookmarks)
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
+    }
+    // 이름 우효성 검증 로직
+    private fun validateName(name: String) {
+        val namePattern = "^[가-힣a-zA-Z]{1,6}\$".toRegex()
+        if (!namePattern.matches(name)) {
+            throw CustomException(ExceptionContent.INVALID_NAME_FORMAT)
+        }
     }
 
     // 비밀번호 유효성 검증 로직
