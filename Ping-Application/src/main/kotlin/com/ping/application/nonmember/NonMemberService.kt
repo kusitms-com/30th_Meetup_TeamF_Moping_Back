@@ -1,7 +1,6 @@
 package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.CreateNonMember
-import com.ping.application.nonmember.dto.GetAllNonMemberPings
 import com.ping.client.navermap.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
