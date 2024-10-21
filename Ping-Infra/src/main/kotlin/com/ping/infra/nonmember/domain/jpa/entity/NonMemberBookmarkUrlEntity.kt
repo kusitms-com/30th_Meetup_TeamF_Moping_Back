@@ -3,7 +3,7 @@ package com.ping.infra.nonmember.domain.jpa.entity
 import com.ping.infra.nonmember.domain.jpa.common.BaseTimeEntity
 import jakarta.persistence.*
 
-@Entity(name = "non_member_bookmark_link")
+@Entity(name = "non_member_bookmark_url")
 class NonMemberBookmarkUrlEntity(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
