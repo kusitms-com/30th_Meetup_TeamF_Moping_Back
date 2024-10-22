@@ -4,4 +4,6 @@ import com.ping.domain.nonmember.aggregate.NonMemberPlaceDomain
 
 interface NonMemberPlaceRepository {
     fun saveAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>): List<NonMemberPlaceDomain>
+
+    fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain>
 }

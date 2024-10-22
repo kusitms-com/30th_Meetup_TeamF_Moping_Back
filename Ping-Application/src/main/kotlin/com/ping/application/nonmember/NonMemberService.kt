@@ -93,6 +93,7 @@ class NonMemberService(
         bookmarkRepository.saveAll(bookmarks)
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
     }
+
     // 이름 우효성 검증 로직
     private fun validateName(name: String) {
         val namePattern = "^[가-힣a-zA-Z]{1,6}\$".toRegex()
@@ -106,5 +107,72 @@ class NonMemberService(
         if (!password.matches(Regex("\\d{4}"))) {
             throw CustomException(ExceptionContent.INVALID_PASSWORD_FORMAT)
         }
+    }
+
+    fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
+        val shareUrl = shareUrlRepository.findByUuid(uuid)
+            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
+        val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
+
+        val nonMembers = nonMemberList.map { nonMember ->
+            GetAllNonMemberPings.NonMember(
+                nonMemberId = nonMember.id,
+                name = nonMember.name
+            )
+        }
+
+        //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
+        val allNonMemberPlaces = nonMemberList.flatMap { nonMember ->
+            nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { place ->
+                place to nonMember
+            }
+        }
+        val bookmarks = bookmarkRepository.findAllBySidIn(allNonMemberPlaces.map { it.first.sid }.distinct())
+        val bookmarkMap = bookmarks.associateBy { it.sid }
+
+        //Map<count,list<Pair<BookmarkDomain,List<NonMemberDomain>>>>
+        val nonMemberPlaces = allNonMemberPlaces
+            .groupBy { it.first.sid }
+            .mapNotNull { (sid, placeNonMemberPairs) ->
+                val bookmarkDomain = bookmarkMap[sid]
+                bookmarkDomain?.let {
+                    it to placeNonMemberPairs.map { placeNonMemberPair ->
+                        placeNonMemberPair.second
+                    }
+                }
+            }
+            .sortedByDescending { it.second.size }.groupBy { it.second.size }
+
+        val pings = nonMemberPlaces.entries.mapIndexed{ index, nonMemberPlace ->
+            val level = when {
+                nonMemberPlace.key == 1 -> 0  // 아무도 안겹친 sid (겹친 인원이 1인 경우)
+                index == 0 -> 4        // 가장 많이 겹친 sid
+                index == 1 -> 3        // 두 번째로 많이 겹친 sid
+                index == 2 -> 2        // 세 번째로 많이 겹친 sid
+                else -> 1              // 그 외의 겹친 sid
+            }
+            nonMemberPlace.value.map { bookmarkPair ->
+                GetAllNonMemberPings.Ping(
+                    iconLevel = level,
+                    nonMembers = bookmarkPair.second.map {
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = it.id,
+                            name = it.name
+                        )
+                    },
+                    url = bookmarkPair.first.url,
+                    placeName = bookmarkPair.first.name,
+                    px = bookmarkPair.first.px,
+                    py = bookmarkPair.first.py,
+                )
+            }
+        }.flatten()
+
+
+        return GetAllNonMemberPings.Response(
+            eventName = shareUrl.eventName,
+            nonMembers = nonMembers,
+            pings = pings
+        )
     }
 }

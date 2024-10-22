@@ -5,4 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 
 interface NonMemberJpaRepository : JpaRepository<NonMemberEntity, Long> {
     fun findByShareUrlIdAndName(urlId: Long, name: String): NonMemberEntity?
+
+    fun findAllByShareUrlId(shareUrlId: Long): List<NonMemberEntity>
 }
