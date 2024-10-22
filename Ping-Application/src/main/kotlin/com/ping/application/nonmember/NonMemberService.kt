@@ -67,7 +67,7 @@ class NonMemberService(
                         sid = bookmark.sid,
                         address = bookmark.address,
                         mcidName = bookmark.mcidName,
-                        url = it
+                        url = "https://map.naver.com/p/entry/place/${bookmark.sid}"
                     )
                 }
             })
