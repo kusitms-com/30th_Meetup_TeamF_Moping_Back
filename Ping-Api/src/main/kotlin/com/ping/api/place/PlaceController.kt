@@ -1,5 +1,7 @@
 package com.ping.api.place
 
+import com.ping.application.place.PlaceService
+import com.ping.application.place.dto.SearchPlace
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
@@ -13,7 +15,8 @@ class PlaceController(
 
     // 장소 검색 API
     @PostMapping("/search")
-    fun searchPlace(@RequestBody request: PlaceRequestDto.SearchRequest) =
-        placeService.searchPlace(request)
+    fun searchPlace(@RequestBody request: SearchPlace.Request): List<SearchPlace.Response> {
+        return placeService.searchPlace(request);
+    }
 
 }

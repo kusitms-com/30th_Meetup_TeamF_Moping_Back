@@ -1,8 +1,10 @@
 package com.ping.application.place
 
-import com.ping.application.place.dto.PlaceRequestDto
 import com.ping.application.place.dto.SavePlace
 import com.ping.application.place.dto.SearchPlace
+import com.ping.client.naver.place.NaverApiClient
+import com.ping.domain.nonmember.aggregate.PlaceDomain
+import com.ping.domain.nonmember.repository.PlaceRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,10 +18,10 @@ class PlaceService(
     fun searchPlace(request: SearchPlace.Request): List<SearchPlace.Response> {
         return naverApiClient.searchPlaces(request.keyword).map {
             SearchPlace.Response(
-                name = it.name,
+                name = it.title,
                 address = it.address,
-                latitude = it.latitude,
-                longitude = it.longitude
+                latitude = it.mapx,
+                longitude = it.mapy
             )
         }
     }
