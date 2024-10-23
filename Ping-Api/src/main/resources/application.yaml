@@ -1,0 +1,42 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /api/v1
+
+spring:
+  jackson:
+    time-zone: Asia/Seoul
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${RDB_HOST}:${RDB_PORT}/${RDB_SCHEMA}?createDatabaseIfNotExist=true
+    username: ${RDB_USER}
+    password: ${RDB_PASSWORD}
+    hikari:
+      auto-commit: false
+      connection-test-query: SELECT 1
+      minimum-idle: 10
+      maximum-pool-size: 20
+
+  data:
+    mongodb:
+      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_SCHEMA}?authSource=admin
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+logging:
+  level:
+    root: info
