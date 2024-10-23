@@ -13,7 +13,7 @@ class NonMemberLoginService(
     private val nonMemberRepository: NonMemberRepository,
     private val validator: NamePasswordValidator
 ) {
-    fun loginNonMember(request: LoginNonMember.Request) {
+    fun login(request: LoginNonMember.Request) {
         // 비밀번호 형식 검사 (4자리 숫자)
         validator.password(request.password)
 
