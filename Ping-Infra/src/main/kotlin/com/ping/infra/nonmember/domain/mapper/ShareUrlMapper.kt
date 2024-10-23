@@ -10,6 +10,8 @@ object ShareUrlMapper {
         shareUrlDomain.url,
         shareUrlDomain.eventName,
         shareUrlDomain.neighborhood,
+        shareUrlDomain.latitude,
+        shareUrlDomain.longtitude,
         shareUrlDomain.uuid
     )
 
@@ -18,6 +20,8 @@ object ShareUrlMapper {
         shareUrlEntity.url,
         shareUrlEntity.eventName,
         shareUrlEntity.neighborhood,
+        shareUrlEntity.latitude,
+        shareUrlEntity.longtitude,
         shareUrlEntity.uuid
     )
 }

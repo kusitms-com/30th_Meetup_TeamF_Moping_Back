@@ -18,6 +18,12 @@ class ShareUrlEntity(
     @Column(nullable = false)
     val neighborhood: String,
 
+    @Column(nullable = false)
+    val latitude: Double,
+
+    @Column(nullable = false)
+    val longtitude: Double,
+
     @Column(nullable = false, unique = true)
     val uuid: String
 
