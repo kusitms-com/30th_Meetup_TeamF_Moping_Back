@@ -13,8 +13,8 @@ class PlaceService(
 ) {
 
     // 장소 검색
-    fun searchPlace(request: SearchPlace.Request): List<SearchPlace.Response> {
-        return naverApiClient.searchPlaces(request.keyword).map {
+    fun searchPlace(keyword: String): List<SearchPlace.Response> {
+        return naverApiClient.searchPlaces(keyword).map {
             SearchPlace.Response(
                 name = it.title,
                 address = it.address,

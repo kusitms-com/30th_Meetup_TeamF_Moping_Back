@@ -19,4 +19,8 @@ class NonMemberRepositoryImpl(
     override fun save(nonMemberDomain: NonMemberDomain): NonMemberDomain {
         return NonMemberMapper.toDomain(nonMemberJpaRepository.save(NonMemberMapper.toEntity(nonMemberDomain)))
     }
+
+    override fun findAllByShareUrl(shareUrlId: Long): List<NonMemberDomain> {
+        return nonMemberJpaRepository.findAllByShareUrlId(shareUrlId).map { NonMemberMapper.toDomain(it) }
+    }
 }

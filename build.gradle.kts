@@ -103,6 +103,7 @@ subprojects {
 
         //spring
         implementation("org.springframework.boot:spring-boot-starter-web")
+        implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
         //test
         testImplementation("org.springframework.boot:spring-boot-starter-test")

@@ -4,4 +4,5 @@ import com.ping.infra.nonmember.domain.jpa.entity.NonMemberPlaceEntity
 import org.springframework.data.jpa.repository.JpaRepository
 
 interface NonMemberPlaceJpaRepository : JpaRepository<NonMemberPlaceEntity, Long> {
+    fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceEntity>
 }

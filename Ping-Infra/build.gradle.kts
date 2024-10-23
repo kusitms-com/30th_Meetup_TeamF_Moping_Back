@@ -22,7 +22,7 @@ dependencies {
 }
 tasks {
     bootJar {
-        isEnabled = true
+        isEnabled = false
     }
     jar {
         isEnabled = true
