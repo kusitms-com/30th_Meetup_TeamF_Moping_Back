@@ -1,4 +1,4 @@
-package com.ping.client.navermap
+package com.ping.client.naver.map
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ping.common.exception.CustomException

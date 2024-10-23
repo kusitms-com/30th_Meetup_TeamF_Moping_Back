@@ -27,6 +27,11 @@ spring:
       ddl-auto: update
     open-in-view: false
 
+naver:
+  client:
+    id: ${NAVER_CLIENT_ID}
+    secret: ${NAVER_CLIENT_SECRET}
+
 management:
   endpoints:
     web:

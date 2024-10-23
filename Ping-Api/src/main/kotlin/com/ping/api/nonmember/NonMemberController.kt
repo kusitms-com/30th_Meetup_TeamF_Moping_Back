@@ -12,8 +12,9 @@ class NonMemberController(
 ) {
 
     @PostMapping("/pings")
-    fun createNonMemberPings(@RequestBody nonMemberCreateRequest: CreateNonMember.Request) {
-        return nonMemberService.createNonMemberPings(nonMemberCreateRequest)
+    fun createNonMemberPings(@RequestBody request: CreateNonMember.Request) {
+        return nonMemberService.createNonMemberPings(request)
+
     }
 
     @GetMapping("/pings")

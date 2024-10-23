@@ -1,4 +1,4 @@
-package com.ping.client.navermap
+package com.ping.client.naver.map
 
 class NaverBookmarkResponse {
     data class BookmarkLists(

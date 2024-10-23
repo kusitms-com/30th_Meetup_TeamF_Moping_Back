@@ -44,3 +44,4 @@ out/
 
 ### applicaion 제외 ###
 src/main/resources/application.yaml
+Ping-Api/src/main/resources/application.yaml
