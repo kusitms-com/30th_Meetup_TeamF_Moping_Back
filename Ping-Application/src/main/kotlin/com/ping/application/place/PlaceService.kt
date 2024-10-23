@@ -4,14 +4,12 @@ import com.ping.application.place.dto.SavePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.client.naver.place.NaverApiClient
 import com.ping.domain.nonmember.aggregate.PlaceDomain
-import com.ping.domain.nonmember.repository.PlaceRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PlaceService(
     private val naverApiClient: NaverApiClient,
-    private val placeRepository: PlaceRepository
 ) {
 
     // 장소 검색
@@ -35,6 +33,5 @@ class PlaceService(
             latitude = request.latitude,
             longitude = request.longitude
         )
-        placeRepository.save(place)
     }
 }
