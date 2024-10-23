@@ -8,4 +8,6 @@ interface NonMemberRepository {
     fun save(nonMemberDomain: NonMemberDomain): NonMemberDomain
 
     fun findAllByShareUrl(shareUrlId: Long): List<NonMemberDomain>
+
+    fun findById(nonMemberId: Long): NonMemberDomain?
 }

@@ -20,15 +20,15 @@ class NonMemberService(
     private val nonMemberPlaceRepository: NonMemberPlaceRepository,
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
-    private val naverMapClient: NaverMapClient
+    private val naverMapClient: NaverMapClient,
+    private val validator: NamePasswordValidator
 ) {
-
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
         //이름 공백, 특수문자, 숫자 불가
-        validateName(request.name)
+        validator.name(request.name)
         // 비밀번호 형식 검사 (4자리 숫자)
-        validatePassword(request.password)
+        validator.password(request.password)
 
         val shareUrl = shareUrlRepository.findByUuid(request.uuid)
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
@@ -92,21 +92,6 @@ class NonMemberService(
             })
         bookmarkRepository.saveAll(bookmarks)
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
-    }
-
-    // 이름 우효성 검증 로직
-    private fun validateName(name: String) {
-        val namePattern = "^[가-힣a-zA-Z]{1,6}\$".toRegex()
-        if (!namePattern.matches(name)) {
-            throw CustomException(ExceptionContent.INVALID_NAME_FORMAT)
-        }
-    }
-
-    // 비밀번호 유효성 검증 로직
-    private fun validatePassword(password: String) {
-        if (!password.matches(Regex("\\d{4}"))) {
-            throw CustomException(ExceptionContent.INVALID_PASSWORD_FORMAT)
-        }
     }
 
     fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
