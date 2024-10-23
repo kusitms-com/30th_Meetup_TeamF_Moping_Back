@@ -145,7 +145,7 @@ class NonMemberService(
 
         val pings = nonMemberPlaces.entries.mapIndexed{ index, nonMemberPlace ->
             val level = when {
-                nonMemberPlace.key == 1 -> 0  // 아무도 안겹친 sid (겹친 인원이 1인 경우)
+                nonMemberPlace.key == 1 -> 1  // 아무도 안겹친 sid (겹친 인원이 1인 경우)
                 index == 0 -> 4        // 가장 많이 겹친 sid
                 index == 1 -> 3        // 두 번째로 많이 겹친 sid
                 index == 2 -> 2        // 세 번째로 많이 겹친 sid
