@@ -17,7 +17,7 @@ class EventService(
     private lateinit var baseUrl: String
 
     @Transactional
-    fun createShareUrl(request: CreateEvent.Request): CreateEvent.Response {
+    fun create(request: CreateEvent.Request): CreateEvent.Response {
         val uniqueId = UUID.randomUUID().toString().substring(0, 8)
         val uniqueUrl = generateUniqueUrl(request, uniqueId)
 

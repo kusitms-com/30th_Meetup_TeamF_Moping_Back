@@ -1,7 +1,11 @@
 package com.ping.api.place
 
+import com.ping.application.event.dto.CreateEvent
 import com.ping.application.place.PlaceService
 import com.ping.application.place.dto.SearchPlace
+import com.ping.common.exception.SuccessResponse
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -12,8 +16,11 @@ class PlaceController(
 
     // 장소 검색 API
     @GetMapping("/search/{keyword}")
-    fun searchPlace(@PathVariable("keyword") keyword: String): List<SearchPlace.Response> {
-        return placeService.searchPlace(keyword);
+    fun searchPlace(@PathVariable("keyword") keyword: String): ResponseEntity<SuccessResponse<List<SearchPlace.Response>>> {
+        val response = placeService.searchPlace(keyword);
+        return ResponseEntity.ok(
+            SuccessResponse.of(HttpStatus.OK, "공유 URL이 성공적으로 생성되었습니다.", response)
+        )
     }
 
 }
