@@ -18,7 +18,7 @@ class ShareUrlEntity(
     @Column(nullable = false)
     val neighborhood: String,
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     val uuid: String
 
 ) : BaseTimeEntity()

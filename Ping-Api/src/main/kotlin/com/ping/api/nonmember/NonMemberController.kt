@@ -1,11 +1,9 @@
 package com.ping.api.nonmember
 
 import com.ping.application.nonmember.NonMemberService
-import com.ping.application.nonmember.dto.request.NonMemberCreateRequest
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import com.ping.application.nonmember.dto.CreateNonMember
+import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/nonmembers")
@@ -14,7 +12,12 @@ class NonMemberController(
 ) {
 
     @PostMapping("/pings")
-    fun createNonMemberPings(@RequestBody nonMemberCreateRequest: NonMemberCreateRequest) {
+    fun createNonMemberPings(@RequestBody nonMemberCreateRequest: CreateNonMember.Request) {
         return nonMemberService.createNonMemberPings(nonMemberCreateRequest)
+    }
+
+    @GetMapping("/pings")
+    fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
+        return nonMemberService.getAllNonMemberPings(uuid)
     }
 }
