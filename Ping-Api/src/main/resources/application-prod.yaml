@@ -34,7 +34,7 @@ naver:
 
 pingping:
   share:
-    base-url: ${BASE-URL}
+    base-url: ${BASE_URL}
 
 management:
   endpoints:
