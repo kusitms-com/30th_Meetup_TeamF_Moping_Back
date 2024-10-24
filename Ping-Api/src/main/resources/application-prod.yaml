@@ -32,6 +32,10 @@ naver:
     id: ${NAVER_CLIENT_ID}
     secret: ${NAVER_CLIENT_SECRET}
 
+pingping:
+  share:
+    base-url: ${BASE-URL}
+
 management:
   endpoints:
     web:
