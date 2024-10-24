@@ -23,4 +23,10 @@ class NonMemberRepositoryImpl(
     override fun findAllByShareUrl(shareUrlId: Long): List<NonMemberDomain> {
         return nonMemberJpaRepository.findAllByShareUrlId(shareUrlId).map { NonMemberMapper.toDomain(it) }
     }
+
+    override fun findById(nonMemberId: Long): NonMemberDomain? {
+        return nonMemberJpaRepository.findById(nonMemberId).get().let {
+            NonMemberMapper.toDomain(it)
+        }
+    }
 }
