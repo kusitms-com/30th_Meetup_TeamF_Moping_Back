@@ -23,14 +23,11 @@ class NonMemberController(
     ): ResponseEntity<SuccessResponse<Unit>> {
         nonMemberLoginService.login(request)
 
-        return ResponseEntity.ok(
-            SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공")
-        )
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공"))
     }
     @PostMapping("/pings")
     fun createNonMemberPings(@RequestBody request: CreateNonMember.Request) {
         return nonMemberService.createNonMemberPings(request)
-
     }
 
     @GetMapping("/pings")

@@ -6,4 +6,5 @@ interface NonMemberPlaceRepository {
     fun saveAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>): List<NonMemberPlaceDomain>
 
     fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain>
+    fun deleteAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>)
 }

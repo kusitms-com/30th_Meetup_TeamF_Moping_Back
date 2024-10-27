@@ -2,6 +2,7 @@ package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import com.ping.application.nonmember.dto.UpdateNonMemberStatus
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
@@ -20,6 +21,7 @@ class NonMemberService(
     private val nonMemberPlaceRepository: NonMemberPlaceRepository,
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
+    private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
     private val naverMapClient: NaverMapClient,
     private val validator: NonMemberValidator
 ) {
@@ -159,5 +161,92 @@ class NonMemberService(
             nonMembers = nonMembers,
             pings = pings
         )
+    }
+
+    @Transactional
+    fun updateNonMemberPings(request: UpdateNonMemberStatus.Request) {
+        val nonMemberDomain = nonMemberRepository.findById(request.nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+
+        val existingSids = nonMemberPlaceRepository.findAllByNonMemberId(request.nonMemberId).map { it.sid }.toSet()
+        val newBookmarkSids = handleBookmarkUrls(request.bookmarkUrls)
+        val newStoreSids = handleStoreUrls(request.storeUrls)
+
+        val allNewSids = (newBookmarkSids + newStoreSids)
+        if (existingSids != allNewSids) {
+            updatePlaceSids(nonMemberDomain, allNewSids)
+        }
+    }
+
+    private fun handleBookmarkUrls(bookmarkUrls: List<String>): Set<String> {
+        val newSids = mutableSetOf<String>()
+        bookmarkUrls.forEach { url ->
+            val expandedUrl = UrlUtil.expandShortUrl(url)
+            val bookmarkList = naverMapClient.bookmarkUrlToBookmarkLists(expandedUrl).bookmarkList
+
+            bookmarkList.forEach { bookmark ->
+                if (!isBookmarkExists(bookmark.sid)) {
+                    bookmarkRepository.saveAll(
+                        listOf(
+                            BookmarkDomain(
+                                name = bookmark.name,
+                                px = bookmark.px,
+                                py = bookmark.py,
+                                sid = bookmark.sid,
+                                address = bookmark.address,
+                                mcidName = bookmark.mcidName,
+                                url = "https://map.naver.com/p/entry/place/${bookmark.sid}"
+                            )
+                        )
+                    )
+                }
+                newSids.add(bookmark.sid)
+            }
+        }
+        return newSids
+    }
+
+    private fun handleStoreUrls(storeUrls: List<String>): Set<String> {
+        val newSids = mutableSetOf<String>()
+        storeUrls.forEach { url ->
+            val expandedUrl = UrlUtil.expandShortUrl(url)
+            val store = naverMapClient.storeUrlToBookmark(expandedUrl)
+
+            if (!isBookmarkExists(store.sid)) {
+                bookmarkRepository.saveAll(
+                    listOf(
+                        BookmarkDomain(
+                            name = store.name,
+                            px = store.px,
+                            py = store.py,
+                            sid = store.sid,
+                            address = store.address,
+                            mcidName = store.mcidName,
+                            url = url
+                        )
+                    )
+                )
+            }
+            newSids.add(store.sid)
+        }
+        return newSids
+    }
+
+    private fun updatePlaceSids(nonMemberDomain: NonMemberDomain, newSids: Set<String>) {
+        val existingPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberDomain.id)
+        val existingSids = existingPlaces.map { it.sid }.toSet()
+
+        val sidsToAdd = newSids - existingSids
+        val sidsToDelete = existingSids - newSids
+
+        val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(nonMemberDomain, sid) }
+        nonMemberPlaceRepository.saveAll(placesToAdd)
+
+        val placesToDelete = existingPlaces.filter { it.sid in sidsToDelete }
+        nonMemberPlaceRepository.deleteAll(placesToDelete)
+    }
+
+    private fun isBookmarkExists(sid: String): Boolean {
+        return bookmarkRepository.findAllBySidIn(listOf(sid)).isNotEmpty()
     }
 }
