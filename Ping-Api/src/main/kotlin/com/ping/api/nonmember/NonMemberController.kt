@@ -4,6 +4,7 @@ import com.ping.application.nonmember.NonMemberLoginService
 import com.ping.application.nonmember.NonMemberService
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import com.ping.application.nonmember.dto.GetNonMemberPing
 import com.ping.application.nonmember.dto.LoginNonMember
 import com.ping.common.exception.SuccessResponse
 import org.springframework.http.HttpStatus
@@ -34,5 +35,10 @@ class NonMemberController(
     @GetMapping(NonMemberApi.PING)
     fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.getAllNonMemberPings(uuid)
+    }
+
+    @GetMapping(NonMemberApi.PING_NONMEMBERID)
+    fun getNonMemberPing(@PathVariable nonMemberId: Long): GetNonMemberPing.Response {
+        return nonMemberService.getNonMemberPing(nonMemberId)
     }
 }
