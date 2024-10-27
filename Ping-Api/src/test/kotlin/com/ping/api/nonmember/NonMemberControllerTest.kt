@@ -73,6 +73,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
 
         val getAllNonMemberPings = GetAllNonMemberPings.Response(
             eventName = "핑핑이들 여행",
+            px = 127.00001,
+            py = 37.00001,
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
                 GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
@@ -113,6 +115,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 resultHandler.document(
                     responseFields(
                         fieldWithPath("eventName").description("이벤트 이름"),
+                        fieldWithPath("px").description("이벤트 중심 경도"),
+                        fieldWithPath("py").description("이벤트 중심 위도"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
@@ -120,8 +124,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].url").description("장소 url"),
                         fieldWithPath("pings[].placeName").description("장소 이름"),
-                        fieldWithPath("pings[].px").description("위도"),
-                        fieldWithPath("pings[].py").description("경도"),
+                        fieldWithPath("pings[].px").description("경도"),
+                        fieldWithPath("pings[].py").description("위도"),
                     )
                 )
             )

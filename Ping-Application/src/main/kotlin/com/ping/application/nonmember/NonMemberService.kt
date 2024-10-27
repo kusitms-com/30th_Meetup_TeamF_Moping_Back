@@ -157,6 +157,8 @@ class NonMemberService(
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
             nonMembers = nonMembers,
+            px = shareUrl.latitude,
+            py = shareUrl.longtitude,
             pings = pings
         )
     }
