@@ -5,7 +5,7 @@ import com.ping.common.exception.ExceptionContent
 import org.springframework.stereotype.Component
 
 @Component
-class NamePasswordValidator {
+class NonMemberValidator {
 
     // 이름 유효성 검증
     fun name(name: String) {
