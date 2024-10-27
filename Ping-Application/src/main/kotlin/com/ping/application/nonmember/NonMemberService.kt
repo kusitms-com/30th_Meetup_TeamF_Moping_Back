@@ -2,7 +2,7 @@ package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
-import com.ping.application.nonmember.dto.UpdateNonMemberStatus
+import com.ping.application.nonmember.dto.UpdateNonMemberPings
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
@@ -164,7 +164,7 @@ class NonMemberService(
     }
 
     @Transactional
-    fun updateNonMemberPings(request: UpdateNonMemberStatus.Request) {
+    fun updateNonMemberPings(request: UpdateNonMemberPings.Request) {
         val nonMemberDomain = nonMemberRepository.findById(request.nonMemberId)
             ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
 

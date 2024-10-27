@@ -5,6 +5,7 @@ import com.ping.application.nonmember.NonMemberService
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
 import com.ping.application.nonmember.dto.LoginNonMember
+import com.ping.application.nonmember.dto.UpdateNonMemberPings
 import com.ping.common.exception.SuccessResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -33,5 +34,10 @@ class NonMemberController(
     @GetMapping("/pings")
     fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.getAllNonMemberPings(uuid)
+    }
+
+    @PutMapping("/pings")
+    fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
+        nonMemberService.updateNonMemberPings(request)
     }
 }
