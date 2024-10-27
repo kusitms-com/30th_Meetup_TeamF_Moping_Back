@@ -21,7 +21,7 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val naverMapClient: NaverMapClient,
-    private val validator: NamePasswordValidator
+    private val validator: NonMemberValidator
 ) {
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
