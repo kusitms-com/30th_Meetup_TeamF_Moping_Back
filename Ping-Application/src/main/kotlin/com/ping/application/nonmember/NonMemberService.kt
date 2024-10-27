@@ -2,6 +2,7 @@ package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import com.ping.application.nonmember.dto.GetNonMemberPing
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
@@ -170,5 +171,20 @@ class NonMemberService(
                 }
             }.sortedByDescending { it.second.size }.groupBy { it.second.size }
         return nonMemberPlaces
+    }
+
+    fun getNonMemberPing(nonMemberId: Long) : GetNonMemberPing.Response {
+        val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
+        val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
+        return GetNonMemberPing.Response(
+            pings = bookmarks.map {
+                GetNonMemberPing.Ping(
+                    url = it.url,
+                    placeName = it.name,
+                    px = it.px,
+                    py = it.py
+                )
+            }
+        )
     }
 }

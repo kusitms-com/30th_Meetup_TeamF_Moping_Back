@@ -8,3 +8,7 @@ operation::NonMemberControllerTest/createNonMemberPings[snippets='http-request,r
 [[Get-NonMemberPings]]
 === 전체 핑 불러오기
 operation::NonMemberControllerTest/getAllNonMemberPings[snippets='http-request,http-response,response-fields']
+
+[[Get-NonMemberPing]]
+=== 개별 핑 불러오기
+operation::NonMemberControllerTest/getNonMemberPing[snippets='http-request,http-response,response-fields']

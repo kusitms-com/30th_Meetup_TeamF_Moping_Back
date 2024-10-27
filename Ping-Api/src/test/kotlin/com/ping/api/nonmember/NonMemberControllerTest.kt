@@ -5,6 +5,7 @@ import com.ping.application.nonmember.NonMemberLoginService
 import com.ping.application.nonmember.NonMemberService
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import com.ping.application.nonmember.dto.GetNonMemberPing
 import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -129,5 +130,47 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     )
                 )
             )
+    }
+
+    @Test
+    @DisplayName("개별 핑 불러오기")
+    fun getNonMemberPing() {
+        //given
+        val nonMemberId = 1L
+        val request = RestDocumentationRequestBuilders.get(NonMemberApi.PING_NONMEMBERID,nonMemberId)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+        val getNonMemberPing = GetNonMemberPing.Response(
+            pings = listOf(GetNonMemberPing.Ping(
+                url = "https://map.naver.com/p/entry/place/1072787710",
+                placeName = "도토리",
+                px = 126.9727984,
+                py = 37.5319087
+            ),
+                GetNonMemberPing.Ping(
+                    url = "https://map.naver.com/p/entry/place/1092976589",
+                    placeName = "당케커피",
+                    px = 126.971301,
+                    py = 37.5314638
+                ))
+        )
+
+        given(nonMemberService.getNonMemberPing(nonMemberId)).willReturn(getNonMemberPing)
+
+        //when
+        val result = mockMvc.perform(request)
+
+        //then
+        result.andExpect(status().isOk)
+            .andDo(
+                resultHandler.document(
+                    responseFields(
+                        fieldWithPath("pings[].url").description("장소 url"),
+                        fieldWithPath("pings[].placeName").description("장소 이름"),
+                        fieldWithPath("pings[].px").description("경도"),
+                        fieldWithPath("pings[].py").description("위도"),
+                    )
+                )
+            )
+
     }
 }
