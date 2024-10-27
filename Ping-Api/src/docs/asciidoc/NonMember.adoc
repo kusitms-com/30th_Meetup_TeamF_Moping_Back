@@ -1,0 +1,10 @@
+[[NonMembers-API]]
+== NonMembers API
+
+[[Post-NonMemberPings]]
+=== 비회원 핑 생성
+operation::NonMemberControllerTest/createNonMemberPings[snippets='HTTP-request,request-fields,HTTP-response']
+
+[[Get-NonMemberPings]]
+=== 전체 핑 불러오기
+operation::NonMemberControllerTest/getAllNonMemberPings[snippets='HTTP-request,HTTP-response,response-fields']
