@@ -106,35 +106,20 @@ class NonMemberService(
             )
         }
 
-        //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
-        val allNonMemberPlaces = nonMemberList.flatMap { nonMember ->
-            nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { place ->
-                place to nonMember
-            }
-        }
-        val bookmarks = bookmarkRepository.findAllBySidIn(allNonMemberPlaces.map { it.first.sid }.distinct())
-        val bookmarkMap = bookmarks.associateBy { it.sid }
-
-        //Map<count,list<Pair<BookmarkDomain,List<NonMemberDomain>>>>
-        val nonMemberPlaces = allNonMemberPlaces
-            .groupBy { it.first.sid }
-            .mapNotNull { (sid, placeNonMemberPairs) ->
-                val bookmarkDomain = bookmarkMap[sid]
-                bookmarkDomain?.let {
-                    it to placeNonMemberPairs.map { placeNonMemberPair ->
-                        placeNonMemberPair.second
-                    }
-                }
-            }
-            .sortedByDescending { it.second.size }.groupBy { it.second.size }
+        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
 
         val pings = nonMemberPlaces.entries.mapIndexed{ index, nonMemberPlace ->
+            val mostOverlappedIconLevel = 4
+            val secondOverlappedIconLevel = 3
+            val thirdOverlappedIconLevel = 2
+            val remainderIconLevel = 1
+
             val level = when {
-                nonMemberPlace.key == 1 -> 1  // 아무도 안겹친 sid (겹친 인원이 1인 경우)
-                index == 0 -> 4        // 가장 많이 겹친 sid
-                index == 1 -> 3        // 두 번째로 많이 겹친 sid
-                index == 2 -> 2        // 세 번째로 많이 겹친 sid
-                else -> 1              // 그 외의 겹친 sid
+                nonMemberPlace.key == 1 -> remainderIconLevel //1명일 때
+                index == 0 -> mostOverlappedIconLevel
+                index == 1 -> secondOverlappedIconLevel
+                index == 2 -> thirdOverlappedIconLevel
+                else -> remainderIconLevel
             }
             nonMemberPlace.value.map { bookmarkPair ->
                 GetAllNonMemberPings.Ping(
@@ -153,7 +138,6 @@ class NonMemberService(
             }
         }.flatten()
 
-
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
             nonMembers = nonMembers,
@@ -161,5 +145,30 @@ class NonMemberService(
             py = shareUrl.longtitude,
             pings = pings
         )
+    }
+
+    private fun nonMembersToNonMemberPlacesMap(nonMembers: List<NonMemberDomain>): Map<Int,List<Pair<BookmarkDomain,List<NonMemberDomain>>>> {
+        //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
+        val allNonMemberPlaces = nonMembers.flatMap { nonMember ->
+            nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { place ->
+                place to nonMember
+            }
+        }
+
+        val bookmarks = bookmarkRepository.findAllBySidIn(allNonMemberPlaces.map { it.first.sid }.distinct())
+        val bookmarkMap = bookmarks.associateBy { it.sid }
+
+        //Map<Int(count),List<Pair<BookmarkDomain,List<NonMemberDomain>>>>
+        val  nonMemberPlaces = allNonMemberPlaces
+            .groupBy { it.first.sid }
+            .mapNotNull { (sid, placeNonMemberPairs) ->
+                val bookmarkDomain = bookmarkMap[sid]
+                bookmarkDomain?.let {
+                    it to placeNonMemberPairs.map { placeNonMemberPair ->
+                        placeNonMemberPair.second
+                    }
+                }
+            }.sortedByDescending { it.second.size }.groupBy { it.second.size }
+        return nonMemberPlaces
     }
 }
