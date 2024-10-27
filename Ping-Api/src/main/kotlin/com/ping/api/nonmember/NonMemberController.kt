@@ -11,13 +11,11 @@ import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
 @RestController
-@RequestMapping("/nonmembers")
 class NonMemberController(
     private val nonMemberService: NonMemberService,
     private val nonMemberLoginService: NonMemberLoginService
 ) {
-
-    @PutMapping("/login")
+    @PutMapping("/nonmembers/login")
     fun loginNonMember(
         @RequestBody request: LoginNonMember.Request
     ): ResponseEntity<SuccessResponse<Unit>> {
@@ -27,12 +25,13 @@ class NonMemberController(
             SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공")
         )
     }
-    @PostMapping("/pings")
+
+    @PostMapping(NonMemberApi.PING)
     fun createNonMemberPings(@RequestBody request: CreateNonMember.Request) {
         return nonMemberService.createNonMemberPings(request)
     }
 
-    @GetMapping("/pings")
+    @GetMapping(NonMemberApi.PING)
     fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.getAllNonMemberPings(uuid)
     }

@@ -40,7 +40,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             bookmarkUrls = listOf("https://naver.me/Fqimcb8B", "https://naver.me/xUwGH5c3"),
             storeUrls = listOf("https://naver.me/GuGEom4T", "https://naver.me/FuVzL1bq")
         )
-        val request = RestDocumentationRequestBuilders.post("/nonmembers/pings")
+        val request = RestDocumentationRequestBuilders.post(NonMemberApi.PING)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .content(objectMapper.writeValueAsString(createNonMemberRequest))
 
@@ -67,7 +67,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     fun getAllNonMemberPings() {
         // given
         val uuid = "test"
-        val request = RestDocumentationRequestBuilders.get("/nonmembers/pings")
+        val request = RestDocumentationRequestBuilders.get(NonMemberApi.PING)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .queryParam("uuid", uuid)
 
