@@ -180,7 +180,7 @@ class NonMemberService(
             pings = bookmarks.map {
                 GetNonMemberPing.Ping(
                     url = it.url,
-                    placeName = it.address,
+                    placeName = it.name,
                     px = it.px,
                     py = it.py
                 )
