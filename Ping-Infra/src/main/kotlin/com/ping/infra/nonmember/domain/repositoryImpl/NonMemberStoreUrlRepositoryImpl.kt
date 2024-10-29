@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 class NonMemberStoreUrlRepositoryImpl(
     private val nonMemberStoreUrlJpaRepository: NonMemberStoreUrlJpaRepository
 ) : NonMemberStoreUrlRepository {
-    override fun saveALl(nonMemberStoreUrlDomains: List<NonMemberStoreUrlDomain>): List<NonMemberStoreUrlDomain> {
+    override fun saveAll(nonMemberStoreUrlDomains: List<NonMemberStoreUrlDomain>): List<NonMemberStoreUrlDomain> {
         return nonMemberStoreUrlJpaRepository.saveAll(nonMemberStoreUrlDomains.map { NonMemberStoreUrlMapper.toEntity(it) })
             .map { NonMemberStoreUrlMapper.toDomain(it) }
     }

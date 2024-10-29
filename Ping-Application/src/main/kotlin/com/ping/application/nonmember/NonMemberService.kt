@@ -27,35 +27,73 @@ class NonMemberService(
 ) {
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
-        // 이름 및 비밀번호 유효성 검증
+        //이름 공백, 특수문자, 숫자 불가
         validator.name(request.name)
+        // 비밀번호 형식 검사 (4자리 숫자)
         validator.password(request.password)
 
         val shareUrl = shareUrlRepository.findByUuid(request.uuid)
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
 
-        // 이미 같은 name의 비회원 존재 여부 확인
+        // shareUrlId과 name으로 비회원 존재 여부 확인
         nonMemberRepository.findByShareUrlIdAndName(shareUrl.id, request.name)?.let {
             throw CustomException(ExceptionContent.NON_MEMBER_ALREADY_EXISTS)
         }
 
-        // NonMember 생성 및 저장
+        // NonMember 엔티티 생성 및 저장
         val nonMemberDomain = NonMemberDomain.of(request.name, request.password, shareUrl)
         val nonmember = nonMemberRepository.save(nonMemberDomain)
 
-        // URL 데이터 저장
+        //url 저장
         val nonMemberBookmarkUrlDomains = NonMemberBookmarkUrlDomain.of(nonmember, request.bookmarkUrls)
         nonMemberBookmarkUrlRepository.saveAll(nonMemberBookmarkUrlDomains)
 
         val nonMemberStoreUrlDomains = NonMemberStoreUrlDomain.of(nonmember, request.storeUrls)
         nonMemberStoreUrlRepository.saveAll(nonMemberStoreUrlDomains)
 
-        // 북마크와 가게 데이터를 개별 리스트로 추출
-        val bookmarkPlaces = handleBookmarkUrls(request.bookmarkUrls, nonmember)
-        val storePlaces = handleStoreUrls(request.storeUrls, nonmember)
-
-        bookmarkRepository.saveAll(bookmarkPlaces.bookmarks + storePlaces.bookmarks)
-        nonMemberPlaceRepository.saveAll(bookmarkPlaces.places + storePlaces.places)
+        val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
+        val bookmarks = mutableListOf<BookmarkDomain>()
+        //맵핀 모은 링크 추출
+        bookmarks.addAll(
+            request.bookmarkUrls.flatMap {
+                val url = UrlUtil.expandShortUrl(it)
+                naverMapClient.bookmarkUrlToBookmarkLists(url).bookmarkList.map { bookmark ->
+                    //NonMemberPlace 저장
+                    nonMemberPlaces
+                        .takeIf { nonMemberPlace -> nonMemberPlace.none { place -> place.sid == bookmark.sid } }
+                        ?.add(NonMemberPlaceDomain.of(nonmember, bookmark.sid))
+                    BookmarkDomain(
+                        name = bookmark.name,
+                        px = bookmark.px,
+                        py = bookmark.py,
+                        sid = bookmark.sid,
+                        address = bookmark.address,
+                        mcidName = bookmark.mcidName,
+                        url = "https://map.naver.com/p/entry/place/${bookmark.sid}"
+                    )
+                }
+            })
+        //맵핀 가게 링크 추출
+        bookmarks.addAll(
+            request.storeUrls.map {
+                val url = UrlUtil.expandShortUrl(it)
+                val bookmark = naverMapClient.storeUrlToBookmark(url)
+                //NonMemberPlace 저장
+                nonMemberPlaces
+                    .takeIf { nonMemberPlace -> nonMemberPlace.none { place -> place.sid == bookmark.sid } }
+                    ?.add(NonMemberPlaceDomain.of(nonmember, bookmark.sid))
+                BookmarkDomain(
+                    name = bookmark.name,
+                    px = bookmark.px,
+                    py = bookmark.py,
+                    sid = bookmark.sid,
+                    address = bookmark.address,
+                    mcidName = bookmark.mcidName,
+                    url = it
+                )
+            })
+        bookmarkRepository.saveAll(bookmarks)
+        nonMemberPlaceRepository.saveAll(nonMemberPlaces)
 
         createNonMemberUpdateStatus(nonmember, shareUrl.id)
     }
@@ -144,10 +182,6 @@ class NonMemberService(
         if (existingSids != allNewSids) {
             updatePlaceSids(nonMemberDomain, allNewSids)
         }
-
-        // 새로운 북마크 데이터 저장
-        bookmarkRepository.saveAll(bookmarkData.bookmarks + storeData.bookmarks)
-        nonMemberPlaceRepository.saveAll(bookmarkData.places + storeData.places)
     }
 
     private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
@@ -176,7 +210,6 @@ class NonMemberService(
             )
         }
 
-        // 모든 NonMemberUpdateStatusDomain 저장
         nonMemberUpdateStatusRepository.saveAll(updateStatusForNewMember + updateStatusForExistingMembers)
     }
 
@@ -185,13 +218,14 @@ class NonMemberService(
     ): BookmarkData {
         val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
         val bookmarks = mutableListOf<BookmarkDomain>()
-        val newSids = mutableSetOf<String>()
+        val newSids = mutableSetOf<String>()  // 중복 확인을 위한 sid 집합
 
         bookmarkUrls.forEach { url ->
             val expandedUrl = UrlUtil.expandShortUrl(url)
             val bookmarkList = naverMapClient.bookmarkUrlToBookmarkLists(expandedUrl).bookmarkList
 
             bookmarkList.forEach { bookmark ->
+                // MongoDB에 존재하지 않는 경우에만 BookmarkDomain 생성
                 if (!isBookmarkExists(bookmark.sid)) {
                     bookmarks.add(
                         BookmarkDomain(
@@ -205,26 +239,29 @@ class NonMemberService(
                         )
                     )
                 }
-                if (nonMemberPlaces.none { it.sid == bookmark.sid }) {
+
+                // 중복되지 않는 경우에만 NonMemberPlace 추가
+                if (newSids.add(bookmark.sid)) {
                     nonMemberPlaces.add(NonMemberPlaceDomain.of(nonMember, bookmark.sid))
                 }
-                newSids.add(bookmark.sid)
             }
         }
         return BookmarkData(nonMemberPlaces, bookmarks, newSids)
     }
 
+    // storeUrls에서 중복되지 않는 NonMemberPlaceDomain과 BookmarkDomain을 생성하고 반환
     private fun handleStoreUrls(
         storeUrls: List<String>, nonMember: NonMemberDomain
     ): BookmarkData {
         val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
         val bookmarks = mutableListOf<BookmarkDomain>()
-        val newSids = mutableSetOf<String>()
+        val newSids = mutableSetOf<String>()  // 중복 확인을 위한 sid 집합
 
         storeUrls.forEach { url ->
             val expandedUrl = UrlUtil.expandShortUrl(url)
             val store = naverMapClient.storeUrlToBookmark(expandedUrl)
 
+            // MongoDB에 존재하지 않는 경우에만 BookmarkDomain 생성
             if (!isBookmarkExists(store.sid)) {
                 bookmarks.add(
                     BookmarkDomain(
@@ -238,10 +275,11 @@ class NonMemberService(
                     )
                 )
             }
-            if (nonMemberPlaces.none { it.sid == store.sid }) {
+
+            // 중복되지 않는 경우에만 NonMemberPlace 추가
+            if (newSids.add(store.sid)) {
                 nonMemberPlaces.add(NonMemberPlaceDomain.of(nonMember, store.sid))
             }
-            newSids.add(store.sid)
         }
         return BookmarkData(nonMemberPlaces, bookmarks, newSids)
     }
