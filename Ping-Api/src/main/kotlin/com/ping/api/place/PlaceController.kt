@@ -2,6 +2,7 @@ package com.ping.api.place
 
 import com.ping.application.event.dto.CreateEvent
 import com.ping.application.place.PlaceService
+import com.ping.application.place.dto.GeocodePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.common.exception.SuccessResponse
 import org.springframework.http.HttpStatus
@@ -18,6 +19,12 @@ class PlaceController(
     fun searchPlace(@PathVariable("keyword") keyword: String): ResponseEntity<SuccessResponse<List<SearchPlace.Response>>> {
         val response = placeService.searchPlace(keyword);
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "장소 검색에 성공하였습니다.", response))
+    }
+
+    @PostMapping("/geocode")
+    fun geocodePlace(@RequestBody request: GeocodePlace.Request): ResponseEntity<SuccessResponse<GeocodePlace.Response>> {
+        val response = placeService.getGeocodeAddress(request)
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "좌표 검색에 성공하였습니다.", response))
     }
 
 }
