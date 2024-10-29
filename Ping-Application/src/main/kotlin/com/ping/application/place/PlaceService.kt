@@ -1,5 +1,6 @@
 package com.ping.application.place
 
+import com.ping.application.place.dto.GeocodePlace
 import com.ping.application.place.dto.SavePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.client.naver.place.NaverApiClient
@@ -21,6 +22,15 @@ class PlaceService(
                 longitude = it.mapy
             )
         }
+    }
+
+    fun getGeocodeAddress(request: GeocodePlace.Request): GeocodePlace.Response {
+        val (latitude, longitude) = naverApiClient.getGeocodeAddress(request.address)
+        return GeocodePlace.Response(
+            address = request.address,
+            latitude = latitude,
+            longitude = longitude
+        )
     }
 
 }
