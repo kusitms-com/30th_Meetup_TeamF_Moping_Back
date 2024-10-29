@@ -19,7 +19,7 @@ class PlaceController(
     fun searchPlace(@PathVariable("keyword") keyword: String): ResponseEntity<SuccessResponse<List<SearchPlace.Response>>> {
         val response = placeService.searchPlace(keyword);
         return ResponseEntity.ok(
-            SuccessResponse.of(HttpStatus.OK, "공유 URL이 성공적으로 생성되었습니다.", response)
+            SuccessResponse.of(HttpStatus.OK, "장소 검색에 성공하였습니다.", response)
         )
     }
 

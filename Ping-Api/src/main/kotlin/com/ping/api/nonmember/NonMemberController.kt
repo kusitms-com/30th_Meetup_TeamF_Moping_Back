@@ -6,6 +6,7 @@ import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
 import com.ping.application.nonmember.dto.GetNonMemberPing
 import com.ping.application.nonmember.dto.LoginNonMember
+import com.ping.application.nonmember.dto.UpdateNonMemberPings
 import com.ping.common.exception.SuccessResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,9 +23,7 @@ class NonMemberController(
     ): ResponseEntity<SuccessResponse<Unit>> {
         nonMemberLoginService.login(request)
 
-        return ResponseEntity.ok(
-            SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공")
-        )
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공"))
     }
 
     @PostMapping(NonMemberApi.PING)
@@ -36,9 +35,14 @@ class NonMemberController(
     fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.getAllNonMemberPings(uuid)
     }
-
+    
     @GetMapping(NonMemberApi.PING_NONMEMBERID)
     fun getNonMemberPing(@PathVariable nonMemberId: Long): GetNonMemberPing.Response {
         return nonMemberService.getNonMemberPing(nonMemberId)
     }
+
+    @PutMapping("/pings")
+    fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
+        nonMemberService.updateNonMemberPings(request)
+
 }

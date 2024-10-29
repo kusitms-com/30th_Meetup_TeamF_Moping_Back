@@ -16,7 +16,7 @@ class PlaceService(
     fun searchPlace(keyword: String): List<SearchPlace.Response> {
         return naverApiClient.searchPlaces(keyword).map {
             SearchPlace.Response(
-                name = it.title,
+                name = it.title.replace("<b>", "").replace("</b>", ""),
                 address = it.address,
                 latitude = it.mapx,
                 longitude = it.mapy

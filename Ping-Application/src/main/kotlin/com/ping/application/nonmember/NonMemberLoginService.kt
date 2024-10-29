@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Transactional(readOnly = true)
 class NonMemberLoginService(
     private val nonMemberRepository: NonMemberRepository,
-    private val validator: NamePasswordValidator
+    private val validator: NonMemberValidator
 ) {
     fun login(request: LoginNonMember.Request) {
         // 비밀번호 형식 검사 (4자리 숫자)

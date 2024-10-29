@@ -2,6 +2,7 @@ package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
+import com.ping.application.nonmember.dto.UpdateNonMemberPings
 import com.ping.application.nonmember.dto.GetNonMemberPing
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
@@ -21,8 +22,9 @@ class NonMemberService(
     private val nonMemberPlaceRepository: NonMemberPlaceRepository,
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
+    private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
     private val naverMapClient: NaverMapClient,
-    private val validator: NamePasswordValidator
+    private val validator: NonMemberValidator
 ) {
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
@@ -48,7 +50,7 @@ class NonMemberService(
         nonMemberBookmarkUrlRepository.saveAll(nonMemberBookmarkUrlDomains)
 
         val nonMemberStoreUrlDomains = NonMemberStoreUrlDomain.of(nonmember, request.storeUrls)
-        nonMemberStoreUrlRepository.saveALl(nonMemberStoreUrlDomains)
+        nonMemberStoreUrlRepository.saveAll(nonMemberStoreUrlDomains)
 
         val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
         val bookmarks = mutableListOf<BookmarkDomain>()
@@ -93,6 +95,8 @@ class NonMemberService(
             })
         bookmarkRepository.saveAll(bookmarks)
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
+
+        createNonMemberUpdateStatus(nonmember, shareUrl.id)
     }
 
     fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
@@ -147,6 +151,148 @@ class NonMemberService(
             pings = pings
         )
     }
+
+    @Transactional
+    fun updateNonMemberPings(request: UpdateNonMemberPings.Request) {
+        val nonMemberDomain = nonMemberRepository.findById(request.nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+
+        // 현재 비회원의 기존 sid 추출
+        val existingSids = nonMemberPlaceRepository.findAllByNonMemberId(request.nonMemberId).map { it.sid }.toSet()
+
+        // 새로운 북마크 및 가게 데이터 처리
+        val bookmarkData = handleBookmarkUrls(request.bookmarkUrls, nonMemberDomain)
+        val storeData = handleStoreUrls(request.storeUrls, nonMemberDomain)
+
+        // 전체 새로운 sid 집합
+        val allNewSids = (bookmarkData.sids + storeData.sids)
+        if (existingSids != allNewSids) {
+            updatePlaceSids(nonMemberDomain, allNewSids)
+        }
+    }
+
+    private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
+        // 새로 생성된 비회원을 제외한 기존 비회원 목록 조회
+        val existingNonMembers = nonMemberRepository.findAllByShareUrl(shareUrlId)
+            .filter { it.id != newNonMember.id }
+
+        // 기존 비회원이 없으면 return
+        if (existingNonMembers.isEmpty()) return
+
+        // 새로 생성된 비회원 기준으로 각 기존 비회원에 대한 NonMemberUpdateStatusDomain 생성
+        val updateStatusForNewMember = existingNonMembers.map { existingMember ->
+            NonMemberUpdateStatusDomain.of(
+                nonMemberDomain = newNonMember,
+                friendId = existingMember.id,
+                isUpdate = false
+            )
+        }
+
+        // 기존 비회원 기준으로 새로 생성된 비회원에 대한 NonMemberUpdateStatusDomain 생성
+        val updateStatusForExistingMembers = existingNonMembers.map { existingMember ->
+            NonMemberUpdateStatusDomain.of(
+                nonMemberDomain = existingMember,
+                friendId = newNonMember.id,
+                isUpdate = false
+            )
+        }
+
+        nonMemberUpdateStatusRepository.saveAll(updateStatusForNewMember + updateStatusForExistingMembers)
+    }
+
+    private fun handleBookmarkUrls(
+        bookmarkUrls: List<String>, nonMember: NonMemberDomain
+    ): BookmarkData {
+        val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
+        val bookmarks = mutableListOf<BookmarkDomain>()
+        val newSids = mutableSetOf<String>()  // 중복 확인을 위한 sid 집합
+
+        bookmarkUrls.forEach { url ->
+            val expandedUrl = UrlUtil.expandShortUrl(url)
+            val bookmarkList = naverMapClient.bookmarkUrlToBookmarkLists(expandedUrl).bookmarkList
+
+            bookmarkList.forEach { bookmark ->
+                // MongoDB에 존재하지 않는 경우에만 BookmarkDomain 생성
+                if (!isBookmarkExists(bookmark.sid)) {
+                    bookmarks.add(
+                        BookmarkDomain(
+                            name = bookmark.name,
+                            px = bookmark.px,
+                            py = bookmark.py,
+                            sid = bookmark.sid,
+                            address = bookmark.address,
+                            mcidName = bookmark.mcidName,
+                            url = "https://map.naver.com/p/entry/place/${bookmark.sid}"
+                        )
+                    )
+                }
+
+                // 중복되지 않는 경우에만 NonMemberPlace 추가
+                if (newSids.add(bookmark.sid)) {
+                    nonMemberPlaces.add(NonMemberPlaceDomain.of(nonMember, bookmark.sid))
+                }
+            }
+        }
+        return BookmarkData(nonMemberPlaces, bookmarks, newSids)
+    }
+
+    // storeUrls에서 중복되지 않는 NonMemberPlaceDomain과 BookmarkDomain을 생성하고 반환
+    private fun handleStoreUrls(
+        storeUrls: List<String>, nonMember: NonMemberDomain
+    ): BookmarkData {
+        val nonMemberPlaces = mutableListOf<NonMemberPlaceDomain>()
+        val bookmarks = mutableListOf<BookmarkDomain>()
+        val newSids = mutableSetOf<String>()  // 중복 확인을 위한 sid 집합
+
+        storeUrls.forEach { url ->
+            val expandedUrl = UrlUtil.expandShortUrl(url)
+            val store = naverMapClient.storeUrlToBookmark(expandedUrl)
+
+            // MongoDB에 존재하지 않는 경우에만 BookmarkDomain 생성
+            if (!isBookmarkExists(store.sid)) {
+                bookmarks.add(
+                    BookmarkDomain(
+                        name = store.name,
+                        px = store.px,
+                        py = store.py,
+                        sid = store.sid,
+                        address = store.address,
+                        mcidName = store.mcidName,
+                        url = url
+                    )
+                )
+            }
+
+            // 중복되지 않는 경우에만 NonMemberPlace 추가
+            if (newSids.add(store.sid)) {
+                nonMemberPlaces.add(NonMemberPlaceDomain.of(nonMember, store.sid))
+            }
+        }
+        return BookmarkData(nonMemberPlaces, bookmarks, newSids)
+    }
+
+    private fun updatePlaceSids(nonMemberDomain: NonMemberDomain, newSids: Set<String>) {
+        val existingPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberDomain.id)
+        val existingSids = existingPlaces.map { it.sid }.toSet()
+
+        val sidsToAdd = newSids - existingSids
+        val sidsToDelete = existingSids - newSids
+
+        val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(nonMemberDomain, sid) }
+        nonMemberPlaceRepository.saveAll(placesToAdd)
+
+        val placesToDelete = existingPlaces.filter { it.sid in sidsToDelete }
+        nonMemberPlaceRepository.deleteAll(placesToDelete)
+    }
+
+    private fun isBookmarkExists(sid: String): Boolean {
+        return bookmarkRepository.findAllBySidIn(listOf(sid)).isNotEmpty()
+    }
+    private data class BookmarkData(
+        val places: List<NonMemberPlaceDomain>,
+        val bookmarks: List<BookmarkDomain>,
+        val sids: Set<String>
+    )
 
     private fun nonMembersToNonMemberPlacesMap(nonMembers: List<NonMemberDomain>): Map<Int,List<Pair<BookmarkDomain,List<NonMemberDomain>>>> {
         //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
