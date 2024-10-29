@@ -44,5 +44,5 @@ class NonMemberController(
     @PutMapping("/pings")
     fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
         nonMemberService.updateNonMemberPings(request)
-
+    }
 }

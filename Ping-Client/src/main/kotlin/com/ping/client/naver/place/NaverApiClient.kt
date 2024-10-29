@@ -24,4 +24,22 @@ class NaverApiClient(
 
         return response?.items ?: emptyList()
     }
+
+    fun getGeocodeAddress(address: String): Pair<Double?, Double?> {
+        val client = WebClient.create("https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode")
+        val response = client.get()
+            .uri { uriBuilder -> uriBuilder.queryParam("query", address).build() }
+            .header("X-NCP-APIGW-API-KEY-ID", clientId)
+            .header("X-NCP-APIGW-API-KEY", clientSecret)
+            .retrieve()
+            .bodyToMono(NaverApiResponse.NaverGeocodeResponse::class.java)
+            .block()
+
+        val location = response?.addresses?.firstOrNull()
+        return if (location != null) {
+            Pair(location.y, location.x)
+        } else {
+            Pair(null, null)
+        }
+    }
 }

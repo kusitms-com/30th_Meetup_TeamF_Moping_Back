@@ -12,7 +12,6 @@ class PlaceService(
     private val naverApiClient: NaverApiClient,
 ) {
 
-    // 장소 검색
     fun searchPlace(keyword: String): List<SearchPlace.Response> {
         return naverApiClient.searchPlaces(keyword).map {
             SearchPlace.Response(
@@ -24,14 +23,4 @@ class PlaceService(
         }
     }
 
-    // 장소 저장
-    @Transactional
-    fun savePlace(request: SavePlace.Request) {
-        val place = PlaceDomain(
-            name = request.name,
-            address = request.address,
-            latitude = request.latitude,
-            longitude = request.longitude
-        )
-    }
 }
