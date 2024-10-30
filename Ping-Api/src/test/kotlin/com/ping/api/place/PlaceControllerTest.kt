@@ -68,8 +68,8 @@ class PlaceControllerTest : BaseRestDocsTest() {
                                 fieldWithPath("message").description("응답 메시지"),
                                 fieldWithPath("data[].name").description("장소 이름"),
                                 fieldWithPath("data[].address").description("장소 주소"),
-                                fieldWithPath("data[].px").description("장소 위도"),
-                                fieldWithPath("data[].py").description("장소 경도")
+                                fieldWithPath("data[].px").description("장소 경도"),
+                                fieldWithPath("data[].py").description("장소 위도")
                             )
                             .responseSchema(Schema.schema("SearchPlaceResponse"))
                             .build()
@@ -111,8 +111,8 @@ class PlaceControllerTest : BaseRestDocsTest() {
                                 fieldWithPath("code").description("응답 코드"),
                                 fieldWithPath("message").description("응답 메시지"),
                                 fieldWithPath("data.address").description("검색된 주소"),
-                                fieldWithPath("data.px").description("주소의 위도"),
-                                fieldWithPath("data.py").description("주소의 경도")
+                                fieldWithPath("data.px").description("주소의 경도"),
+                                fieldWithPath("data.py").description("주소의 위도")
                             )
                             .responseSchema(Schema.schema("GeocodePlaceResponse"))
                             .build()
