@@ -13,19 +13,12 @@ import org.springframework.web.bind.annotation.RestController
 
 @Tag(name = "이벤트")
 @RestController
-@RequestMapping("/event")
 class EventController(
     private val eventService: EventService
 ) {
-    @PostMapping
-    fun create(
-        @RequestBody request: CreateEvent.Request
-    ): ResponseEntity<SuccessResponse<CreateEvent.Response>> {
+    @PostMapping(EventApi.BASE_URL)
+    fun create(@RequestBody request: CreateEvent.Request): ResponseEntity<SuccessResponse<CreateEvent.Response>> {
         val response = eventService.create(request)
-
-        return ResponseEntity.ok(
-            SuccessResponse.of(HttpStatus.OK, "공유 URL이 성공적으로 생성되었습니다.", response)
-        )
+        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "공유 URL이 성공적으로 생성되었습니다.", response))
     }
-
 }

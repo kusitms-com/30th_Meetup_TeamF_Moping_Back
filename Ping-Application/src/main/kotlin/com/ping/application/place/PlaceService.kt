@@ -24,10 +24,10 @@ class PlaceService(
         }
     }
 
-    fun getGeocodeAddress(request: GeocodePlace.Request): GeocodePlace.Response {
-        val (latitude, longitude) = naverApiClient.getGeocodeAddress(request.address)
+    fun getGeocodeAddress(address: String): GeocodePlace.Response {
+        val (latitude, longitude) = naverApiClient.getGeocodeAddress(address)
         return GeocodePlace.Response(
-            address = request.address,
+            address = address,
             latitude = latitude,
             longitude = longitude
         )
