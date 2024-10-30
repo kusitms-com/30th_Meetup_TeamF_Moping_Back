@@ -7,7 +7,9 @@ import org.springframework.web.reactive.function.client.WebClient
 @Component
 class NaverApiClient(
     @Value("\${naver.client.id}") private val clientId: String,
-    @Value("\${naver.client.secret}") private val clientSecret: String
+    @Value("\${naver.client.secret}") private val clientSecret: String,
+    @Value("\${naver.cloud.id}") private val cloudId: String,
+    @Value("\${naver.cloud.secret}") private val cloudSecret: String
 ) {
 
     fun searchPlaces(keyword: String): List<NaverApiResponse.NaverPlace> {
@@ -23,5 +25,23 @@ class NaverApiClient(
             .block()
 
         return response?.items ?: emptyList()
+    }
+
+    fun getGeocodeAddress(address: String): Pair<Double?, Double?> {
+        val client = WebClient.create("https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode")
+        val response = client.get()
+            .uri { uriBuilder -> uriBuilder.queryParam("query", address).build() }
+            .header("X-NCP-APIGW-API-KEY-ID", cloudId)
+            .header("X-NCP-APIGW-API-KEY", cloudSecret)
+            .retrieve()
+            .bodyToMono(NaverApiResponse.NaverGeocodeResponse::class.java)
+            .block()
+
+        val location = response?.addresses?.firstOrNull()
+        return if (location != null) {
+            Pair(location.y, location.x)
+        } else {
+            Pair(null, null)
+        }
     }
 }

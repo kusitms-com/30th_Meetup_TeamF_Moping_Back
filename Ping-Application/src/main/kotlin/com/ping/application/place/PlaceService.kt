@@ -1,5 +1,6 @@
 package com.ping.application.place
 
+import com.ping.application.place.dto.GeocodePlace
 import com.ping.application.place.dto.SavePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.client.naver.place.NaverApiClient
@@ -12,7 +13,6 @@ class PlaceService(
     private val naverApiClient: NaverApiClient,
 ) {
 
-    // 장소 검색
     fun searchPlace(keyword: String): List<SearchPlace.Response> {
         return naverApiClient.searchPlaces(keyword).map {
             SearchPlace.Response(
@@ -24,14 +24,13 @@ class PlaceService(
         }
     }
 
-    // 장소 저장
-    @Transactional
-    fun savePlace(request: SavePlace.Request) {
-        val place = PlaceDomain(
-            name = request.name,
-            address = request.address,
-            latitude = request.latitude,
-            longitude = request.longitude
+    fun getGeocodeAddress(address: String): GeocodePlace.Response {
+        val (latitude, longitude) = naverApiClient.getGeocodeAddress(address)
+        return GeocodePlace.Response(
+            address = address,
+            latitude = latitude,
+            longitude = longitude
         )
     }
+
 }
