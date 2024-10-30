@@ -18,8 +18,8 @@ class PlaceService(
             SearchPlace.Response(
                 name = it.title.replace("<b>", "").replace("</b>", ""),
                 address = it.address,
-                latitude = it.mapx,
-                longitude = it.mapy
+                px = it.mapx,
+                py = it.mapy
             )
         }
     }
@@ -28,8 +28,8 @@ class PlaceService(
         val (latitude, longitude) = naverApiClient.getGeocodeAddress(address)
         return GeocodePlace.Response(
             address = address,
-            latitude = latitude,
-            longitude = longitude
+            px = latitude,
+            py = longitude
         )
     }
 

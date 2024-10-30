@@ -39,7 +39,7 @@ class NaverApiClient(
 
         val location = response?.addresses?.firstOrNull()
         return if (location != null) {
-            Pair(location.y, location.x)
+            Pair(location.x, location.y)
         } else {
             Pair(null, null)
         }
