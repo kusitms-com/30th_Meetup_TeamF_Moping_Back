@@ -14,4 +14,13 @@ class NonMemberStoreUrlRepositoryImpl(
         return nonMemberStoreUrlJpaRepository.saveAll(nonMemberStoreUrlDomains.map { NonMemberStoreUrlMapper.toEntity(it) })
             .map { NonMemberStoreUrlMapper.toDomain(it) }
     }
+
+    override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberStoreUrlDomain> {
+        return nonMemberStoreUrlJpaRepository.findAllByNonMemberId(nonMemberId)
+            .map { NonMemberStoreUrlMapper.toDomain(it) }
+    }
+
+    override fun deleteAllByIds(ids: List<Long>) {
+        nonMemberStoreUrlJpaRepository.deleteAllById(ids)
+    }
 }
