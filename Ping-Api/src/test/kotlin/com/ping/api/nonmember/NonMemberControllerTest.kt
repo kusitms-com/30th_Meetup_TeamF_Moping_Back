@@ -1,21 +1,28 @@
 package com.ping.api.nonmember
 
+import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
+import com.epages.restdocs.apispec.ResourceDocumentation.resource
+import com.epages.restdocs.apispec.ResourceSnippetParameters
+import com.epages.restdocs.apispec.Schema
 import com.ping.api.global.BaseRestDocsTest
 import com.ping.application.nonmember.NonMemberLoginService
 import com.ping.application.nonmember.NonMemberService
-import com.ping.application.nonmember.dto.CreateNonMember
-import com.ping.application.nonmember.dto.GetAllNonMemberPings
-import com.ping.application.nonmember.dto.GetNonMemberPing
+import com.ping.application.nonmember.dto.*
 import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito.doNothing
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
+import org.springframework.restdocs.operation.preprocess.Preprocessors.*
 import org.springframework.restdocs.payload.PayloadDocumentation.*
+import org.springframework.test.web.servlet.ResultActions
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+
 
 @WebMvcTest(NonMemberController::class)
 class NonMemberControllerTest : BaseRestDocsTest() {
@@ -29,6 +36,57 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     @MockBean
     private lateinit var bookmarkMongoRepository: BookmarkMongoRepository
 
+    @Test
+    @DisplayName("비회원 로그인")
+    fun loginNonMember() {
+        // given
+        val request = LoginNonMember.Request(nonMemberId = 1L, password = "1234")
+
+        doNothing().`when`(nonMemberLoginService).login(request)
+
+        val jsonRequest = """
+            {
+                "nonMemberId": 1,
+                "password": "1234"
+            }
+            """
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.put(NonMemberApi.LOGIN)
+                .content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andExpect(jsonPath("$.code").value(200))
+            .andExpect(jsonPath("$.message").value("비회원 로그인 성공"))
+            .andDo(
+                MockMvcRestDocumentationWrapper.document(
+                    "nonmember/loginNonMember",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("NonMember")
+                            .description("비회원 로그인")
+                            .requestFields(
+                                fieldWithPath("nonMemberId").description("비회원 ID"),
+                                fieldWithPath("password").description("비회원 비밀번호")
+                            )
+                            .responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                fieldWithPath("data").description("응답 데이터")
+                            )
+                            .responseSchema(Schema.schema("CommonResponse"))
+                            .build()
+                    )
+                )
+            )
+    }
 
     @Test
     @DisplayName("비회원 핑 생성")
@@ -172,5 +230,61 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 )
             )
 
+    }
+
+    @Test
+    @DisplayName("비회원 핑 업데이트")
+    fun updateNonMemberPings() {
+        // given
+        val request = UpdateNonMemberPings.Request(
+            nonMemberId = 1L,
+            bookmarkUrls = listOf("bookmarkUrl1", "bookmarkUrl2"),
+            storeUrls = listOf("storeUrl1")
+        )
+
+        doNothing().`when`(nonMemberService).updateNonMemberPings(request)
+
+        val jsonRequest = """
+            {
+                "nonMemberId": 1,
+                "bookmarkUrls": ["bookmarkUrl1", "bookmarkUrl2"],
+                "storeUrls": ["storeUrl1"]
+            }
+            """
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.put(NonMemberApi.PING)
+                .content(jsonRequest)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(
+                MockMvcRestDocumentationWrapper.document(
+                    "nonmember/updateNonMemberPings",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("NonMember")
+                            .description("비회원 핑 업데이트")
+                            .requestFields(
+                                fieldWithPath("nonMemberId").description("비회원 ID"),
+                                fieldWithPath("bookmarkUrls").description("업데이트할 북마크 URL 목록"),
+                                fieldWithPath("storeUrls").description("업데이트할 스토어 URL 목록")
+                            )
+//                            .responseFields(
+//                                fieldWithPath("code").description("응답 코드"),
+//                                fieldWithPath("message").description("응답 메시지"),
+//                                fieldWithPath("data").description("응답 데이터")
+//                            )
+                            .responseSchema(Schema.schema("CommonResponse"))
+                            .build()
+                    )
+                )
+            )
     }
 }

@@ -17,12 +17,9 @@ class NonMemberController(
     private val nonMemberService: NonMemberService,
     private val nonMemberLoginService: NonMemberLoginService
 ) {
-    @PutMapping("/nonmembers/login")
-    fun loginNonMember(
-        @RequestBody request: LoginNonMember.Request
-    ): ResponseEntity<SuccessResponse<Unit>> {
+    @PutMapping(NonMemberApi.LOGIN)
+    fun loginNonMember(@RequestBody request: LoginNonMember.Request): ResponseEntity<SuccessResponse<Unit>> {
         nonMemberLoginService.login(request)
-
         return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공"))
     }
 
@@ -41,7 +38,7 @@ class NonMemberController(
         return nonMemberService.getNonMemberPing(nonMemberId)
     }
 
-    @PutMapping("/pings")
+    @PutMapping(NonMemberApi.PING)
     fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
         nonMemberService.updateNonMemberPings(request)
     }

@@ -22,6 +22,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
 
     //RestDocs
+    testImplementation("com.epages:restdocs-api-spec-mockmvc:0.19.2")
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
     asciidoctorExt("org.springframework.restdocs:spring-restdocs-asciidoctor")
     testFixturesImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")

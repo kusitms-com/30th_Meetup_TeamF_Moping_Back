@@ -12,3 +12,11 @@ operation::NonMemberControllerTest/getAllNonMemberPings[snippets='http-request,h
 [[Get-NonMemberPing]]
 === 개별 핑 불러오기
 operation::NonMemberControllerTest/getNonMemberPing[snippets='http-request,http-response,response-fields']
+
+[[Put-UpdateNonMemberPings]]
+=== 비회원 핑 업데이트
+operation::NonMemberControllerTest/updateNonMemberPings[snippets='http-request,request-fields,http-response']
+
+[[Post-NonMemberLogin]]
+=== 비회원 로그인
+operation::NonMemberControllerTest/loginNonMember[snippets='http-request,request-fields,http-response']

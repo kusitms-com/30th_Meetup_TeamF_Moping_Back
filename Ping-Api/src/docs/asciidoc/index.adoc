@@ -8,3 +8,4 @@
 
 include::event.adoc[]
 include::NonMember.adoc[]
+include::place.adoc[]

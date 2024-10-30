@@ -1,0 +1,10 @@
+[[Places-API]]
+== Places API
+
+[[Search-Place]]
+=== 장소 검색
+operation::PlaceControllerTest/searchPlace[snippets='http-request,http-response,request-parameters,response-fields']
+
+[[Geocode-Place]]
+=== 주소로 좌표 검색
+operation::PlaceControllerTest/geocodePlace[snippets='http-request,http-response,request-parameters,response-fields']
