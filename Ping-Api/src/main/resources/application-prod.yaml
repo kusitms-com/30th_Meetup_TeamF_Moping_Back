@@ -31,6 +31,9 @@ naver:
   client:
     id: ${NAVER_CLIENT_ID}
     secret: ${NAVER_CLIENT_SECRET}
+  cloud:
+    id: ${NAVER_CLOUD_ID}
+    secret: ${NAVER_CLOUD_SECRET}
 
 pingping:
   share:
