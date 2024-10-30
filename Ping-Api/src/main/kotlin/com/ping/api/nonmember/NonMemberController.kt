@@ -18,9 +18,8 @@ class NonMemberController(
     private val nonMemberLoginService: NonMemberLoginService
 ) {
     @PutMapping(NonMemberApi.LOGIN)
-    fun loginNonMember(@RequestBody request: LoginNonMember.Request) {
-        nonMemberLoginService.login(request)
-//        return ResponseEntity.ok(SuccessResponse.of(HttpStatus.OK, "비회원 로그인 성공"))
+    fun loginNonMember(@RequestBody request: LoginNonMember.Request): LoginNonMember.Response {
+        return nonMemberLoginService.login(request)
     }
 
     @PostMapping(NonMemberApi.PING)

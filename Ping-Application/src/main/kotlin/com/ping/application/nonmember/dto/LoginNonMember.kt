@@ -5,4 +5,11 @@ class LoginNonMember {
         val nonMemberId: Long,
         val password: String
     )
+    data class Response(
+        val nonMemberId: Long,
+        val name: String,
+        val bookmarkUrls: List<String>,
+        val storeUrls: List<String>
+    )
+
 }

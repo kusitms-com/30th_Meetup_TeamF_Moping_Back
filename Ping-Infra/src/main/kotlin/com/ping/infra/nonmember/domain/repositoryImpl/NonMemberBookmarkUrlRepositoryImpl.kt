@@ -15,4 +15,9 @@ class NonMemberBookmarkUrlRepositoryImpl(
             NonMemberBookmarkUrlMapper.toEntity(it)
         }).map { NonMemberBookmarkUrlMapper.toDomain(it) }
     }
+
+    override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberBookmarkUrlDomain> {
+        return nonMemberBookmarkUrlJpaRepository.findAllByNonMemberId(nonMemberId)
+            .map { NonMemberBookmarkUrlMapper.toDomain(it) }
+    }
 }
