@@ -20,4 +20,8 @@ class NonMemberBookmarkUrlRepositoryImpl(
         return nonMemberBookmarkUrlJpaRepository.findAllByNonMemberId(nonMemberId)
             .map { NonMemberBookmarkUrlMapper.toDomain(it) }
     }
+
+    override fun deleteAllByIds(ids: List<Long>) {
+        nonMemberBookmarkUrlJpaRepository.deleteAllById(ids)
+    }
 }

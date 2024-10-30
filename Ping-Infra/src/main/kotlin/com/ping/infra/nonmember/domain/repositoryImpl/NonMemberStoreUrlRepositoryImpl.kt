@@ -19,4 +19,8 @@ class NonMemberStoreUrlRepositoryImpl(
         return nonMemberStoreUrlJpaRepository.findAllByNonMemberId(nonMemberId)
             .map { NonMemberStoreUrlMapper.toDomain(it) }
     }
+
+    override fun deleteAllByIds(ids: List<Long>) {
+        nonMemberStoreUrlJpaRepository.deleteAllById(ids)
+    }
 }

@@ -169,6 +169,33 @@ class NonMemberService(
         if (existingSids != allNewSids) {
             updatePlaceSids(nonMemberDomain, allNewSids)
         }
+
+        // 기존 북마크 URL 및 상점 URL 조회
+        val existingBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMemberDomain.id)
+        val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMemberDomain.id)
+
+        // URL과 ID를 쉽게 매핑하기 위해 Map 형태로 변환
+        val existingBookmarkMap = existingBookmarkUrls.associateBy { it.bookmarkUrl }
+        val existingStoreMap = existingStoreUrls.associateBy { it.storeUrl }
+
+        // 새 URL과 기존 URL을 비교하여 추가 및 삭제할 URL 식별
+        val bookmarkUrlsToAdd = request.bookmarkUrls.filterNot { it in existingBookmarkMap.keys }
+        val bookmarkUrlsToDeleteIds = existingBookmarkUrls.filter { it.bookmarkUrl !in request.bookmarkUrls }.map { it.id }
+
+        val storeUrlsToAdd = request.storeUrls.filterNot { it in existingStoreMap.keys }
+        val storeUrlsToDeleteIds = existingStoreUrls.filter { it.storeUrl !in request.storeUrls }.map { it.id }
+
+        // 삭제할 URL을 ID 기반으로 삭제
+        nonMemberBookmarkUrlRepository.deleteAllByIds(bookmarkUrlsToDeleteIds)
+        nonMemberStoreUrlRepository.deleteAllByIds(storeUrlsToDeleteIds)
+
+        // 새 URL 추가 저장
+        nonMemberBookmarkUrlRepository.saveAll(bookmarkUrlsToAdd.map { url ->
+            NonMemberBookmarkUrlDomain.of(nonMemberDomain, listOf(url)).first()
+        })
+        nonMemberStoreUrlRepository.saveAll(storeUrlsToAdd.map { url ->
+            NonMemberStoreUrlDomain.of(nonMemberDomain, listOf(url)).first()
+        })
     }
 
     private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
@@ -283,6 +310,12 @@ class NonMemberService(
 
         val placesToDelete = existingPlaces.filter { it.sid in sidsToDelete }
         nonMemberPlaceRepository.deleteAll(placesToDelete)
+    }
+
+    fun findUrlsToUpdate(existingUrls: List<String>, newUrls: List<String>): Pair<List<String>, List<String>> {
+        val urlsToAdd = newUrls.filterNot { it in existingUrls }
+        val urlsToDelete = existingUrls.filterNot { it in newUrls }
+        return Pair(urlsToAdd, urlsToDelete)
     }
 
     private fun isBookmarkExists(sid: String): Boolean {
