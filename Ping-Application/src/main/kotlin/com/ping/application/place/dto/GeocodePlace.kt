@@ -7,7 +7,7 @@ class GeocodePlace {
 
     data class Response(
         val address: String,
-        val latitude: Double?,
-        val longitude: Double?
+        val px: Double?,
+        val py: Double?
     )
 }

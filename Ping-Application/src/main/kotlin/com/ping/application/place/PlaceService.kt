@@ -1,12 +1,9 @@
 package com.ping.application.place
 
 import com.ping.application.place.dto.GeocodePlace
-import com.ping.application.place.dto.SavePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.client.naver.place.NaverApiClient
-import com.ping.domain.nonmember.aggregate.PlaceDomain
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PlaceService(
@@ -18,8 +15,8 @@ class PlaceService(
             SearchPlace.Response(
                 name = it.title.replace("<b>", "").replace("</b>", ""),
                 address = it.address,
-                latitude = it.mapx,
-                longitude = it.mapy
+                px = it.mapx,
+                py = it.mapy
             )
         }
     }
@@ -28,8 +25,8 @@ class PlaceService(
         val (latitude, longitude) = naverApiClient.getGeocodeAddress(address)
         return GeocodePlace.Response(
             address = address,
-            latitude = latitude,
-            longitude = longitude
+            px = latitude,
+            py = longitude
         )
     }
 

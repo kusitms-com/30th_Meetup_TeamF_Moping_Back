@@ -6,4 +6,6 @@
 :toclevels: 2
 :sectlinks:
 
+include::event.adoc[]
 include::NonMember.adoc[]
+include::place.adoc[]
