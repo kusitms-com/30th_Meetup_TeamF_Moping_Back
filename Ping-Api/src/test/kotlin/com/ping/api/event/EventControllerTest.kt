@@ -50,8 +50,8 @@ class EventControllerTest : BaseRestDocsTest() {
                 resultHandler.document(
                     requestFields(
                         fieldWithPath("neighborhood").description("이벤트 장소"),
-                        fieldWithPath("px").description("이벤트 장소의 위도"),
-                        fieldWithPath("py").description("이벤트 장소의 경도"),
+                        fieldWithPath("px").description("이벤트 장소의 경도"),
+                        fieldWithPath("py").description("이벤트 장소의 위도"),
                         fieldWithPath("eventName").description("이벤트 이름")
                     ),
                     responseFields(

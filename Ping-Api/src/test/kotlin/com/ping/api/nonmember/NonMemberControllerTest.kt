@@ -61,8 +61,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
 
         // then
         result.andExpect(status().isOk)
-            .andExpect(jsonPath("$.code").value(200))
-            .andExpect(jsonPath("$.message").value("비회원 로그인 성공"))
+//            .andExpect(jsonPath("$.code").value(200))
+//            .andExpect(jsonPath("$.message").value("비회원 로그인 성공"))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
                     "nonmember/loginNonMember",
@@ -76,11 +76,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                                 fieldWithPath("nonMemberId").description("비회원 ID"),
                                 fieldWithPath("password").description("비회원 비밀번호")
                             )
-                            .responseFields(
-                                fieldWithPath("code").description("응답 코드"),
-                                fieldWithPath("message").description("응답 메시지"),
-                                fieldWithPath("data").description("응답 데이터")
-                            )
+//                            .responseFields(
+//                                fieldWithPath("code").description("응답 코드"),
+//                                fieldWithPath("message").description("응답 메시지"),
+//                                fieldWithPath("data").description("응답 데이터")
+//                            )
                             .responseSchema(Schema.schema("CommonResponse"))
                             .build()
                     )
@@ -238,8 +238,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         // given
         val request = UpdateNonMemberPings.Request(
             nonMemberId = 1L,
-            bookmarkUrls = listOf("bookmarkUrl1", "bookmarkUrl2"),
-            storeUrls = listOf("storeUrl1")
+            bookmarkUrls = listOf("https://naver.me/Fqimcb8B"),
+            storeUrls = listOf("https://naver.me/FuVzL1bq")
         )
 
         doNothing().`when`(nonMemberService).updateNonMemberPings(request)
@@ -247,8 +247,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         val jsonRequest = """
             {
                 "nonMemberId": 1,
-                "bookmarkUrls": ["bookmarkUrl1", "bookmarkUrl2"],
-                "storeUrls": ["storeUrl1"]
+                "bookmarkUrls": ["https://naver.me/Fqimcb8B"],
+                "storeUrls": [ "https://naver.me/FuVzL1bq"]
             }
             """
 
