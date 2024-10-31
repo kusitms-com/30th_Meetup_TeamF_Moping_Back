@@ -41,9 +41,4 @@ class NonMemberController(
     fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
         nonMemberService.updateNonMemberPings(request)
     }
-
-    @GetMapping(NonMemberApi.PING_REFRESH_ALL)
-    fun refreshAllNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
-        return nonMemberService.refreshAllNonMemberPings(uuid)
-    }
 }

@@ -198,59 +198,6 @@ class NonMemberService(
         })
     }
 
-    fun refreshAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
-        val shareUrl = shareUrlRepository.findByUuid(uuid)
-            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
-
-        val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
-
-        nonMemberList.forEach { nonMember ->
-            val updatedBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id)
-            val updatedStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id)
-
-            // 새로운 북마크와 스토어 URL에 대한 업데이트 처리
-            handleBookmarkUrls(updatedBookmarkUrls.map { it.bookmarkUrl }, nonMember)
-            handleStoreUrls(updatedStoreUrls.map { it.storeUrl }, nonMember)
-        }
-
-        val nonMembers = nonMemberList.map { nonMember ->
-            GetAllNonMemberPings.NonMember(
-                nonMemberId = nonMember.id,
-                name = nonMember.name
-            )
-        }
-
-        // 핑 데이터 생성 및 아이콘 레벨 할당
-        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
-        val pings = nonMemberPlaces.entries.mapIndexed { index, nonMemberPlace ->
-            val level = calculateIconLevel(index, nonMemberPlace.key)
-
-            nonMemberPlace.value.map { bookmarkPair ->
-                GetAllNonMemberPings.Ping(
-                    iconLevel = level,
-                    nonMembers = bookmarkPair.second.map {
-                        GetAllNonMemberPings.NonMember(
-                            nonMemberId = it.id,
-                            name = it.name
-                        )
-                    },
-                    url = bookmarkPair.first.url,
-                    placeName = bookmarkPair.first.name,
-                    px = bookmarkPair.first.px,
-                    py = bookmarkPair.first.py,
-                )
-            }
-        }.flatten()
-
-        return GetAllNonMemberPings.Response(
-            eventName = shareUrl.eventName,
-            nonMembers = nonMembers,
-            px = shareUrl.latitude,
-            py = shareUrl.longtitude,
-            pings = pings
-        )
-    }
-
     private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
         // 새로 생성된 비회원을 제외한 기존 비회원 목록 조회
         val existingNonMembers = nonMemberRepository.findAllByShareUrl(shareUrlId)
@@ -365,19 +312,10 @@ class NonMemberService(
         nonMemberPlaceRepository.deleteAll(placesToDelete)
     }
 
-    private fun calculateIconLevel(index: Int, overlapCount: Int): Int {
-        val mostOverlappedIconLevel = 4
-        val secondOverlappedIconLevel = 3
-        val thirdOverlappedIconLevel = 2
-        val remainderIconLevel = 1
-
-        return when {
-            overlapCount == 1 -> remainderIconLevel
-            index == 0 -> mostOverlappedIconLevel
-            index == 1 -> secondOverlappedIconLevel
-            index == 2 -> thirdOverlappedIconLevel
-            else -> remainderIconLevel
-        }
+    fun findUrlsToUpdate(existingUrls: List<String>, newUrls: List<String>): Pair<List<String>, List<String>> {
+        val urlsToAdd = newUrls.filterNot { it in existingUrls }
+        val urlsToDelete = existingUrls.filterNot { it in newUrls }
+        return Pair(urlsToAdd, urlsToDelete)
     }
 
     private fun isBookmarkExists(sid: String): Boolean {
