@@ -1,7 +1,6 @@
 package com.ping.api.nonmember
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
-import com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName
 import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
@@ -296,78 +295,6 @@ class NonMemberControllerTest : BaseRestDocsTest() {
 //                                fieldWithPath("data").description("응답 데이터")
 //                            )
                             .responseSchema(Schema.schema("CommonResponse"))
-                            .build()
-                    )
-                )
-            )
-    }
-
-    @Test
-    @DisplayName("비회원 모든 핑 리프레쉬")
-    fun refreshAllNonMemberPings() {
-        // given
-        val uuid = "test-uuid"
-        val response = GetAllNonMemberPings.Response(
-            eventName = "Sample Event",
-            nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
-            ),
-            px = 127.00001,
-            py = 37.00001,
-            pings = listOf(
-                GetAllNonMemberPings.Ping(
-                    iconLevel = 2,
-                    nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
-                    ),
-                    url = "https://map.naver.com/p/entry/place/1946678040",
-                    placeName = "호이",
-                    px = 126.971178,
-                    py = 37.5302481
-                )
-            )
-        )
-
-        Mockito.`when`(nonMemberService.refreshAllNonMemberPings(uuid)).thenReturn(response)
-
-        // when
-        val result: ResultActions = mockMvc.perform(
-            RestDocumentationRequestBuilders.get(NonMemberApi.PING_REFRESH_ALL)
-                .param("uuid", uuid)
-                .contentType(MediaType.APPLICATION_JSON)
-        )
-
-        // then
-        result.andExpect(status().isOk)
-            .andDo(
-                MockMvcRestDocumentationWrapper.document(
-                    "nonmember/refreshAllNonMemberPings",
-                    preprocessRequest(prettyPrint()),
-                    preprocessResponse(prettyPrint()),
-                    resource(
-                        ResourceSnippetParameters.builder()
-                            .tag("NonMember")
-                            .description("비회원 모든 핑 리프레쉬")
-                            .queryParameters(
-                                parameterWithName("uuid").description("이벤트 식별자 UUID")
-                            )
-                            .responseFields(
-                                fieldWithPath("eventName").description("이벤트 이름"),
-                                fieldWithPath("px").description("이벤트 중심 경도"),
-                                fieldWithPath("py").description("이벤트 중심 위도"),
-                                fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
-                                fieldWithPath("nonMembers[].name").description("비회원 이름"),
-                                fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
-                                fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
-                                fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
-                                fieldWithPath("pings[].url").description("장소 URL"),
-                                fieldWithPath("pings[].placeName").description("장소 이름"),
-                                fieldWithPath("pings[].px").description("경도"),
-                                fieldWithPath("pings[].py").description("위도")
-                            )
-                            .responseSchema(Schema.schema("GetAllNonMemberPingsResponse"))
                             .build()
                     )
                 )

@@ -373,19 +373,10 @@ class NonMemberService(
         nonMemberPlaceRepository.deleteAll(placesToDelete)
     }
 
-    private fun calculateIconLevel(index: Int, overlapCount: Int): Int {
-        val mostOverlappedIconLevel = 4
-        val secondOverlappedIconLevel = 3
-        val thirdOverlappedIconLevel = 2
-        val remainderIconLevel = 1
-
-        return when {
-            overlapCount == 1 -> remainderIconLevel
-            index == 0 -> mostOverlappedIconLevel
-            index == 1 -> secondOverlappedIconLevel
-            index == 2 -> thirdOverlappedIconLevel
-            else -> remainderIconLevel
-        }
+    fun findUrlsToUpdate(existingUrls: List<String>, newUrls: List<String>): Pair<List<String>, List<String>> {
+        val urlsToAdd = newUrls.filterNot { it in existingUrls }
+        val urlsToDelete = existingUrls.filterNot { it in newUrls }
+        return Pair(urlsToAdd, urlsToDelete)
     }
 
     private fun isBookmarkExists(sid: String): Boolean {
