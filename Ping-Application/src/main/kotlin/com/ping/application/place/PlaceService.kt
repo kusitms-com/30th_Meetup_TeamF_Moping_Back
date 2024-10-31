@@ -30,4 +30,8 @@ class PlaceService(
         )
     }
 
+    fun getReverseGeocode(px: Double, py: Double): String? {
+        return naverApiClient.getReverseGeocode(px, py)
+    }
+
 }
