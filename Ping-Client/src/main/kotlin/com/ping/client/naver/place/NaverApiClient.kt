@@ -44,4 +44,28 @@ class NaverApiClient(
             Pair(null, null)
         }
     }
+
+    fun getReverseGeocode(px: Double, py: Double): String? {
+        val client = WebClient.create("https://naveropenapi.apigw.ntruss.com/map-reversegeocode/v2/gc")
+        val response = client.get()
+            .uri { uriBuilder ->
+                uriBuilder.queryParam("coords", "$px,$py")
+                    .queryParam("output", "json")
+                    .queryParam("orders", "roadaddr")
+                    .build()
+            }
+            .header("X-NCP-APIGW-API-KEY-ID", cloudId)
+            .header("X-NCP-APIGW-API-KEY", cloudSecret)
+            .retrieve()
+            .bodyToMono(NaverApiResponse.ReverseGeocodeResponse::class.java)
+            .block()
+
+        // 도로명 주소의 모든 구성 요소를 조합하여 반환
+        val land = response?.results?.firstOrNull()?.land
+        return if (land != null) {
+            "${land.name} ${land.number1}${if (land.number2?.isNotEmpty() == true) "-${land.number2}" else ""}"
+        } else {
+            null
+        }
+    }
 }
