@@ -60,7 +60,12 @@ class NaverApiClient(
             .bodyToMono(NaverApiResponse.ReverseGeocodeResponse::class.java)
             .block()
 
-        // 응답에서 도로명 주소 추출
-        return response?.results?.firstOrNull()?.land?.name
+        // 도로명 주소의 모든 구성 요소를 조합하여 반환
+        val land = response?.results?.firstOrNull()?.land
+        return if (land != null) {
+            "${land.name} ${land.number1}${if (land.number2?.isNotEmpty() == true) "-${land.number2}" else ""}"
+        } else {
+            null
+        }
     }
 }

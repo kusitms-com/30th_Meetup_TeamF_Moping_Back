@@ -33,6 +33,8 @@ class NaverApiResponse {
     )
 
     data class Land(
-        val name: String // 도로명 주소
+        val name: String,        // 도로명
+        val number1: String,      // 본번
+        val number2: String? = "" // 부번 (없을 수도 있음)
     )
 }
