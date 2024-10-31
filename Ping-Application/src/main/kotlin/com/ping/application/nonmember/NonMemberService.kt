@@ -205,12 +205,20 @@ class NonMemberService(
         val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
 
         nonMemberList.forEach { nonMember ->
-            val updatedBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id)
-            val updatedStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id)
+            // 기존 sid를 추출
+            val existingSids = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { it.sid }.toSet()
 
-            // 새로운 북마크와 스토어 URL에 대한 업데이트 처리
-            handleBookmarkUrls(updatedBookmarkUrls.map { it.bookmarkUrl }, nonMember)
-            handleStoreUrls(updatedStoreUrls.map { it.storeUrl }, nonMember)
+            // 새로운 북마크 및 스토어 URL 처리 후 sid 추출
+            val bookmarkData = handleBookmarkUrls(nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }, nonMember)
+            val storeData = handleStoreUrls(nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id).map { it.storeUrl }, nonMember)
+
+            // 새로운 sid 집합 (북마크와 스토어 데이터의 sids 결합)
+            val allNewSids = (bookmarkData.sids + storeData.sids)
+
+            // 기존 sid와 비교하여 변경 사항이 있으면 업데이트
+            if (existingSids != allNewSids) {
+                updatePlaceSids(nonMember, allNewSids)
+            }
         }
 
         val nonMembers = nonMemberList.map { nonMember ->
