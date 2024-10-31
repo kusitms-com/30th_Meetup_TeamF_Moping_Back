@@ -12,6 +12,7 @@ import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito
 import org.mockito.Mockito.doNothing
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
@@ -41,15 +42,22 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     fun loginNonMember() {
         // given
         val request = LoginNonMember.Request(nonMemberId = 1L, password = "1234")
+        val response = LoginNonMember.Response(
+            nonMemberId = 1L,
+            name = "테스트 사용자",
+            bookmarkUrls = listOf("bookmarkUrl1", "bookmarkUrl2"),
+            storeUrls = listOf("storeUrl1")
+        )
 
-        doNothing().`when`(nonMemberLoginService).login(request)
+        // 로그인 서비스의 반환 값 설정
+        Mockito.`when`(nonMemberLoginService.login(request)).thenReturn(response)
 
         val jsonRequest = """
-            {
-                "nonMemberId": 1,
-                "password": "1234"
-            }
-            """
+        {
+            "nonMemberId": 1,
+            "password": "1234"
+        }
+        """
 
         // when
         val result: ResultActions = mockMvc.perform(
@@ -61,8 +69,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
 
         // then
         result.andExpect(status().isOk)
-//            .andExpect(jsonPath("$.code").value(200))
-//            .andExpect(jsonPath("$.message").value("비회원 로그인 성공"))
+            .andExpect(jsonPath("$.nonMemberId").value(response.nonMemberId))
+            .andExpect(jsonPath("$.name").value(response.name))
+            .andExpect(jsonPath("$.bookmarkUrls[0]").value(response.bookmarkUrls[0]))
+            .andExpect(jsonPath("$.bookmarkUrls[1]").value(response.bookmarkUrls[1]))
+            .andExpect(jsonPath("$.storeUrls[0]").value(response.storeUrls[0]))
             .andDo(
                 MockMvcRestDocumentationWrapper.document(
                     "nonmember/loginNonMember",
@@ -76,17 +87,19 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                                 fieldWithPath("nonMemberId").description("비회원 ID"),
                                 fieldWithPath("password").description("비회원 비밀번호")
                             )
-//                            .responseFields(
-//                                fieldWithPath("code").description("응답 코드"),
-//                                fieldWithPath("message").description("응답 메시지"),
-//                                fieldWithPath("data").description("응답 데이터")
-//                            )
-                            .responseSchema(Schema.schema("CommonResponse"))
+                            .responseFields(
+                                fieldWithPath("nonMemberId").description("로그인한 비회원의 ID"),
+                                fieldWithPath("name").description("비회원의 이름"),
+                                fieldWithPath("bookmarkUrls").description("비회원의 북마크 URL 목록"),
+                                fieldWithPath("storeUrls").description("비회원의 스토어 URL 목록")
+                            )
+                            .responseSchema(Schema.schema("LoginNonMemberResponse"))
                             .build()
                     )
                 )
             )
     }
+
 
     @Test
     @DisplayName("비회원 핑 생성")
