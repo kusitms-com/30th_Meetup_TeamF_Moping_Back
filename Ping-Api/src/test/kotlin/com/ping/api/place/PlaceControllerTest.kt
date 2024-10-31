@@ -9,6 +9,7 @@ import com.ping.api.global.BaseRestDocsTest
 import com.ping.application.place.PlaceService
 import com.ping.application.place.dto.GeocodePlace
 import com.ping.application.place.dto.SearchPlace
+import com.ping.client.naver.place.NaverApiResponse
 import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -80,7 +81,7 @@ class PlaceControllerTest : BaseRestDocsTest() {
 
     @Test
     @DisplayName("주소로 좌표 검색")
-    fun geocodePlace() {
+    fun getGeocodePlace() {
         // given
         val address = "서울시 중구 명동"
         val geocodeResponse = GeocodePlace.Response("서울시 중구 명동", 126.9784, 37.5665)
@@ -115,6 +116,50 @@ class PlaceControllerTest : BaseRestDocsTest() {
                                 fieldWithPath("data.py").description("주소의 위도")
                             )
                             .responseSchema(Schema.schema("GeocodePlaceResponse"))
+                            .build()
+                    )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("도로명 주소 조회")
+    fun getReverseGeocode() {
+        // given
+        val px = 127.12345
+        val py = 37.12345
+        val response = "성남대로 123-45"
+        given(placeService.getReverseGeocode(px, py)).willReturn(response)
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.get(PlaceApi.REVERSE_GEOCODE)
+                .param("px", px.toString())
+                .param("py", py.toString())
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo(
+                MockMvcRestDocumentationWrapper.document(
+                    "place/reverseGeocode",
+                    preprocessRequest(prettyPrint()),
+                    preprocessResponse(prettyPrint()),
+                    resource(
+                        ResourceSnippetParameters.builder()
+                            .tag("장소")
+                            .description("경도와 위도를 기반으로 도로명 주소 조회")
+                            .queryParameters(
+                                parameterWithName("px").description("경도"),
+                                parameterWithName("py").description("위도")
+                            )
+                            .responseFields(
+                                fieldWithPath("code").description("응답 코드"),
+                                fieldWithPath("message").description("응답 메시지"),
+                                fieldWithPath("data").description("도로명 주소")
+                            )
+                            .responseSchema(Schema.schema("ReverseGeocodeResponse"))
                             .build()
                     )
                 )
