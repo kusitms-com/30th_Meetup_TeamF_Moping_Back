@@ -7,4 +7,8 @@ operation::PlaceControllerTest/searchPlace[snippets='http-request,http-response,
 
 [[Geocode-Place]]
 === 주소로 좌표 검색
-operation::PlaceControllerTest/geocodePlace[snippets='http-request,http-response,request-parameters,response-fields']
+operation::PlaceControllerTest/getGeocodePlace[snippets='http-request,http-response,request-parameters,response-fields']
+
+[[Reverse-Geocode-Place]]
+=== 도로명 주소 조회
+operation::PlaceControllerTest/getReverseGeocode[snippets='http-request,http-response,request-parameters,response-fields']
