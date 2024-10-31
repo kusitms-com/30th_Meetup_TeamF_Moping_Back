@@ -198,6 +198,67 @@ class NonMemberService(
         })
     }
 
+    fun refreshAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
+        val shareUrl = shareUrlRepository.findByUuid(uuid)
+            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
+
+        val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
+
+        nonMemberList.forEach { nonMember ->
+            // 기존 sid를 추출
+            val existingSids = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { it.sid }.toSet()
+
+            // 새로운 북마크 및 스토어 URL 처리 후 sid 추출
+            val bookmarkData = handleBookmarkUrls(nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }, nonMember)
+            val storeData = handleStoreUrls(nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id).map { it.storeUrl }, nonMember)
+
+            // 새로운 sid 집합 (북마크와 스토어 데이터의 sids 결합)
+            val allNewSids = (bookmarkData.sids + storeData.sids)
+
+            // 기존 sid와 비교하여 변경 사항이 있으면 업데이트
+            if (existingSids != allNewSids) {
+                updatePlaceSids(nonMember, allNewSids)
+            }
+        }
+
+        val nonMembers = nonMemberList.map { nonMember ->
+            GetAllNonMemberPings.NonMember(
+                nonMemberId = nonMember.id,
+                name = nonMember.name
+            )
+        }
+
+        // 핑 데이터 생성 및 아이콘 레벨 할당
+        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
+        val pings = nonMemberPlaces.entries.mapIndexed { index, nonMemberPlace ->
+            val level = calculateIconLevel(index, nonMemberPlace.key)
+
+            nonMemberPlace.value.map { bookmarkPair ->
+                GetAllNonMemberPings.Ping(
+                    iconLevel = level,
+                    nonMembers = bookmarkPair.second.map {
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = it.id,
+                            name = it.name
+                        )
+                    },
+                    url = bookmarkPair.first.url,
+                    placeName = bookmarkPair.first.name,
+                    px = bookmarkPair.first.px,
+                    py = bookmarkPair.first.py,
+                )
+            }
+        }.flatten()
+
+        return GetAllNonMemberPings.Response(
+            eventName = shareUrl.eventName,
+            nonMembers = nonMembers,
+            px = shareUrl.latitude,
+            py = shareUrl.longtitude,
+            pings = pings
+        )
+    }
+
     private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
         // 새로 생성된 비회원을 제외한 기존 비회원 목록 조회
         val existingNonMembers = nonMemberRepository.findAllByShareUrl(shareUrlId)
