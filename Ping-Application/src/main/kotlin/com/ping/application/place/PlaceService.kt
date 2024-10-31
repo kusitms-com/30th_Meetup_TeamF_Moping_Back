@@ -31,7 +31,8 @@ class PlaceService(
     }
 
     fun getReverseGeocode(px: Double, py: Double): String? {
-        return naverApiClient.getReverseGeocode(px, py)
+        val roundedPx = String.format("%.4f", px).toDouble()
+        val roundedPy = String.format("%.4f", py).toDouble()
+        return naverApiClient.getReverseGeocode(roundedPx, roundedPy)
     }
-
 }
