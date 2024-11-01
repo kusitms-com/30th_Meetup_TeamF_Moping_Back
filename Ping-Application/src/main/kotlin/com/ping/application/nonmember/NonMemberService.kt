@@ -1,13 +1,11 @@
 package com.ping.application.nonmember
 
-import com.ping.application.nonmember.dto.CreateNonMember
-import com.ping.application.nonmember.dto.GetAllNonMemberPings
-import com.ping.application.nonmember.dto.UpdateNonMemberPings
-import com.ping.application.nonmember.dto.GetNonMemberPing
+import com.ping.application.nonmember.dto.*
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
 import com.ping.common.util.UrlUtil
+import com.ping.common.util.ValidationUtil
 import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
@@ -23,15 +21,38 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
-    private val naverMapClient: NaverMapClient,
-    private val validator: NonMemberValidator
+    private val naverMapClient: NaverMapClient
 ) {
+    fun login(request: LoginNonMember.Request): LoginNonMember.Response {
+        // 비밀번호 형식 검사 (4자리 숫자)
+        ValidationUtil.validatePassword(request.password)
+
+        val nonMember = nonMemberRepository.findById(request.nonMemberId) ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+
+        // 비밀번호가 일치하는지 비교
+        if (request.password != nonMember.password) {
+            throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
+        }
+
+        // 비회원의 북마크 URL 리스트와 스토어 URL 리스트 조회
+        val bookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
+        val storeUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.storeUrl }
+
+        // 로그인 응답 데이터 반환
+        return LoginNonMember.Response(
+            nonMemberId = nonMember.id,
+            name = nonMember.name,
+            bookmarkUrls = bookmarkUrls,
+            storeUrls = storeUrls
+        )
+    }
+
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
         //이름 공백, 특수문자, 숫자 불가
-        validator.name(request.name)
+        ValidationUtil.validateName(request.name)
         // 비밀번호 형식 검사 (4자리 숫자)
-        validator.password(request.password)
+        ValidationUtil.validatePassword(request.password)
 
         val shareUrl = shareUrlRepository.findByUuid(request.uuid)
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)

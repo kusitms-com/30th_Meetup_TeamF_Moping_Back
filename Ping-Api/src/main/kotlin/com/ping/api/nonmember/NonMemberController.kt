@@ -1,6 +1,5 @@
 package com.ping.api.nonmember
 
-import com.ping.application.nonmember.NonMemberLoginService
 import com.ping.application.nonmember.NonMemberService
 import com.ping.application.nonmember.dto.CreateNonMember
 import com.ping.application.nonmember.dto.GetAllNonMemberPings
@@ -14,12 +13,11 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 class NonMemberController(
-    private val nonMemberService: NonMemberService,
-    private val nonMemberLoginService: NonMemberLoginService
+    private val nonMemberService: NonMemberService
 ) {
     @PutMapping(NonMemberApi.LOGIN)
     fun loginNonMember(@RequestBody request: LoginNonMember.Request): LoginNonMember.Response {
-        return nonMemberLoginService.login(request)
+        return nonMemberService.login(request)
     }
 
     @PostMapping(NonMemberApi.PING)
