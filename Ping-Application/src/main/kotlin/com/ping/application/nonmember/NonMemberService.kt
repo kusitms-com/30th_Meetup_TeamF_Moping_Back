@@ -21,9 +21,32 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
-    private val naverMapClient: NaverMapClient,
-    private val validator: NonMemberValidator
+    private val naverMapClient: NaverMapClient
 ) {
+    fun login(request: LoginNonMember.Request): LoginNonMember.Response {
+        // 비밀번호 형식 검사 (4자리 숫자)
+        ValidationUtil.validatePassword(request.password)
+
+        val nonMember = nonMemberRepository.findById(request.nonMemberId) ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+
+        // 비밀번호가 일치하는지 비교
+        if (request.password != nonMember.password) {
+            throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
+        }
+
+        // 비회원의 북마크 URL 리스트와 스토어 URL 리스트 조회
+        val bookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
+        val storeUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.storeUrl }
+
+        // 로그인 응답 데이터 반환
+        return LoginNonMember.Response(
+            nonMemberId = nonMember.id,
+            name = nonMember.name,
+            bookmarkUrls = bookmarkUrls,
+            storeUrls = storeUrls
+        )
+    }
+
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
         //이름 공백, 특수문자, 숫자 불가

@@ -6,7 +6,6 @@ import com.epages.restdocs.apispec.ResourceDocumentation.resource
 import com.epages.restdocs.apispec.ResourceSnippetParameters
 import com.epages.restdocs.apispec.Schema
 import com.ping.api.global.BaseRestDocsTest
-import com.ping.application.nonmember.NonMemberLoginService
 import com.ping.application.nonmember.NonMemberService
 import com.ping.application.nonmember.dto.*
 import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
@@ -33,9 +32,6 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     private lateinit var nonMemberService: NonMemberService
 
     @MockBean
-    private lateinit var nonMemberLoginService: NonMemberLoginService
-
-    @MockBean
     private lateinit var bookmarkMongoRepository: BookmarkMongoRepository
 
     @Test
@@ -51,7 +47,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         )
 
         // 로그인 서비스의 반환 값 설정
-        Mockito.`when`(nonMemberLoginService.login(request)).thenReturn(response)
+        Mockito.`when`(nonMemberService.login(request)).thenReturn(response)
 
         val jsonRequest = """
         {
