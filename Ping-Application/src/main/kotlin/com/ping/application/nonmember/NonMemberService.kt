@@ -1,13 +1,11 @@
 package com.ping.application.nonmember
 
-import com.ping.application.nonmember.dto.CreateNonMember
-import com.ping.application.nonmember.dto.GetAllNonMemberPings
-import com.ping.application.nonmember.dto.UpdateNonMemberPings
-import com.ping.application.nonmember.dto.GetNonMemberPing
+import com.ping.application.nonmember.dto.*
 import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
 import com.ping.common.util.UrlUtil
+import com.ping.common.util.ValidationUtil
 import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
@@ -29,9 +27,9 @@ class NonMemberService(
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
         //이름 공백, 특수문자, 숫자 불가
-        validator.name(request.name)
+        ValidationUtil.validateName(request.name)
         // 비밀번호 형식 검사 (4자리 숫자)
-        validator.password(request.password)
+        ValidationUtil.validatePassword(request.password)
 
         val shareUrl = shareUrlRepository.findByUuid(request.uuid)
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
