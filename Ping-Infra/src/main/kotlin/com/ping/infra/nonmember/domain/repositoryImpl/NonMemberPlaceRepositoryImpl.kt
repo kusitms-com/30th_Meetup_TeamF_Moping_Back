@@ -17,8 +17,7 @@ class NonMemberPlaceRepositoryImpl(
     override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.findAllByNonMemberId(nonMemberId).map { NonMemberPlaceMapper.toDomain(it) }
     }
-    override fun deleteAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>) {
-        val entities = nonMemberPlaceDomains.map { NonMemberPlaceMapper.toEntity(it) }
-        nonMemberPlaceJpaRepository.deleteAll(entities)
+    override fun deleteAll(ids: List<Long>) {
+        nonMemberPlaceJpaRepository.deleteAllById(ids)
     }
 }
