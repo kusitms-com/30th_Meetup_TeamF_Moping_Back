@@ -19,7 +19,7 @@ spring:
 
   data:
     mongodb:
-      uri: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}:${MONGODB_PORT}/${MONGODB_SCHEMA}?authSource=admin
+      uri: mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_SCHEMA}?retryWrites=true&w=majority&appName=${MONGODB_SCHEMA}
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
