@@ -9,7 +9,7 @@
 <img width="1159" alt="image" src="https://github.com/user-attachments/assets/e4545cb2-5662-490b-af02-0b072df38f61">
 
 # 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/45b25ea3-e464-49ed-9c1d-be21ce9d1e63)
+![image](https://github.com/user-attachments/assets/8c64a505-22b4-466b-a527-5d4092854e95)
 
 # 👍 공통 사항
 
