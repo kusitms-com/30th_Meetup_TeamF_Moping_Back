@@ -174,14 +174,11 @@ class NonMemberService(
         val nonMember = nonMemberRepository.findById(request.nonMemberId)
             ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
 
-        val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(request.nonMemberId)
-        val existingSids = nonMemberPlaces.map { it.sid }.toSet()
-
         val bookmarkUrlSids = handleBookmarkUrls(request.bookmarkUrls)
         val storeUrlSids = handleStoreUrls(request.storeUrls)
         val newSids = (bookmarkUrlSids + storeUrlSids)
 
-        updateNonMemberPlacesIfNeeded(nonMember, nonMemberPlaces, existingSids, newSids)
+        updateNonMemberPlacesIfNeeded(nonMember, newSids)
         updateBookmarkUrls(nonMember, request.bookmarkUrls)
         updateStoreUrls(nonMember, request.storeUrls)
     }
@@ -194,9 +191,6 @@ class NonMemberService(
         val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
 
         nonMemberList.forEach { nonMember ->
-            val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id)
-            val existingSids = nonMemberPlaces.map { it.sid }.toSet()
-
             val existingBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }
             val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id).map { it.storeUrl }
 
@@ -204,45 +198,10 @@ class NonMemberService(
             val storeUrlSids = handleStoreUrls(existingStoreUrls)
             val newSids = (bookmarkUrlSids + storeUrlSids)
 
-            updateNonMemberPlacesIfNeeded(nonMember, nonMemberPlaces, existingSids, newSids)
+            updateNonMemberPlacesIfNeeded(nonMember, newSids)
         }
 
-        val nonMembers = nonMemberList.map { nonMember ->
-            GetAllNonMemberPings.NonMember(
-                nonMemberId = nonMember.id,
-                name = nonMember.name
-            )
-        }
-
-        // 핑 데이터 생성 및 아이콘 레벨 할당
-        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
-        val pings = nonMemberPlaces.entries.mapIndexed { index, nonMemberPlace ->
-            val level = calculateIconLevel(index, nonMemberPlace.key)
-
-            nonMemberPlace.value.map { bookmarkPair ->
-                GetAllNonMemberPings.Ping(
-                    iconLevel = level,
-                    nonMembers = bookmarkPair.second.map {
-                        GetAllNonMemberPings.NonMember(
-                            nonMemberId = it.id,
-                            name = it.name
-                        )
-                    },
-                    url = bookmarkPair.first.url,
-                    placeName = bookmarkPair.first.name,
-                    px = bookmarkPair.first.px,
-                    py = bookmarkPair.first.py,
-                )
-            }
-        }.flatten()
-
-        return GetAllNonMemberPings.Response(
-            eventName = shareUrl.eventName,
-            nonMembers = nonMembers,
-            px = shareUrl.latitude,
-            py = shareUrl.longtitude,
-            pings = pings
-        )
+        return createPingResponse(shareUrl, nonMemberList)
     }
 
     private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
@@ -339,7 +298,10 @@ class NonMemberService(
         return allSids
     }
 
-    private fun updateNonMemberPlacesIfNeeded(nonMember: NonMemberDomain, nonMemberPlaces: List<NonMemberPlaceDomain>, existingSids: Set<String>, newSids: Set<String>) {
+    private fun updateNonMemberPlacesIfNeeded(nonMember: NonMemberDomain, newSids: Set<String>) {
+        val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id)
+        val existingSids = nonMemberPlaces.map { it.sid }.toSet()
+
         if(existingSids != newSids) {
             val sidsToAdd = newSids - existingSids
             val sidsToDelete = existingSids - newSids
@@ -393,6 +355,40 @@ class NonMemberService(
         val idsToDelete = existingUrls.filter { getUrl(it) !in newUrls }.map { getId(it) }
 
         return Pair(urlsToAdd, idsToDelete)
+    }
+
+    private fun createPingResponse(
+        shareUrl: ShareUrlDomain,
+        nonMemberList: List<NonMemberDomain>
+    ): GetAllNonMemberPings.Response {
+        val nonMembers = nonMemberList.map { nonMember ->
+            GetAllNonMemberPings.NonMember(nonMemberId = nonMember.id, name = nonMember.name)
+        }
+
+        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
+        val pings = nonMemberPlaces.entries.flatMapIndexed { index, nonMemberPlace ->
+            val level = calculateIconLevel(index, nonMemberPlace.key)
+            nonMemberPlace.value.map { bookmarkPair ->
+                GetAllNonMemberPings.Ping(
+                    iconLevel = level,
+                    nonMembers = bookmarkPair.second.map {
+                        GetAllNonMemberPings.NonMember(nonMemberId = it.id, name = it.name)
+                    },
+                    url = bookmarkPair.first.url,
+                    placeName = bookmarkPair.first.name,
+                    px = bookmarkPair.first.px,
+                    py = bookmarkPair.first.py,
+                )
+            }
+        }
+
+        return GetAllNonMemberPings.Response(
+            eventName = shareUrl.eventName,
+            nonMembers = nonMembers,
+            px = shareUrl.latitude,
+            py = shareUrl.longtitude,
+            pings = pings
+        )
     }
 
     private fun calculateIconLevel(index: Int, overlapCount: Int): Int {
