@@ -177,32 +177,13 @@ class NonMemberService(
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(request.nonMemberId)
         val existingSids = nonMemberPlaces.map { it.sid }.toSet()
 
-        val bookmarkData = handleBookmarkUrls(request.bookmarkUrls)
-        val storeData = handleStoreUrls(request.storeUrls)
+        val bookmarkUrlSids = handleBookmarkUrls(request.bookmarkUrls)
+        val storeUrlSids = handleStoreUrls(request.storeUrls)
+        val newSids = (bookmarkUrlSids + storeUrlSids)
 
-        val newSids = (bookmarkData.sids + storeData.sids)
-        if (existingSids != newSids) {
-            updateNonMemberPlaces(nonMember,nonMemberPlaces, newSids, existingSids)
-        }
-
-        val existingBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id)
-        val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id)
-
-        // URL을 쉽게 매핑하기 위해 Map 형태로 변환
-        val existingBookmarkMap = existingBookmarkUrls.associateBy { it.bookmarkUrl }
-        val existingStoreMap = existingStoreUrls.associateBy { it.storeUrl }
-
-        val bookmarkUrlsToAdd = request.bookmarkUrls.filterNot { it in existingBookmarkMap.keys }
-        val bookmarkUrlsToDeleteIds = existingBookmarkUrls.filter { it.bookmarkUrl !in request.bookmarkUrls }.map { it.id }
-
-        val storeUrlsToAdd = request.storeUrls.filterNot { it in existingStoreMap.keys }
-        val storeUrlsToDeleteIds = existingStoreUrls.filter { it.storeUrl !in request.storeUrls }.map { it.id }
-
-        nonMemberBookmarkUrlRepository.saveAll(NonMemberBookmarkUrlDomain.of(nonMember, bookmarkUrlsToAdd))
-        nonMemberStoreUrlRepository.saveAll(NonMemberStoreUrlDomain.of(nonMember, storeUrlsToAdd))
-
-        nonMemberBookmarkUrlRepository.deleteAllByIds(bookmarkUrlsToDeleteIds)
-        nonMemberStoreUrlRepository.deleteAllByIds(storeUrlsToDeleteIds)
+        updateNonMemberPlacesIfNeeded(nonMember, nonMemberPlaces, existingSids, newSids)
+        updateBookmarkUrls(nonMember, request.bookmarkUrls)
+        updateStoreUrls(nonMember, request.storeUrls)
     }
 
     @Transactional
@@ -219,14 +200,11 @@ class NonMemberService(
             val existingBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }
             val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id).map { it.storeUrl }
 
-            val bookmarkData = handleBookmarkUrls(existingBookmarkUrls)
-            val storeData = handleStoreUrls(existingStoreUrls)
+            val bookmarkUrlSids = handleBookmarkUrls(existingBookmarkUrls)
+            val storeUrlSids = handleStoreUrls(existingStoreUrls)
+            val newSids = (bookmarkUrlSids + storeUrlSids)
 
-            val newSids = (bookmarkData.sids + storeData.sids)
-
-            if (existingSids != newSids) {
-                updateNonMemberPlaces(nonMember, nonMemberPlaces, newSids, existingSids)
-            }
+            updateNonMemberPlacesIfNeeded(nonMember, nonMemberPlaces, existingSids, newSids)
         }
 
         val nonMembers = nonMemberList.map { nonMember ->
@@ -298,7 +276,7 @@ class NonMemberService(
 
     private fun handleBookmarkUrls(
         bookmarkUrls: List<String>
-    ): BookmarkData {
+    ): Set<String> {
         val bookmarks = mutableListOf<BookmarkDomain>()
         val allSids = mutableSetOf<String>()
 
@@ -326,12 +304,12 @@ class NonMemberService(
         val bookmarksToAdd = bookmarks.filterNot { it.sid in existingSids }
         bookmarkRepository.saveAll(bookmarksToAdd)
 
-        return BookmarkData(bookmarks, allSids)
+        return allSids
     }
 
     private fun handleStoreUrls(
         storeUrls: List<String>
-    ): BookmarkData {
+    ): Set<String> {
         val bookmarks = mutableListOf<BookmarkDomain>()
         val allSids = mutableSetOf<String>()
 
@@ -358,20 +336,63 @@ class NonMemberService(
         val bookmarksToAdd = bookmarks.filterNot { it.sid in existingSids }
         bookmarkRepository.saveAll(bookmarksToAdd)
 
-        return BookmarkData(bookmarks, allSids)
+        return allSids
     }
 
-    private fun updateNonMemberPlaces(nonMember: NonMemberDomain, nonMemberPlaces: List<NonMemberPlaceDomain>, newSids: Set<String>, existingSids: Set<String>) {
-        val sidsToAdd = newSids - existingSids
-        val sidsToDelete = existingSids - newSids
+    private fun updateNonMemberPlacesIfNeeded(nonMember: NonMemberDomain, nonMemberPlaces: List<NonMemberPlaceDomain>, existingSids: Set<String>, newSids: Set<String>) {
+        if(existingSids != newSids) {
+            val sidsToAdd = newSids - existingSids
+            val sidsToDelete = existingSids - newSids
 
-        val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(nonMember, sid) }
-        nonMemberPlaceRepository.saveAll(placesToAdd)
+            val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(nonMember, sid) }
+            nonMemberPlaceRepository.saveAll(placesToAdd)
 
-        val placesIdToDelete = nonMemberPlaces
-            .filter { it.nonMember == nonMember && it.sid in sidsToDelete }
-            .map { it.id }
-        nonMemberPlaceRepository.deleteAll(placesIdToDelete)
+            val placesIdToDelete = nonMemberPlaces
+                .filter { it.nonMember == nonMember && it.sid in sidsToDelete }
+                .map { it.id }
+            nonMemberPlaceRepository.deleteAll(placesIdToDelete)
+        }
+    }
+
+    private fun updateBookmarkUrls(nonMember: NonMemberDomain, bookmarkUrls: List<String>) {
+        val existingBookmarks = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id)
+
+        val (urlsToAdd, idsToDelete) = findUrlsToUpdate(
+            existingUrls = existingBookmarks,
+            newUrls = bookmarkUrls,
+            getUrl = { it.bookmarkUrl },
+            getId = { it.id }
+        )
+
+        nonMemberBookmarkUrlRepository.saveAll(NonMemberBookmarkUrlDomain.of(nonMember, urlsToAdd))
+        nonMemberBookmarkUrlRepository.deleteAllByIds(idsToDelete)
+    }
+
+    private fun updateStoreUrls(nonMember: NonMemberDomain, storeUrls: List<String>) {
+        val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id)
+
+        val (urlsToAdd, idsToDelete) = findUrlsToUpdate(
+            existingUrls = existingStoreUrls,
+            newUrls = storeUrls,
+            getUrl = { it.storeUrl },
+            getId = { it.id }
+        )
+
+        nonMemberStoreUrlRepository.saveAll(NonMemberStoreUrlDomain.of(nonMember, urlsToAdd))
+        nonMemberStoreUrlRepository.deleteAllByIds(idsToDelete)
+    }
+
+    private fun <T> findUrlsToUpdate(
+        existingUrls: List<T>,
+        newUrls: List<String>,
+        getUrl: (T) -> String,
+        getId: (T) -> Long
+    ): Pair<List<String>, List<Long>> {
+        val existingUrlSet = existingUrls.map { getUrl(it) }.toSet()
+        val urlsToAdd = newUrls.filter { it !in existingUrlSet }
+        val idsToDelete = existingUrls.filter { getUrl(it) !in newUrls }.map { getId(it) }
+
+        return Pair(urlsToAdd, idsToDelete)
     }
 
     private fun calculateIconLevel(index: Int, overlapCount: Int): Int {
@@ -387,11 +408,6 @@ class NonMemberService(
             else -> remainderIconLevel
         }
     }
-
-    private data class BookmarkData(
-        val bookmarks: List<BookmarkDomain>,
-        val sids: Set<String>
-    )
 
     private fun nonMembersToNonMemberPlacesMap(nonMembers: List<NonMemberDomain>): Map<Int,List<Pair<BookmarkDomain,List<NonMemberDomain>>>> {
         //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
