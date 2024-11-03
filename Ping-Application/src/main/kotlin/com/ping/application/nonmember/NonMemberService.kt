@@ -121,52 +121,7 @@ class NonMemberService(
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
         val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
 
-        val nonMembers = nonMemberList.map { nonMember ->
-            GetAllNonMemberPings.NonMember(
-                nonMemberId = nonMember.id,
-                name = nonMember.name
-            )
-        }
-
-        val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
-
-        val pings = nonMemberPlaces.entries.mapIndexed{ index, nonMemberPlace ->
-            val mostOverlappedIconLevel = 4
-            val secondOverlappedIconLevel = 3
-            val thirdOverlappedIconLevel = 2
-            val remainderIconLevel = 1
-
-            val level = when {
-                nonMemberPlace.key == 1 -> remainderIconLevel //1명일 때
-                index == 0 -> mostOverlappedIconLevel
-                index == 1 -> secondOverlappedIconLevel
-                index == 2 -> thirdOverlappedIconLevel
-                else -> remainderIconLevel
-            }
-            nonMemberPlace.value.map { bookmarkPair ->
-                GetAllNonMemberPings.Ping(
-                    iconLevel = level,
-                    nonMembers = bookmarkPair.second.map {
-                        GetAllNonMemberPings.NonMember(
-                            nonMemberId = it.id,
-                            name = it.name
-                        )
-                    },
-                    url = bookmarkPair.first.url,
-                    placeName = bookmarkPair.first.name,
-                    px = bookmarkPair.first.px,
-                    py = bookmarkPair.first.py,
-                )
-            }
-        }.flatten()
-
-        return GetAllNonMemberPings.Response(
-            eventName = shareUrl.eventName,
-            nonMembers = nonMembers,
-            px = shareUrl.latitude,
-            py = shareUrl.longtitude,
-            pings = pings
-        )
+        return createPingResponse(shareUrl, nonMemberList)
     }
 
     @Transactional
