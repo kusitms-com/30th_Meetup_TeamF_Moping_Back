@@ -46,6 +46,9 @@ out/
 src/main/resources/application.yaml
 Ping-Api/src/main/resources/application.yaml
 
-
 ### rest docs ###
 **/src/main/resources/static/docs/
+Ping-Api/src/main/resources/static/swagger/openapi3.yaml
+
+### docker compose ###
+docker-compose.yaml
