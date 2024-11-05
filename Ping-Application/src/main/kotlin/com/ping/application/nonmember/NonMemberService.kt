@@ -10,6 +10,7 @@ import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import kotlin.random.Random
 
 @Service
 @Transactional(readOnly = true)
@@ -21,18 +22,21 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
+    private val profileRepository: ProfileRepository,
     private val naverMapClient: NaverMapClient
 ) {
     fun login(request: LoginNonMember.Request): LoginNonMember.Response {
         ValidationUtil.validatePassword(request.password)
 
-        val nonMember = nonMemberRepository.findById(request.nonMemberId) ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+        val nonMember = nonMemberRepository.findById(request.nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
 
         if (request.password != nonMember.password) {
             throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
         }
 
-        val savedBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
+        val savedBookmarkUrls =
+            nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
         val savedStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.storeUrl }
 
         return LoginNonMember.Response(
@@ -55,7 +59,7 @@ class NonMemberService(
             throw CustomException(ExceptionContent.NON_MEMBER_ALREADY_EXISTS)
         }
 
-        val nonMemberDomain = NonMemberDomain.of(request.name, request.password, shareUrl)
+        val nonMemberDomain = NonMemberDomain.of(request.name, request.password, getRandomProfileSvg(), shareUrl)
         val savedNonMember = nonMemberRepository.save(nonMemberDomain)
 
         val nonMemberBookmarkUrlDomains = NonMemberBookmarkUrlDomain.of(savedNonMember, request.bookmarkUrls)
@@ -69,6 +73,11 @@ class NonMemberService(
 
         val nonMemberPlaces = allSids.map { sid -> NonMemberPlaceDomain.of(savedNonMember, sid) }
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
+    }
+
+    private fun getRandomProfileSvg(): String {
+        val profiles = profileRepository.findAll()
+        return profiles[Random.nextInt(profiles.size)].url
     }
 
     fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
@@ -101,7 +110,8 @@ class NonMemberService(
         val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
 
         nonMemberList.forEach { nonMember ->
-            val existingBookmarkUrls = nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }
+            val existingBookmarkUrls =
+                nonMemberBookmarkUrlRepository.findAllByNonMemberId(nonMember.id).map { it.bookmarkUrl }
             val existingStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(nonMember.id).map { it.storeUrl }
 
             val bookmarkUrlSids = handleBookmarkUrls(existingBookmarkUrls)
@@ -212,7 +222,7 @@ class NonMemberService(
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id)
         val existingSids = nonMemberPlaces.map { it.sid }.toSet()
 
-        if(existingSids != newSids) {
+        if (existingSids != newSids) {
             val sidsToAdd = newSids - existingSids
             val sidsToDelete = existingSids - newSids
 
@@ -272,7 +282,11 @@ class NonMemberService(
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
         val nonMembers = nonMemberList.map { nonMember ->
-            GetAllNonMemberPings.NonMember(nonMemberId = nonMember.id, name = nonMember.name)
+            GetAllNonMemberPings.NonMember(
+                nonMemberId = nonMember.id,
+                name = nonMember.name,
+                profileSvg = nonMember.profileSvg
+            )
         }
 
         val nonMemberPlaces = nonMembersToNonMemberPlacesMap(nonMemberList)
@@ -282,7 +296,7 @@ class NonMemberService(
                 GetAllNonMemberPings.Ping(
                     iconLevel = level,
                     nonMembers = bookmarkPair.second.map {
-                        GetAllNonMemberPings.NonMember(nonMemberId = it.id, name = it.name)
+                        GetAllNonMemberPings.NonMember(nonMemberId = it.id, name = it.name, profileSvg = it.profileSvg)
                     },
                     url = bookmarkPair.first.url,
                     placeName = bookmarkPair.first.name,
@@ -315,7 +329,7 @@ class NonMemberService(
         }
     }
 
-    private fun nonMembersToNonMemberPlacesMap(nonMembers: List<NonMemberDomain>): Map<Int,List<Pair<BookmarkDomain,List<NonMemberDomain>>>> {
+    private fun nonMembersToNonMemberPlacesMap(nonMembers: List<NonMemberDomain>): Map<Int, List<Pair<BookmarkDomain, List<NonMemberDomain>>>> {
         //list<Pair<NonMemberPlaceDomain, List<NonMemberDomain>>>
         val allNonMemberPlaces = nonMembers.flatMap { nonMember ->
             nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id).map { place ->
@@ -327,7 +341,7 @@ class NonMemberService(
         val bookmarkMap = bookmarks.associateBy { it.sid }
 
         //Map<Int(count),List<Pair<BookmarkDomain,List<NonMemberDomain>>>>
-        val  nonMemberPlaces = allNonMemberPlaces
+        val nonMemberPlaces = allNonMemberPlaces
             .groupBy { it.first.sid }
             .mapNotNull { (sid, placeNonMemberPairs) ->
                 val bookmarkDomain = bookmarkMap[sid]
@@ -340,7 +354,7 @@ class NonMemberService(
         return nonMemberPlaces
     }
 
-    fun getNonMemberPing(nonMemberId: Long) : GetNonMemberPing.Response {
+    fun getNonMemberPing(nonMemberId: Long): GetNonMemberPing.Response {
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
         val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
         return GetNonMemberPing.Response(

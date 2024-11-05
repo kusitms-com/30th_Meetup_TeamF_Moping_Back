@@ -9,6 +9,7 @@ object NonMemberMapper {
         nonMemberEntity.id,
         nonMemberEntity.name,
         nonMemberEntity.password,
+        nonMemberEntity.profileSvg,
         ShareUrlMapper.toDomain(nonMemberEntity.shareUrl)
     )
 
@@ -16,6 +17,7 @@ object NonMemberMapper {
         nonMemberDomain.id,
         nonMemberDomain.name,
         nonMemberDomain.password,
+        nonMemberDomain.profileSvg,
         ShareUrlMapper.toEntity(nonMemberDomain.shareUrlDomain)
     )
 }
