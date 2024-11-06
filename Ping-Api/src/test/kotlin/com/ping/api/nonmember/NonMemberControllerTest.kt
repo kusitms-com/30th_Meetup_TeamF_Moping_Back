@@ -144,15 +144,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             px = 127.00001,
             py = 37.00001,
             nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
+                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
             ),
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
+                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
                     ),
                     url = "https://map.naver.com/p/entry/place/1946678040",
                     placeName = "호이",
@@ -162,7 +162,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 GetAllNonMemberPings.Ping(
                     iconLevel = 1,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
+                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
                     ),
                     url = "https://map.naver.com/p/entry/place/1492901893",
                     placeName = "퍼즈앤스틸",
@@ -194,9 +194,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("py").description("이벤트 중심 위도"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].url").description("장소 url"),
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
@@ -219,9 +221,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("py").description("이벤트 중심 위도"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].url").description("장소 url"),
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),
@@ -341,8 +345,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         val response = GetAllNonMemberPings.Response(
             eventName = "Sample Event",
             nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
+                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
             ),
             px = 127.00001,
             py = 37.00001,
@@ -350,8 +354,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2")
+                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
                     ),
                     url = "https://map.naver.com/p/entry/place/1946678040",
                     placeName = "호이",
@@ -382,9 +386,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("py").description("이벤트 중심 위도"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].url").description("장소 URL"),
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
@@ -408,9 +414,11 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("py").description("이벤트 중심 위도"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].url").description("장소 URL"),
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),

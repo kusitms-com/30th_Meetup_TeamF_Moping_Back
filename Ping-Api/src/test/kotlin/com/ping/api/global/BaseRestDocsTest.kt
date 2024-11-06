@@ -2,6 +2,7 @@ package com.ping.api.global
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
+import com.ping.infra.nonmember.domain.mongo.repository.ProfileMongoRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,6 +35,9 @@ abstract class BaseRestDocsTest {
 
     @MockBean
     private lateinit var bookmarkMongoRepository: BookmarkMongoRepository
+
+    @MockBean
+    private lateinit var profileMongoRepository: ProfileMongoRepository
 
     @BeforeEach
     fun mockMvcSetup(
