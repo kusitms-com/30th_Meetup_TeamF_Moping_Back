@@ -21,7 +21,6 @@ class NonMemberService(
     private val nonMemberPlaceRepository: NonMemberPlaceRepository,
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
-    private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
     private val profileRepository: ProfileRepository,
     private val naverMapClient: NaverMapClient
 ) {
@@ -122,35 +121,6 @@ class NonMemberService(
         }
 
         return createPingResponse(shareUrl, nonMemberList)
-    }
-
-    private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
-        // 새로 생성된 비회원을 제외한 기존 비회원 목록 조회
-        val existingNonMembers = nonMemberRepository.findAllByShareUrl(shareUrlId)
-            .filter { it.id != newNonMember.id }
-
-        // 기존 비회원이 없으면 return
-        if (existingNonMembers.isEmpty()) return
-
-        // 새로 생성된 비회원 기준으로 각 기존 비회원에 대한 NonMemberUpdateStatusDomain 생성
-        val updateStatusForNewMember = existingNonMembers.map { existingMember ->
-            NonMemberUpdateStatusDomain.of(
-                nonMemberDomain = newNonMember,
-                friendId = existingMember.id,
-                isUpdate = false
-            )
-        }
-
-        // 기존 비회원 기준으로 새로 생성된 비회원에 대한 NonMemberUpdateStatusDomain 생성
-        val updateStatusForExistingMembers = existingNonMembers.map { existingMember ->
-            NonMemberUpdateStatusDomain.of(
-                nonMemberDomain = existingMember,
-                friendId = newNonMember.id,
-                isUpdate = false
-            )
-        }
-
-        nonMemberUpdateStatusRepository.saveAll(updateStatusForNewMember + updateStatusForExistingMembers)
     }
 
     private fun handleBookmarkUrls(
