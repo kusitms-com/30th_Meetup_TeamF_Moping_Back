@@ -143,6 +143,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             eventName = "핑핑이들 여행",
             px = 127.00001,
             py = 37.00001,
+            pingLastUpdateTime = "16분",
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
                 GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
@@ -192,6 +193,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("eventName").description("이벤트 이름"),
                         fieldWithPath("px").description("이벤트 중심 경도"),
                         fieldWithPath("py").description("이벤트 중심 위도"),
+                        fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -219,6 +221,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("eventName").description("이벤트 이름"),
                             fieldWithPath("px").description("이벤트 중심 경도"),
                             fieldWithPath("py").description("이벤트 중심 위도"),
+                            fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -350,6 +353,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             ),
             px = 127.00001,
             py = 37.00001,
+            pingLastUpdateTime = "19분",
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
@@ -384,6 +388,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("eventName").description("이벤트 이름"),
                         fieldWithPath("px").description("이벤트 중심 경도"),
                         fieldWithPath("py").description("이벤트 중심 위도"),
+                        fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -412,6 +417,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("eventName").description("이벤트 이름"),
                             fieldWithPath("px").description("이벤트 중심 경도"),
                             fieldWithPath("py").description("이벤트 중심 위도"),
+                            fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
