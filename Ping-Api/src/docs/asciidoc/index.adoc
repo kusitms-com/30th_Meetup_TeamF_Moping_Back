@@ -9,3 +9,4 @@
 include::Event.adoc[]
 include::NonMember.adoc[]
 include::Place.adoc[]
+include::Pings.adoc[]
