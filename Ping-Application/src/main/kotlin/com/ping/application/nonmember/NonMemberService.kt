@@ -71,6 +71,11 @@ class NonMemberService(
         val storeSids = handleStoreUrls(request.storeUrls)
         val allSids = bookmarkSids + storeSids
 
+        if (allSids.isNotEmpty()) {
+            val updatedShareUrl = shareUrl.copy(pingUpdateTime = LocalDateTime.now())
+            shareUrlRepository.save(updatedShareUrl)
+        }
+
         val nonMemberPlaces = allSids.map { sid -> NonMemberPlaceDomain.of(savedNonMember, sid) }
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
     }
@@ -204,6 +209,10 @@ class NonMemberService(
                 .filter { it.nonMember == nonMember && it.sid in sidsToDelete }
                 .map { it.id }
             nonMemberPlaceRepository.deleteAll(placesIdToDelete)
+
+            val updatedShareUrl = nonMember.shareUrlDomain.copy(pingUpdateTime = LocalDateTime.now())
+            shareUrlRepository.save(updatedShareUrl)
+
         }
     }
 
