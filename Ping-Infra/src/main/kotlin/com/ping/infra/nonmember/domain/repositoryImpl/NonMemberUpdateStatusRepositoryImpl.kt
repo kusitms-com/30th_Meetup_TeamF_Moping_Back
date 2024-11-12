@@ -2,7 +2,6 @@ package com.ping.infra.nonmember.domain.repositoryImpl
 
 import com.ping.domain.nonmember.aggregate.NonMemberUpdateStatusDomain
 import com.ping.domain.nonmember.repository.NonMemberUpdateStatusRepository
-import com.ping.infra.nonmember.domain.jpa.repository.NonMemberUpdateStatusJpaRepository
 import com.ping.infra.nonmember.domain.mapper.NonMemberUpdateStatusMapper
 import org.springframework.stereotype.Repository
 
