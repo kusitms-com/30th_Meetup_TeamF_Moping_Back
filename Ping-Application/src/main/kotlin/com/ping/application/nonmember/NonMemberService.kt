@@ -11,6 +11,7 @@ import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
+import java.time.Duration
 import kotlin.random.Random
 
 @Service
@@ -261,6 +262,8 @@ class NonMemberService(
         shareUrl: ShareUrlDomain,
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
+        val pingLastUpdateTime = caculateTimeDifference(shareUrl)
+
         val nonMembers = nonMemberList.map { nonMember ->
             GetAllNonMemberPings.NonMember(
                 nonMemberId = nonMember.id,
@@ -288,10 +291,11 @@ class NonMemberService(
 
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
-            nonMembers = nonMembers,
             px = shareUrl.px,
             py = shareUrl.py,
-            pings = pings
+            pingLastUpdateTime = pingLastUpdateTime,
+            nonMembers = nonMembers,
+            pings = pings,
         )
     }
 
@@ -347,5 +351,16 @@ class NonMemberService(
                 )
             }
         )
+    }
+
+    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String {
+        val timeDifference = Duration.between(shareUrl.pingUpdateTime, LocalDateTime.now())
+        val pingLastUpdateTime: String = when {
+            timeDifference.toDays() >= 1 -> "${timeDifference.toDays()}일"
+            timeDifference.toHours() >= 1 -> "${timeDifference.toHours()}시간"
+            timeDifference.toMinutes() >= 1 -> "${timeDifference.toMinutes()}분"
+            else -> "1분"
+        }
+        return pingLastUpdateTime
     }
 }
