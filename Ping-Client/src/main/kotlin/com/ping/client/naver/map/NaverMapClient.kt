@@ -13,6 +13,8 @@ class NaverMapClient(
 ) {
 
     fun bookmarkUrlToBookmarkLists(url: String): NaverBookmarkResponse.BookmarkLists {
+        if(url.contains("/place/")) throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
+
         try {
             val shareId = url.split("/").lastOrNull()?.split("?")?.firstOrNull()?.replace("%", "")
             val webclient = WebClient.create("https://pages.map.naver.com")
@@ -25,11 +27,13 @@ class NaverMapClient(
                 }
                 .block()!!
         } catch (e: Exception) {
-            throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
+            throw CustomException(ExceptionContent.INVALID_URL)
         }
     }
 
     fun storeUrlToBookmark(url: String): NaverBookmarkResponse.Bookmark {
+        if(url.contains("/folder/")) throw CustomException(ExceptionContent.INVALID_STORE_URL)
+
         try {
             val shareId = url.split("place/").lastOrNull()?.split("/home")?.firstOrNull()?.split("?")?.firstOrNull()
                 ?.replace("%", "")!!
@@ -59,7 +63,7 @@ class NaverMapClient(
                 mcidName = ""
             )
         } catch (e: Exception) {
-            throw CustomException(ExceptionContent.INVALID_STORE_URL)
+            throw CustomException(ExceptionContent.INVALID_URL)
         }
     }
 }
