@@ -1,13 +1,14 @@
 package com.ping.api.place
 
-import com.ping.application.event.dto.CreateEvent
 import com.ping.application.place.PlaceService
 import com.ping.application.place.dto.GeocodePlace
 import com.ping.application.place.dto.SearchPlace
 import com.ping.common.exception.SuccessResponse
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.RestController
 
 @RestController
 class PlaceController(
