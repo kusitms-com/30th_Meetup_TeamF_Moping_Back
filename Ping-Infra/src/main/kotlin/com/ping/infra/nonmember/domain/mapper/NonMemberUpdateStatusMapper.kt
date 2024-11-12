@@ -1,7 +1,6 @@
 package com.ping.infra.nonmember.domain.mapper
 
 import com.ping.domain.nonmember.aggregate.NonMemberUpdateStatusDomain
-import com.ping.infra.nonmember.domain.jpa.entity.NonMemberUpdateStatusEntity
 
 object NonMemberUpdateStatusMapper {
 
