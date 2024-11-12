@@ -20,10 +20,10 @@ class ShareUrlEntity(
     val neighborhood: String,
 
     @Column(nullable = false)
-    val latitude: Double,
+    val px: Double,
 
     @Column(nullable = false)
-    val longtitude: Double,
+    val py: Double,
 
     @Column(nullable = false, unique = true)
     val uuid: String,

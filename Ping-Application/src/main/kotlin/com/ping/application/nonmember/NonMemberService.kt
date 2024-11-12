@@ -10,6 +10,7 @@ import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Service
@@ -279,8 +280,8 @@ class NonMemberService(
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
             nonMembers = nonMembers,
-            px = shareUrl.latitude,
-            py = shareUrl.longtitude,
+            px = shareUrl.px,
+            py = shareUrl.py,
             pings = pings
         )
     }
