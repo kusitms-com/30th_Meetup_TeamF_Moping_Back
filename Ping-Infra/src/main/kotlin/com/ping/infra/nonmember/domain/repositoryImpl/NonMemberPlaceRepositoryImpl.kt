@@ -20,4 +20,8 @@ class NonMemberPlaceRepositoryImpl(
     override fun deleteAll(ids: List<Long>) {
         nonMemberPlaceJpaRepository.deleteAllById(ids)
     }
+
+    override fun findCountBySidIn(sids: List<String>): List<Pair<String, Long>> {
+        return nonMemberPlaceJpaRepository.findCountBySidIn(sids)
+    }
 }
