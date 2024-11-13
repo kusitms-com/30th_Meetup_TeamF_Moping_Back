@@ -5,6 +5,7 @@ import java.time.LocalDateTime
 class GetAllNonMemberPings {
     data class Response(
         val eventName: String,
+        val neighborhood: String,
         val px: Double,
         val py: Double,
         val pingLastUpdateTime: String?,

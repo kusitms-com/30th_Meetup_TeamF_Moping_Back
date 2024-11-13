@@ -274,6 +274,7 @@ class NonMemberService(
 
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
+            neighborhood = shareUrl.neighborhood,
             px = shareUrl.px,
             py = shareUrl.py,
             pingLastUpdateTime = pingLastUpdateTime,
