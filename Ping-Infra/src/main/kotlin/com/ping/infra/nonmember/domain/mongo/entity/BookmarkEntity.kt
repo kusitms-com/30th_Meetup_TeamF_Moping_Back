@@ -2,6 +2,9 @@ package com.ping.infra.nonmember.domain.mongo.entity
 
 import com.ping.infra.nonmember.domain.mongo.common.BaseTimeMongoEntity
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexType
+import org.springframework.data.mongodb.core.index.GeoSpatialIndexed
 import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
 
@@ -15,5 +18,7 @@ data class BookmarkEntity(
     val sid: String,
     val address: String,
     val mcidName: String,
-    val url: String
+    val url: String,
+    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
+    val location: GeoJsonPoint = GeoJsonPoint(px, py),
 ): BaseTimeMongoEntity()

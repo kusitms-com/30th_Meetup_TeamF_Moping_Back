@@ -129,6 +129,21 @@ class NonMemberService(
         return createPingResponse(shareUrl, nonMemberList)
     }
 
+    fun getTopSidCountsForNearbyPlaces(px: Double, py: Double, distanceKm: Double): List<String> {
+        // 1. 주어진 px, py 좌표에서 반경 내의 SIDs를 MongoDB로부터 조회
+        val nearbySids = bookmarkRepository.findNearbySids(px, py, distanceKm)
+
+        // 2. 해당 SID들을 한 번에 조회하여 각 SID의 등장 횟수를 계산
+        val sidCountsMap = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
+            .toMap()  // Pair<String, Long> 리스트를 Map<String, Long>으로 변환
+
+        // 3. 등장 횟수에 따라 정렬 후 상위 5개의 SID를 추출
+        return sidCountsMap.entries
+            .sortedByDescending { it.value } // 횟수를 기준으로 내림차순 정렬
+            .take(5)
+            .map { it.key } // SID만 리스트로 반환
+    }
+
     private fun handleBookmarkUrls(
         bookmarkUrls: List<String>
     ): Set<String> {
