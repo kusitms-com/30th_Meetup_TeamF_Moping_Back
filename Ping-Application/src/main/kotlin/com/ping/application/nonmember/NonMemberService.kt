@@ -353,8 +353,8 @@ class NonMemberService(
         )
     }
 
-    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String {
-        val pingLastUpdateTime: String = shareUrl.pingUpdateTime?.let {
+    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String? {
+        val pingLastUpdateTime: String? = shareUrl.pingUpdateTime?.let {
             val timeDifference = Duration.between(shareUrl.pingUpdateTime, LocalDateTime.now())
             when {
                 timeDifference.toDays() >= 1 -> "${timeDifference.toDays()}일"
@@ -362,7 +362,7 @@ class NonMemberService(
                 timeDifference.toMinutes() >= 1 -> "${timeDifference.toMinutes()}분"
                 else -> "1분"
             }
-        } ?: "업데이트된 적 없음"
+        }
         return pingLastUpdateTime
     }
 }

@@ -7,7 +7,7 @@ class GetAllNonMemberPings {
         val eventName: String,
         val px: Double,
         val py: Double,
-        val pingLastUpdateTime: String,
+        val pingLastUpdateTime: String?,
         val nonMembers: List<NonMember>,
         val pings: List<Ping>,
     )
