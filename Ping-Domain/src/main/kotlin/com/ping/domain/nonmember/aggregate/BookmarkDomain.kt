@@ -7,5 +7,5 @@ data class BookmarkDomain (
     val sid: String,
     val address: String,
     val mcidName: String,
-    val url: String
+    val url: String,
 )
