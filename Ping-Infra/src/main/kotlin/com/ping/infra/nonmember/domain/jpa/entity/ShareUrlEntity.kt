@@ -2,6 +2,7 @@ package com.ping.infra.nonmember.domain.jpa.entity
 
 import com.ping.infra.nonmember.domain.jpa.common.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity(name = "share_url")
 class ShareUrlEntity(
@@ -19,12 +20,14 @@ class ShareUrlEntity(
     val neighborhood: String,
 
     @Column(nullable = false)
-    val latitude: Double,
+    val px: Double,
 
     @Column(nullable = false)
-    val longtitude: Double,
+    val py: Double,
 
     @Column(nullable = false, unique = true)
-    val uuid: String
+    val uuid: String,
+
+    val pingUpdateTime: LocalDateTime?
 
 ) : BaseTimeEntity()

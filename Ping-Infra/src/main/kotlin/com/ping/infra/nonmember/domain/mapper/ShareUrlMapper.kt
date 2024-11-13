@@ -10,9 +10,10 @@ object ShareUrlMapper {
         shareUrlDomain.url,
         shareUrlDomain.eventName,
         shareUrlDomain.neighborhood,
-        shareUrlDomain.latitude,
-        shareUrlDomain.longtitude,
-        shareUrlDomain.uuid
+        shareUrlDomain.px,
+        shareUrlDomain.py,
+        shareUrlDomain.uuid,
+        shareUrlDomain.pingUpdateTime,
     )
 
     fun toDomain(shareUrlEntity: ShareUrlEntity) = ShareUrlDomain(
@@ -20,8 +21,9 @@ object ShareUrlMapper {
         shareUrlEntity.url,
         shareUrlEntity.eventName,
         shareUrlEntity.neighborhood,
-        shareUrlEntity.latitude,
-        shareUrlEntity.longtitude,
-        shareUrlEntity.uuid
+        shareUrlEntity.px,
+        shareUrlEntity.py,
+        shareUrlEntity.uuid,
+        shareUrlEntity.pingUpdateTime,
     )
 }

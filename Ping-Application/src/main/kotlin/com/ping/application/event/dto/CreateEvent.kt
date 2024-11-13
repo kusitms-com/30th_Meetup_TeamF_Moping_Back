@@ -1,6 +1,6 @@
 package com.ping.application.event.dto
 
-class CreateEvent {
+interface CreateEvent {
     data class Request(
         val neighborhood: String,
         val px: Double,
