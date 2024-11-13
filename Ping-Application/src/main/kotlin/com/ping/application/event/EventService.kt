@@ -21,7 +21,15 @@ class EventService(
         val uniqueId = UUID.randomUUID().toString().substring(0, 8)
         val uniqueUrl = generateUniqueUrl(request, uniqueId)
 
-        val shareUrl = ShareUrlDomain(0,uniqueUrl, request.eventName, request.neighborhood,request.px, request.py, uniqueId)
+        val shareUrl = ShareUrlDomain.of(
+            url = uniqueUrl,
+            eventName = request.eventName,
+            neighborhood = request.neighborhood,
+            px = request.px,
+            py = request.py,
+            uuid =  uniqueId,
+            )
+
         val savedShareUrlDomain = shareUrlRepository.save(shareUrl)
 
         return CreateEvent.Response(savedShareUrlDomain.url)

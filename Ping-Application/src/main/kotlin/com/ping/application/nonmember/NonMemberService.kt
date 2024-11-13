@@ -10,6 +10,8 @@ import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
+import java.time.Duration
 import kotlin.random.Random
 
 @Service
@@ -21,7 +23,6 @@ class NonMemberService(
     private val nonMemberPlaceRepository: NonMemberPlaceRepository,
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
-    private val nonMemberUpdateStatusRepository: NonMemberUpdateStatusRepository,
     private val profileRepository: ProfileRepository,
     private val naverMapClient: NaverMapClient
 ) {
@@ -70,6 +71,11 @@ class NonMemberService(
         val bookmarkSids = handleBookmarkUrls(request.bookmarkUrls)
         val storeSids = handleStoreUrls(request.storeUrls)
         val allSids = bookmarkSids + storeSids
+
+        if (allSids.isNotEmpty()) {
+            val updatedShareUrl = shareUrl.copy(pingUpdateTime = LocalDateTime.now())
+            shareUrlRepository.save(updatedShareUrl)
+        }
 
         val nonMemberPlaces = allSids.map { sid -> NonMemberPlaceDomain.of(savedNonMember, sid) }
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
@@ -122,35 +128,6 @@ class NonMemberService(
         }
 
         return createPingResponse(shareUrl, nonMemberList)
-    }
-
-    private fun createNonMemberUpdateStatus(newNonMember: NonMemberDomain, shareUrlId: Long) {
-        // 새로 생성된 비회원을 제외한 기존 비회원 목록 조회
-        val existingNonMembers = nonMemberRepository.findAllByShareUrl(shareUrlId)
-            .filter { it.id != newNonMember.id }
-
-        // 기존 비회원이 없으면 return
-        if (existingNonMembers.isEmpty()) return
-
-        // 새로 생성된 비회원 기준으로 각 기존 비회원에 대한 NonMemberUpdateStatusDomain 생성
-        val updateStatusForNewMember = existingNonMembers.map { existingMember ->
-            NonMemberUpdateStatusDomain.of(
-                nonMemberDomain = newNonMember,
-                friendId = existingMember.id,
-                isUpdate = false
-            )
-        }
-
-        // 기존 비회원 기준으로 새로 생성된 비회원에 대한 NonMemberUpdateStatusDomain 생성
-        val updateStatusForExistingMembers = existingNonMembers.map { existingMember ->
-            NonMemberUpdateStatusDomain.of(
-                nonMemberDomain = existingMember,
-                friendId = newNonMember.id,
-                isUpdate = false
-            )
-        }
-
-        nonMemberUpdateStatusRepository.saveAll(updateStatusForNewMember + updateStatusForExistingMembers)
     }
 
     private fun handleBookmarkUrls(
@@ -233,6 +210,10 @@ class NonMemberService(
                 .filter { it.nonMember == nonMember && it.sid in sidsToDelete }
                 .map { it.id }
             nonMemberPlaceRepository.deleteAll(placesIdToDelete)
+
+            val updatedShareUrl = nonMember.shareUrlDomain.copy(pingUpdateTime = LocalDateTime.now())
+            shareUrlRepository.save(updatedShareUrl)
+
         }
     }
 
@@ -281,6 +262,8 @@ class NonMemberService(
         shareUrl: ShareUrlDomain,
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
+        val pingLastUpdateTime = caculateTimeDifference(shareUrl)
+
         val nonMembers = nonMemberList.map { nonMember ->
             GetAllNonMemberPings.NonMember(
                 nonMemberId = nonMember.id,
@@ -308,10 +291,11 @@ class NonMemberService(
 
         return GetAllNonMemberPings.Response(
             eventName = shareUrl.eventName,
+            px = shareUrl.px,
+            py = shareUrl.py,
+            pingLastUpdateTime = pingLastUpdateTime,
             nonMembers = nonMembers,
-            px = shareUrl.latitude,
-            py = shareUrl.longtitude,
-            pings = pings
+            pings = pings,
         )
     }
 
@@ -367,5 +351,18 @@ class NonMemberService(
                 )
             }
         )
+    }
+
+    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String? {
+        val pingLastUpdateTime: String? = shareUrl.pingUpdateTime?.let {
+            val timeDifference = Duration.between(shareUrl.pingUpdateTime, LocalDateTime.now())
+            when {
+                timeDifference.toDays() >= 1 -> "${timeDifference.toDays()}일"
+                timeDifference.toHours() >= 1 -> "${timeDifference.toHours()}시간"
+                timeDifference.toMinutes() >= 1 -> "${timeDifference.toMinutes()}분"
+                else -> "1분"
+            }
+        }
+        return pingLastUpdateTime
     }
 }
