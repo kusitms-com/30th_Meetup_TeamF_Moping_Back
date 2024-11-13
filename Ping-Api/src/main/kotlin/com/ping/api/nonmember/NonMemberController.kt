@@ -28,6 +28,11 @@ class NonMemberController(
         return nonMemberService.getNonMemberPing(nonMemberId)
     }
 
+    @GetMapping(NonMemberApi.PING_RECOMMEND)
+    fun getRecommendPings(@RequestBody request: GetRecommendPings.Request): GetRecommendPings.Response {
+        return nonMemberService.getRecommendPings(request)
+    }
+
     @PutMapping(NonMemberApi.PING)
     fun updateNonMemberPings(@RequestBody request: UpdateNonMemberPings.Request) {
         nonMemberService.updateNonMemberPings(request)
