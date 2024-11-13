@@ -1,0 +1,10 @@
+[[Pings-API]]
+== Pings API
+
+[[Post-IsCorrectBookmarkUrl]]
+=== 유효한 북마크 링크
+operation::PingControllerTest/isCorrectBookmarkUrl[snippets='http-request,http-response,request-fields,request-body']
+
+[[List-IsCorrectStoreUrl]]
+=== 유효한 가게 링크
+operation::PingControllerTest/isCorrectStoreUrl[snippets='http-request,http-response,request-fields,request-body']

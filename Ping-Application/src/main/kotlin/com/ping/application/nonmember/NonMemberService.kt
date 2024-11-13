@@ -1,13 +1,12 @@
 package com.ping.application.nonmember
 
 import com.ping.application.nonmember.dto.*
-import com.ping.client.naver.map.NaverMapClient
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
-import com.ping.common.util.UrlUtil
 import com.ping.common.util.ValidationUtil
 import com.ping.domain.nonmember.aggregate.*
 import com.ping.domain.nonmember.repository.*
+import com.ping.domain.ping.PingService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
@@ -24,7 +23,7 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val profileRepository: ProfileRepository,
-    private val naverMapClient: NaverMapClient
+    private val pingService: PingService
 ) {
     fun login(request: LoginNonMember.Request): LoginNonMember.Response {
         ValidationUtil.validatePassword(request.password)
@@ -134,65 +133,24 @@ class NonMemberService(
         bookmarkUrls: List<String>
     ): Set<String> {
         val bookmarks = mutableListOf<BookmarkDomain>()
-        val allSids = mutableSetOf<String>()
 
-        bookmarkUrls.forEach { url ->
-            val expandedUrl = UrlUtil.expandShortUrl(url)
-            val bookmarkList = naverMapClient.bookmarkUrlToBookmarkLists(expandedUrl).bookmarkList
-
-            bookmarkList.forEach { bookmark ->
-                bookmarks.add(
-                    BookmarkDomain(
-                        name = bookmark.name,
-                        px = bookmark.px,
-                        py = bookmark.py,
-                        sid = bookmark.sid,
-                        address = bookmark.address,
-                        mcidName = bookmark.mcidName,
-                        url = "https://map.naver.com/p/entry/place/${bookmark.sid}"
-                    )
-                )
-                allSids.add(bookmark.sid)
-            }
+        bookmarkUrls.forEach {
+            bookmarks.addAll(pingService.bookmarkUrlToBookmarks(it))
         }
-
-        val existingSids = bookmarkRepository.findAllBySidIn(allSids.toList()).map { it.sid }.toSet()
-        val bookmarksToAdd = bookmarks.filterNot { it.sid in existingSids }
-        bookmarkRepository.saveAll(bookmarksToAdd)
-
-        return allSids
+        bookmarkRepository.saveAll(bookmarks)
+        return bookmarks.map { it.sid }.toSet()
     }
 
     private fun handleStoreUrls(
         storeUrls: List<String>
     ): Set<String> {
         val bookmarks = mutableListOf<BookmarkDomain>()
-        val allSids = mutableSetOf<String>()
 
-        storeUrls.forEach { url ->
-            val expandedUrl = UrlUtil.expandShortUrl(url)
-            val store = naverMapClient.storeUrlToBookmark(expandedUrl)
-
-            bookmarks.add(
-                BookmarkDomain(
-                    name = store.name,
-                    px = store.px,
-                    py = store.py,
-                    sid = store.sid,
-                    address = store.address,
-                    mcidName = store.mcidName,
-                    url = url
-                )
-            )
-
-            allSids.add(store.sid)
+        storeUrls.forEach {
+            bookmarks.add(pingService.storeUrlToBookmark(it))
         }
 
-        val existingSids = bookmarkRepository.findAllBySidIn(allSids.toList()).map { it.sid }.toSet()
-        val bookmarksToAdd = bookmarks.filterNot { it.sid in existingSids }
-        bookmarkRepository.saveAll(bookmarksToAdd)
-
-        return allSids
+        return bookmarks.map { it.sid }.toSet()
     }
 
     private fun updateNonMemberPlacesIfNeeded(nonMember: NonMemberDomain, newSids: Set<String>) {

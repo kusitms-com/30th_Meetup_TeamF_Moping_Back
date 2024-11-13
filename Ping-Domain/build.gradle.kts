@@ -1,5 +1,6 @@
 dependencies {
     implementation(project(":Ping-Common"))
+    implementation(project(":Ping-Client"))
 }
 tasks {
     bootJar {
