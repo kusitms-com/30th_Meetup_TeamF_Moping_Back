@@ -11,9 +11,13 @@ import org.springframework.web.reactive.function.client.WebClient
 class NaverMapClient(
     private val objectMapper: ObjectMapper
 ) {
+    companion object {
+        const val BOOKMARK_URL_PATTERN = "/folder/"
+        const val STORE_URL_PATTERN = "/place/"
+    }
 
     fun bookmarkUrlToBookmarkLists(url: String): NaverBookmarkResponse.BookmarkLists {
-        if(url.contains("/place/")) throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
+        if(url.contains(STORE_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
 
         try {
             val shareId = url.split("/").lastOrNull()?.split("?")?.firstOrNull()?.replace("%", "")
@@ -32,7 +36,7 @@ class NaverMapClient(
     }
 
     fun storeUrlToBookmark(url: String): NaverBookmarkResponse.Bookmark {
-        if(url.contains("/folder/")) throw CustomException(ExceptionContent.INVALID_STORE_URL)
+        if(url.contains(BOOKMARK_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_STORE_URL)
 
         try {
             val shareId = url.split("place/").lastOrNull()?.split("/home")?.firstOrNull()?.split("?")?.firstOrNull()
