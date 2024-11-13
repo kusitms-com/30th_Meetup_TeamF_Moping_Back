@@ -2,8 +2,7 @@ package com.ping.application.nonmember.dto
 
 interface GetRecommendPings {
     data class Request(
-        val px: Double,
-        val py: Double,
+        val uuid: String,
         val radiusInKm: Double,
     )
 

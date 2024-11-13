@@ -130,16 +130,23 @@ class NonMemberService(
     }
 
     fun getRecommendPings(request: GetRecommendPings.Request): GetRecommendPings.Response {
-        val bookmarks =  bookmarkRepository.findByLocationNear(request.px, request.py, request.radiusInKm)
+        val shareUrl = shareUrlRepository.findByUuid(request.uuid)
+            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
+
+        val nonMemberIds = nonMemberRepository.findAllByShareUrl(shareUrl.id).map { it.id }
+        val excludedSids = nonMemberPlaceRepository.findAllByNonMemberIdIn(nonMemberIds).map { it.sid }.toSet()
+
+        val bookmarks =  bookmarkRepository.findByLocationNear(shareUrl.px, shareUrl.py, request.radiusInKm)
         val nearbySids = bookmarks.map { it.sid }
 
         val sidCountsMap = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
                 .toMap()
 
         val recommendSids = sidCountsMap.entries
-                .sortedByDescending { it.value }
-                .take(5)
-                .map { it.key }
+            .filter { it.key !in excludedSids }
+            .sortedByDescending { it.value }
+            .take(5)
+            .map { it.key }
 
         val recommendPings = bookmarks.filter { it.sid in recommendSids }
             .map { bookmark ->

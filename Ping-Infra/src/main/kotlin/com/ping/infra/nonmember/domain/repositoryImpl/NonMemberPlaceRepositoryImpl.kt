@@ -12,7 +12,7 @@ class NonMemberPlaceRepositoryImpl(
 ) : NonMemberPlaceRepository {
     override fun saveAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.saveAll(nonMemberPlaceDomains.map { NonMemberPlaceMapper.toEntity(it) })
-            .map { NonMemberPlaceMapper.toDomain(it) }
+                .map { NonMemberPlaceMapper.toDomain(it) }
     }
     override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.findAllByNonMemberId(nonMemberId).map { NonMemberPlaceMapper.toDomain(it) }
@@ -23,5 +23,10 @@ class NonMemberPlaceRepositoryImpl(
 
     override fun findCountBySidIn(sids: List<String>): List<Pair<String, Long>> {
         return nonMemberPlaceJpaRepository.findCountBySidIn(sids)
+    }
+
+    override fun findAllByNonMemberIdIn(nonMemberIds: List<Long>): List<NonMemberPlaceDomain> {
+        return nonMemberPlaceJpaRepository.findAllByNonMemberIdIn(nonMemberIds)
+                .map { NonMemberPlaceMapper.toDomain(it) }
     }
 }

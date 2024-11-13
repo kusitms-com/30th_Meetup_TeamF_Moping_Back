@@ -10,4 +10,6 @@ interface NonMemberPlaceRepository {
     fun deleteAll(ids: List<Long>)
 
     fun findCountBySidIn(sids: List<String>): List<Pair<String, Long>>
+
+    fun findAllByNonMemberIdIn(nonMemberIds: List<Long>): List<NonMemberPlaceDomain>
 }
