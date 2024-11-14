@@ -9,6 +9,7 @@ import com.ping.domain.nonmember.repository.*
 import com.ping.domain.ping.PingService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.web.bind.annotation.RequestParam
 import java.time.LocalDateTime
 import java.time.Duration
 import kotlin.random.Random
@@ -23,7 +24,8 @@ class NonMemberService(
     private val nonMemberBookmarkUrlRepository: NonMemberBookmarkUrlRepository,
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val profileRepository: ProfileRepository,
-    private val pingService: PingService
+    private val recommendPlaceRepository: RecommendPlaceRepository,
+    private val pingService: PingService,
 ) {
     fun login(request: LoginNonMember.Request): LoginNonMember.Response {
         ValidationUtil.validatePassword(request.password)
@@ -80,6 +82,22 @@ class NonMemberService(
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
     }
 
+    @Transactional
+    fun saveRecommendPings(request: SaveRecommendPings.Request): GetAllNonMemberPings.Response {
+        val shareUrl = shareUrlRepository.findByUuid(request.uuid)
+            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
+
+        val recommendPlaces = request.sids
+            .map { sid ->
+                RecommendPlaceDomain.of(shareUrl, sid)
+            }
+
+        val savedRecommendPlaces = recommendPlaceRepository.saveAll(recommendPlaces)
+        val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
+
+        return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
+    }
+
     private fun getRandomProfileSvg(): String {
         val profiles = profileRepository.findAll()
         return profiles[Random.nextInt(profiles.size)].url
@@ -90,7 +108,58 @@ class NonMemberService(
             ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
         val nonMemberList = nonMemberRepository.findAllByShareUrl(shareUrl.id)
 
-        return createPingResponse(shareUrl, nonMemberList)
+        val savedRecommendPlaces = recommendPlaceRepository.findAllByShareUrlId(shareUrl.id)
+
+        return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
+    }
+
+    fun getNonMemberPing(nonMemberId: Long): GetNonMemberPing.Response {
+        val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
+        val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
+        return GetNonMemberPing.Response(
+            pings = bookmarks.map {
+                GetNonMemberPing.Ping(
+                    url = it.url,
+                    placeName = it.name,
+                    px = it.px,
+                    py = it.py
+                )
+            }
+        )
+    }
+
+    fun getRecommendPings(uuid: String, radiusInKm: Double): GetRecommendPings.Response {
+        val shareUrl = shareUrlRepository.findByUuid(uuid)
+            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
+
+        val nonMemberIds = nonMemberRepository.findAllByShareUrl(shareUrl.id).map { it.id }
+        val excludedSids = nonMemberPlaceRepository.findAllByNonMemberIdIn(nonMemberIds).map { it.sid }.toSet()
+
+        val bookmarks =  bookmarkRepository.findAllByLocationNear(shareUrl.px, shareUrl.py, radiusInKm)
+        val nearbySids = bookmarks.map { it.sid }
+
+        val sidCounts = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
+        val sidCountsMap = sidCounts.associate { it.sid to it.count }
+
+        val recommendSids = sidCountsMap.entries
+            .filter { it.key !in excludedSids }
+            .sortedByDescending { it.value }
+            .take(5)
+            .map { it.key }
+
+        val recommendPings = recommendSids.mapNotNull { sid ->
+            bookmarks.find { it.sid == sid }?.let { bookmark ->
+                GetRecommendPings.RecommendPing(
+                    sid = bookmark.sid,
+                    placeName = bookmark.name,
+                    url = bookmark.url,
+                    px = bookmark.px,
+                    py = bookmark.py
+                )
+            }
+        }
+
+        return GetRecommendPings.Response(recommendPings)
     }
 
     @Transactional
@@ -126,39 +195,9 @@ class NonMemberService(
             updateNonMemberPlacesIfNeeded(nonMember, newSids)
         }
 
-        return createPingResponse(shareUrl, nonMemberList)
-    }
+        val savedRecommendPlaces = recommendPlaceRepository.findAllByShareUrlId(shareUrl.id)
 
-    fun getRecommendPings(request: GetRecommendPings.Request): GetRecommendPings.Response {
-        val shareUrl = shareUrlRepository.findByUuid(request.uuid)
-            ?: throw CustomException(ExceptionContent.INVALID_SHARE_URL)
-
-        val nonMemberIds = nonMemberRepository.findAllByShareUrl(shareUrl.id).map { it.id }
-        val excludedSids = nonMemberPlaceRepository.findAllByNonMemberIdIn(nonMemberIds).map { it.sid }.toSet()
-
-        val bookmarks =  bookmarkRepository.findByLocationNear(shareUrl.px, shareUrl.py, request.radiusInKm)
-        val nearbySids = bookmarks.map { it.sid }
-
-        val sidCountsMap = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
-                .toMap()
-
-        val recommendSids = sidCountsMap.entries
-            .filter { it.key !in excludedSids }
-            .sortedByDescending { it.value }
-            .take(5)
-            .map { it.key }
-
-        val recommendPings = bookmarks.filter { it.sid in recommendSids }
-            .map { bookmark ->
-                GetRecommendPings.RecommendPing(
-                    placeName = bookmark.name,
-                    url = bookmark.url,
-                    px = bookmark.px,
-                    py = bookmark.py
-                )
-            }
-
-        return GetRecommendPings.Response(recommendPings)
+        return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
     }
 
     private fun handleBookmarkUrls(
@@ -250,9 +289,28 @@ class NonMemberService(
 
     private fun createPingResponse(
         shareUrl: ShareUrlDomain,
+        recommendPlaces: List<RecommendPlaceDomain>,
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
         val pingLastUpdateTime = caculateTimeDifference(shareUrl)
+
+        val recommendSids = recommendPlaces.map { it.sid }
+        val recommendBookmarks = bookmarkRepository.findAllBySidIn(recommendSids)
+
+        val bookmarkMap = recommendBookmarks.associateBy { it.sid }
+
+        val recommendPings = recommendPlaces.map { recommendPlace ->
+            val bookmark = bookmarkMap[recommendPlace.sid]
+            bookmark?.let {
+                GetRecommendPings.RecommendPing(
+                    sid = recommendPlace.sid,
+                    placeName = it.name,
+                    url = it.url,
+                    px = it.px,
+                    py = it.py,
+                )
+            }
+        }
 
         val nonMembers = nonMemberList.map { nonMember ->
             GetAllNonMemberPings.NonMember(
@@ -285,6 +343,7 @@ class NonMemberService(
             px = shareUrl.px,
             py = shareUrl.py,
             pingLastUpdateTime = pingLastUpdateTime,
+            recommendPings = recommendPings,
             nonMembers = nonMembers,
             pings = pings,
         )
@@ -327,21 +386,6 @@ class NonMemberService(
                 }
             }.sortedByDescending { it.second.size }.groupBy { it.second.size }
         return nonMemberPlaces
-    }
-
-    fun getNonMemberPing(nonMemberId: Long): GetNonMemberPing.Response {
-        val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
-        val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
-        return GetNonMemberPing.Response(
-            pings = bookmarks.map {
-                GetNonMemberPing.Ping(
-                    url = it.url,
-                    placeName = it.name,
-                    px = it.px,
-                    py = it.py
-                )
-            }
-        )
     }
 
     private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String? {

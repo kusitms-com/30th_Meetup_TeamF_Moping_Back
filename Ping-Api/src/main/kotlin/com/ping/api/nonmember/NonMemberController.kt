@@ -18,6 +18,11 @@ class NonMemberController(
         return nonMemberService.createNonMemberPings(request)
     }
 
+    @PostMapping(NonMemberApi.PING_RECOMMEND)
+    fun saveRecommendPings(@RequestBody request: SaveRecommendPings.Request): GetAllNonMemberPings.Response {
+        return nonMemberService.saveRecommendPings(request)
+    }
+
     @GetMapping(NonMemberApi.PING)
     fun getNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.getAllNonMemberPings(uuid)
@@ -29,8 +34,8 @@ class NonMemberController(
     }
 
     @GetMapping(NonMemberApi.PING_RECOMMEND)
-    fun getRecommendPings(@RequestBody request: GetRecommendPings.Request): GetRecommendPings.Response {
-        return nonMemberService.getRecommendPings(request)
+    fun getRecommendPings(@RequestParam uuid: String, @RequestParam radiusInKm: Double): GetRecommendPings.Response {
+        return nonMemberService.getRecommendPings(uuid, radiusInKm)
     }
 
     @PutMapping(NonMemberApi.PING)
