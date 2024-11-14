@@ -23,8 +23,8 @@ class BookmarkRepositoryImpl(
         return bookmarkMongoRepository.findAllBySidIn(sids).map { BookmarkMapper.toDomain(it) }
     }
 
-    override fun findByLocationNear(px: Double, py: Double, distance: Double): List<BookmarkDomain> {
-        return bookmarkMongoRepository.findByLocationNear(GeoJsonPoint(px,py), Distance(distance, Metrics.KILOMETERS))
+    override fun findAllByLocationNear(px: Double, py: Double, distance: Double): List<BookmarkDomain> {
+        return bookmarkMongoRepository.findAllByLocationNear(GeoJsonPoint(px,py), Distance(distance, Metrics.KILOMETERS))
             .map {
                 BookmarkMapper.toDomain(it)
             }

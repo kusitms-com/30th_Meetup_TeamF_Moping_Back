@@ -7,5 +7,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 
 interface BookmarkMongoRepository : MongoRepository<BookmarkEntity, String> {
     fun findAllBySidIn(sids: List<String>) : List<BookmarkEntity>
-    fun findByLocationNear(location: GeoJsonPoint, distance: Distance): List<BookmarkEntity>
+    fun findAllByLocationNear(location: GeoJsonPoint, distance: Distance): List<BookmarkEntity>
 }
