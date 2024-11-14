@@ -1,6 +1,7 @@
 package com.ping.infra.nonmember.domain.repositoryImpl
 
 import com.ping.domain.nonmember.aggregate.NonMemberPlaceDomain
+import com.ping.domain.nonmember.dto.SidCount
 import com.ping.domain.nonmember.repository.NonMemberPlaceRepository
 import com.ping.infra.nonmember.domain.jpa.repository.NonMemberPlaceJpaRepository
 import com.ping.infra.nonmember.domain.mapper.NonMemberPlaceMapper
@@ -12,12 +13,21 @@ class NonMemberPlaceRepositoryImpl(
 ) : NonMemberPlaceRepository {
     override fun saveAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.saveAll(nonMemberPlaceDomains.map { NonMemberPlaceMapper.toEntity(it) })
-            .map { NonMemberPlaceMapper.toDomain(it) }
+                .map { NonMemberPlaceMapper.toDomain(it) }
     }
     override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.findAllByNonMemberId(nonMemberId).map { NonMemberPlaceMapper.toDomain(it) }
     }
     override fun deleteAll(ids: List<Long>) {
         nonMemberPlaceJpaRepository.deleteAllById(ids)
+    }
+
+    override fun findCountBySidIn(sids: List<String>): List<SidCount> {
+        return nonMemberPlaceJpaRepository.findCountBySidIn(sids)
+    }
+
+    override fun findAllByNonMemberIdIn(nonMemberIds: List<Long>): List<NonMemberPlaceDomain> {
+        return nonMemberPlaceJpaRepository.findAllByNonMemberIdIn(nonMemberIds)
+                .map { NonMemberPlaceMapper.toDomain(it) }
     }
 }

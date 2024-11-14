@@ -2,6 +2,7 @@ package com.ping.infra.nonmember.domain.mapper
 
 import com.ping.domain.nonmember.aggregate.BookmarkDomain
 import com.ping.infra.nonmember.domain.mongo.entity.BookmarkEntity
+import org.springframework.data.mongodb.core.geo.GeoJsonPoint
 
 object BookmarkMapper {
 
@@ -12,7 +13,7 @@ object BookmarkMapper {
         bookmarkEntity.sid,
         bookmarkEntity.address,
         bookmarkEntity.mcidName,
-        bookmarkEntity.url
+        bookmarkEntity.url,
     )
 
     fun toEntity(bookmarkDomain: BookmarkDomain) = BookmarkEntity(
@@ -22,6 +23,7 @@ object BookmarkMapper {
         bookmarkDomain.sid,
         bookmarkDomain.address,
         bookmarkDomain.mcidName,
-        bookmarkDomain.url
+        bookmarkDomain.url,
+        GeoJsonPoint(bookmarkDomain.px, bookmarkDomain.py),
     )
 }

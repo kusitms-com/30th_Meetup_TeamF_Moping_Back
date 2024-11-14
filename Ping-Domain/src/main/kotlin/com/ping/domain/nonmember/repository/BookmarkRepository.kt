@@ -6,4 +6,5 @@ interface BookmarkRepository {
     fun saveAll(bookmarkDomains: List<BookmarkDomain>) : List<BookmarkDomain>
 
     fun findAllBySidIn(sids: List<String>) : List<BookmarkDomain>
+    fun findAllByLocationNear(px: Double, py: Double, distance: Double): List<BookmarkDomain>
 }

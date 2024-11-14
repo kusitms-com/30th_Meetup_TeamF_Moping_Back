@@ -135,15 +135,174 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     }
 
     @Test
+    @DisplayName("추천 핑 저장")
+    fun saveRecommendPings() {
+        // given
+        val request = SaveRecommendPings.Request(
+            uuid = "test",
+            sids = listOf(
+                "1445446311",
+                "1250904288",
+            )
+        )
+
+        val response = GetAllNonMemberPings.Response(
+            eventName = "핑핑이들 여행",
+            neighborhood = "강원도 속초",
+            px = 127.00001,
+            py = 37.00001,
+            pingLastUpdateTime = "16분",
+            recommendPings = listOf(
+                GetRecommendPings.RecommendPing(
+                    sid = "1445446311",
+                    placeName = "꾸아 광교점",
+                    url = "https://map.naver.com/p/entry/place/1445446311",
+                    px = 127.0548454,
+                    py = 37.2938313,
+                ),
+                GetRecommendPings.RecommendPing(
+                    sid = "1250904288",
+                    placeName = "옴레스토랑 광교점",
+                    url = "https://map.naver.com/p/entry/place/1250904288",
+                    px = 127.0505683,
+                    py = 37.2903113,
+                )
+            ),
+            nonMembers = listOf(
+                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+            ),
+            pings = listOf(
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 2,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                    ),
+                    url = "https://map.naver.com/p/entry/place/1946678040",
+                    placeName = "호이",
+                    px = 126.971178,
+                    py = 37.5302481
+                ),
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 1,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                    ),
+                    url = "https://map.naver.com/p/entry/place/1492901893",
+                    placeName = "퍼즈앤스틸",
+                    px = 126.9713426,
+                    py = 37.5303303
+                )
+            )
+        )
+
+        given(nonMemberService.saveRecommendPings(request)).willReturn(response)
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.post(NonMemberApi.PING_RECOMMEND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request))
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // rest docs
+                resultHandler.document(
+                    requestFields(
+                        fieldWithPath("uuid").description("이벤트 식별자 UUID"),
+                        fieldWithPath("sids").description("추천 장소 ID 리스트"),
+                    ),
+                    responseFields(
+                        fieldWithPath("eventName").description("이벤트 이름"),
+                        fieldWithPath("neighborhood").description("추천 지역 이름"),
+                        fieldWithPath("px").description("중심 경도"),
+                        fieldWithPath("py").description("중심 위도"),
+                        fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                        fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                        fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                        fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                        fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                        fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
+                        fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
+                        fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                        fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
+                        fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
+                        fieldWithPath("pings[].url").description("장소 url"),
+                        fieldWithPath("pings[].placeName").description("장소 이름"),
+                        fieldWithPath("pings[].px").description("경도"),
+                        fieldWithPath("pings[].py").description("위도"),
+                    )
+                )
+            )
+            .andDo( // swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "추천 핑 저장",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("추천 핑 저장")
+                        .requestFields(
+                            fieldWithPath("uuid").description("이벤트 식별자 UUID"),
+                            fieldWithPath("sids").description("추천 장소 ID 리스트"),
+                        )
+                        .responseFields(
+                            fieldWithPath("eventName").description("이벤트 이름"),
+                            fieldWithPath("neighborhood").description("추천 지역 이름"),
+                            fieldWithPath("px").description("중심 경도"),
+                            fieldWithPath("py").description("중심 위도"),
+                            fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                            fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                            fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                            fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                            fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                            fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
+                            fieldWithPath("nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
+                            fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                            fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
+                            fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
+                            fieldWithPath("pings[].url").description("장소 url"),
+                            fieldWithPath("pings[].placeName").description("장소 이름"),
+                            fieldWithPath("pings[].px").description("경도"),
+                            fieldWithPath("pings[].py").description("위도"),
+                        )
+                )
+            )
+    }
+
+    @Test
     @DisplayName("전체 핑 불러오기")
     fun getAllNonMemberPings() {
         // given
         val uuid = "test"
         val response = GetAllNonMemberPings.Response(
             eventName = "핑핑이들 여행",
+            neighborhood = "강원도 속초",
             px = 127.00001,
             py = 37.00001,
             pingLastUpdateTime = "16분",
+            recommendPings = listOf(
+                GetRecommendPings.RecommendPing(
+                    sid = "1445446311",
+                    placeName = "꾸아 광교점",
+                    url = "https://map.naver.com/p/entry/place/1445446311",
+                    px = 127.0548454,
+                    py = 37.2938313,
+                ),
+                GetRecommendPings.RecommendPing(
+                    sid = "1250904288",
+                    placeName = "옴레스토랑 광교점",
+                    url = "https://map.naver.com/p/entry/place/1250904288",
+                    px = 127.0505683,
+                    py = 37.2903113,
+                )
+            ),
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
                 GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
@@ -191,9 +350,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     ),
                     responseFields(
                         fieldWithPath("eventName").description("이벤트 이름"),
-                        fieldWithPath("px").description("이벤트 중심 경도"),
-                        fieldWithPath("py").description("이벤트 중심 위도"),
-                        fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
+                        fieldWithPath("neighborhood").description("추천 지역 이름"),
+                        fieldWithPath("px").description("중심 경도"),
+                        fieldWithPath("py").description("중심 위도"),
+                        fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                        fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                        fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                        fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                        fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -219,9 +384,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         )
                         .responseFields(
                             fieldWithPath("eventName").description("이벤트 이름"),
-                            fieldWithPath("px").description("이벤트 중심 경도"),
-                            fieldWithPath("py").description("이벤트 중심 위도"),
-                            fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
+                            fieldWithPath("neighborhood").description("추천 지역 이름"),
+                            fieldWithPath("px").description("중심 경도"),
+                            fieldWithPath("py").description("중심 위도"),
+                            fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                            fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                            fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                            fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                            fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -297,6 +468,78 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     }
 
     @Test
+    @DisplayName("추천 핑 조회")
+    fun getRecommendPings() {
+        // given
+        val uuid = "test"
+        val radiusInKm = 1.0
+        val response = GetRecommendPings.Response(
+            recommendPings = listOf(
+                GetRecommendPings.RecommendPing(
+                    sid = "1445446311",
+                    placeName = "꾸아 광교점",
+                    url = "https://map.naver.com/p/entry/place/1445446311",
+                    px = 127.0548454,
+                    py = 37.2938313,
+                ),
+                GetRecommendPings.RecommendPing(
+                    sid = "1250904288",
+                    placeName = "옴레스토랑 광교점",
+                    url = "https://map.naver.com/p/entry/place/1250904288",
+                    px = 127.0505683,
+                    py = 37.2903113,
+                )
+            ),
+        )
+        given(nonMemberService.getRecommendPings(uuid, radiusInKm)).willReturn(response)
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.get(NonMemberApi.PING_RECOMMEND)
+                .contentType(MediaType.APPLICATION_JSON)
+                .queryParam("uuid", uuid)
+                .queryParam("radiusInKm", radiusInKm.toString())
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // rest docs
+                resultHandler.document(
+                    queryParameters(
+                        RequestDocumentation.parameterWithName("uuid").description("이벤트 식별자 UUID"),
+                        RequestDocumentation.parameterWithName("radiusInKm").description("추천 반경 범위 (km)"),
+                    ),
+                    responseFields(
+                        fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                        fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                        fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                        fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                        fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                    )
+                )
+            )
+            .andDo( // swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "추천 핑 조회",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("추천 핑 조회")
+                        .queryParameters(
+                            parameterWithName("uuid").description("이벤트 식별자 UUID"),
+                            parameterWithName("radiusInKm").description("추천 반경 범위 (km)")
+                        )
+                        .responseFields(
+                            fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                            fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                            fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                            fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                            fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                        )
+                )
+            )
+    }
+
+    @Test
     @DisplayName("비회원 핑 업데이트")
     fun updateNonMemberPings() {
         // given
@@ -344,9 +587,26 @@ class NonMemberControllerTest : BaseRestDocsTest() {
     @DisplayName("비회원 모든 핑 리프레쉬")
     fun refreshAllNonMemberPings() {
         // given
-        val uuid = "test-uuid"
+        val uuid = "test"
         val response = GetAllNonMemberPings.Response(
-            eventName = "Sample Event",
+            eventName = "수원 광교 힙쟁이들",
+            neighborhood = "수원 광교",
+            recommendPings = listOf(
+                GetRecommendPings.RecommendPing(
+                    sid = "1445446311",
+                    placeName = "꾸아 광교점",
+                    url = "https://map.naver.com/p/entry/place/1445446311",
+                    px = 127.0548454,
+                    py = 37.2938313,
+                ),
+                GetRecommendPings.RecommendPing(
+                    sid = "1250904288",
+                    placeName = "옴레스토랑 광교점",
+                    url = "https://map.naver.com/p/entry/place/1250904288",
+                    px = 127.0505683,
+                    py = 37.2903113,
+                )
+            ),
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
                 GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
@@ -386,9 +646,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     ),
                     responseFields(
                         fieldWithPath("eventName").description("이벤트 이름"),
-                        fieldWithPath("px").description("이벤트 중심 경도"),
-                        fieldWithPath("py").description("이벤트 중심 위도"),
-                        fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
+                        fieldWithPath("neighborhood").description("추천 지역 이름"),
+                        fieldWithPath("px").description("중심 경도"),
+                        fieldWithPath("py").description("중심 위도"),
+                        fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                        fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                        fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                        fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                        fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -415,9 +681,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         )
                         .responseFields(
                             fieldWithPath("eventName").description("이벤트 이름"),
-                            fieldWithPath("px").description("이벤트 중심 경도"),
-                            fieldWithPath("py").description("이벤트 중심 위도"),
-                            fieldWithPath("pingLastUpdateTime").description("마지막으로 업데이트 된 시간"),
+                            fieldWithPath("neighborhood").description("추천 지역 이름"),
+                            fieldWithPath("px").description("중심 경도"),
+                            fieldWithPath("py").description("중심 위도"),
+                            fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
+                            fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
+                            fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
+                            fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
+                            fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
