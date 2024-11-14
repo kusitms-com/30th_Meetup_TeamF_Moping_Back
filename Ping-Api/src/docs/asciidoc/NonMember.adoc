@@ -5,6 +5,10 @@
 === 비회원 핑 생성
 operation::NonMemberControllerTest/createNonMemberPings[snippets='http-request,request-fields,http-response']
 
+[[Post-RecommendPings]]
+=== 추천 핑 저장
+operation::NonMemberControllerTest/saveRecommendPings[snippets='http-request,http-response,request-fields,response-fields']
+
 [[Get-NonMemberPings]]
 === 전체 핑 불러오기
 operation::NonMemberControllerTest/getAllNonMemberPings[snippets='http-request,http-response,query-parameters,response-body,response-fields']
@@ -12,6 +16,10 @@ operation::NonMemberControllerTest/getAllNonMemberPings[snippets='http-request,h
 [[Get-NonMemberPing]]
 === 개별 핑 불러오기
 operation::NonMemberControllerTest/getNonMemberPing[snippets='http-request,http-response,response-fields']
+
+[[Get-RecommendPings]]
+=== 추천 핑 불러오기
+operation::NonMemberControllerTest/getRecommendPings[snippets='http-request,http-response,query-parameters,response-fields']
 
 [[Put-UpdateNonMemberPings]]
 === 비회원 핑 업데이트
