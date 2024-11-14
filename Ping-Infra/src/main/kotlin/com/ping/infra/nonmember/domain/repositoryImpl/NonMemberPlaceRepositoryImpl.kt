@@ -1,6 +1,7 @@
 package com.ping.infra.nonmember.domain.repositoryImpl
 
 import com.ping.domain.nonmember.aggregate.NonMemberPlaceDomain
+import com.ping.domain.nonmember.dto.SidCount
 import com.ping.domain.nonmember.repository.NonMemberPlaceRepository
 import com.ping.infra.nonmember.domain.jpa.repository.NonMemberPlaceJpaRepository
 import com.ping.infra.nonmember.domain.mapper.NonMemberPlaceMapper
@@ -21,7 +22,7 @@ class NonMemberPlaceRepositoryImpl(
         nonMemberPlaceJpaRepository.deleteAllById(ids)
     }
 
-    override fun findCountBySidIn(sids: List<String>): List<Pair<String, Long>> {
+    override fun findCountBySidIn(sids: List<String>): List<SidCount> {
         return nonMemberPlaceJpaRepository.findCountBySidIn(sids)
     }
 
