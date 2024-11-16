@@ -28,7 +28,7 @@ class NonMemberController(
         return nonMemberService.getAllNonMemberPings(uuid)
     }
     
-    @GetMapping(NonMemberApi.PING_NONMEMBERID)
+    @GetMapping(NonMemberApi.PING_NONMEMBER_ID)
     fun getNonMemberPing(@PathVariable nonMemberId: Long): GetNonMemberPing.Response {
         return nonMemberService.getNonMemberPing(nonMemberId)
     }
@@ -46,5 +46,10 @@ class NonMemberController(
     @GetMapping(NonMemberApi.PING_REFRESH_ALL)
     fun refreshAllNonMemberPings(@RequestParam uuid: String): GetAllNonMemberPings.Response {
         return nonMemberService.refreshAllNonMemberPings(uuid)
+    }
+
+    @GetMapping(NonMemberApi.NONMEMBER_ID)
+    fun getNonMemberProfile(@PathVariable nonMemberId: Long): GetNonMemberProfile.Response {
+        return nonMemberService.getNonMemberProfile(nonMemberId)
     }
 }
