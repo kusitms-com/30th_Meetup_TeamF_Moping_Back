@@ -32,3 +32,7 @@ operation::NonMemberControllerTest/loginNonMember[snippets='http-request,request
 [[Get-RefreshAllNonMemberPings]]
 === 비회원 모든 핑 갱신
 operation::NonMemberControllerTest/refreshAllNonMemberPings[snippets='http-request,http-response,query-parameters,response-fields']
+
+[[Get-NonMemberProfile]]
+=== 비회원 프로필 불러오기
+operation::NonMemberControllerTest/getNonMemberProfile[snippets='http-request,http-response,response-fields']

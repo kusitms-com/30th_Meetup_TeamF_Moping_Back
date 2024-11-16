@@ -169,30 +169,52 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 )
             ),
             nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 1,
+                    name = "핑핑이1",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                ),
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 2,
+                    name = "핑핑이2",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                )
             ),
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 1,
+                            name = "핑핑이1",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        ),
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 2,
+                            name = "핑핑이2",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        )
                     ),
                     url = "https://map.naver.com/p/entry/place/1946678040",
                     placeName = "호이",
                     px = 126.971178,
-                    py = 37.5302481
+                    py = 37.5302481,
+                    type = "음식점"
                 ),
                 GetAllNonMemberPings.Ping(
                     iconLevel = 1,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 1,
+                            name = "핑핑이1",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        ),
                     ),
                     url = "https://map.naver.com/p/entry/place/1492901893",
                     placeName = "퍼즈앤스틸",
                     px = 126.9713426,
-                    py = 37.5303303
+                    py = 37.5303303,
+                    type = "음식점"
                 )
             )
         )
@@ -236,6 +258,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
                         fieldWithPath("pings[].py").description("위도"),
+                        fieldWithPath("pings[].type").description("업종"),
                     )
                 )
             )
@@ -271,6 +294,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),
                             fieldWithPath("pings[].py").description("위도"),
+                            fieldWithPath("pings[].type").description("업종"),
                         )
                 )
             )
@@ -304,30 +328,52 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 )
             ),
             nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 1,
+                    name = "핑핑이1",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                ),
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 2,
+                    name = "핑핑이2",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                )
             ),
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 1,
+                            name = "핑핑이1",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        ),
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 2,
+                            name = "핑핑이2",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        )
                     ),
                     url = "https://map.naver.com/p/entry/place/1946678040",
                     placeName = "호이",
                     px = 126.971178,
-                    py = 37.5302481
+                    py = 37.5302481,
+                    type = "음식점"
                 ),
                 GetAllNonMemberPings.Ping(
                     iconLevel = 1,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 1,
+                            name = "핑핑이1",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        ),
                     ),
                     url = "https://map.naver.com/p/entry/place/1492901893",
                     placeName = "퍼즈앤스틸",
                     px = 126.9713426,
-                    py = 37.5303303
+                    py = 37.5303303,
+                    type = "음식점"
                 )
             )
         )
@@ -370,6 +416,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
                         fieldWithPath("pings[].py").description("위도"),
+                        fieldWithPath("pings[].type").description("업종"),
                     )
                 )
             )
@@ -404,6 +451,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),
                             fieldWithPath("pings[].py").description("위도"),
+                            fieldWithPath("pings[].type").description("업종"),
                         )
                 )
             )
@@ -416,17 +464,35 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         val nonMemberId = 1L
         val response = GetNonMemberPing.Response(
             pings = listOf(
-                GetNonMemberPing.Ping(
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 0,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = nonMemberId,
+                            name = "쏘야",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        )
+                    ),
                     url = "https://map.naver.com/p/entry/place/1072787710",
                     placeName = "도토리",
                     px = 126.9727984,
-                    py = 37.5319087
+                    py = 37.5319087,
+                    type = "음식점"
                 ),
-                GetNonMemberPing.Ping(
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 0,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = nonMemberId,
+                            name = "쏘야",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        )
+                    ),
                     url = "https://map.naver.com/p/entry/place/1092976589",
                     placeName = "당케커피",
                     px = 126.971301,
-                    py = 37.5314638
+                    py = 37.5314638,
+                    type = "음식점"
                 )
             )
         )
@@ -435,7 +501,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
 
         //when
         val result = mockMvc.perform(
-            RestDocumentationRequestBuilders.get(NonMemberApi.PING_NONMEMBERID, nonMemberId)
+            RestDocumentationRequestBuilders.get(NonMemberApi.PING_NONMEMBER_ID, nonMemberId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
         )
 
@@ -444,10 +510,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             .andDo( // rest docs
                 resultHandler.document(
                     responseFields(
-                        fieldWithPath("pings[].url").description("장소 url"),
+                        fieldWithPath("pings[].iconLevel").description("아이콘 레벨: 0"),
+                        fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
+                        fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                        fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
+                        fieldWithPath("pings[].url").description("장소 URL"),
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
                         fieldWithPath("pings[].py").description("위도"),
+                        fieldWithPath("pings[].type").description("업종"),
                     )
                 )
             )
@@ -458,10 +529,15 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         .tag(tag)
                         .description("개별 핑 불러오기")
                         .responseFields(
-                            fieldWithPath("pings[].url").description("장소 url"),
+                            fieldWithPath("pings[].iconLevel").description("아이콘 레벨: 0"),
+                            fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
+                            fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
+                            fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
+                            fieldWithPath("pings[].url").description("장소 URL"),
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),
                             fieldWithPath("pings[].py").description("위도"),
+                            fieldWithPath("pings[].type").description("업종"),
                         )
                 )
             )
@@ -608,8 +684,16 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 )
             ),
             nonMembers = listOf(
-                GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 1,
+                    name = "핑핑이1",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                ),
+                GetAllNonMemberPings.NonMember(
+                    nonMemberId = 2,
+                    name = "핑핑이2",
+                    profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                )
             ),
             px = 127.00001,
             py = 37.00001,
@@ -618,13 +702,22 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
                     nonMembers = listOf(
-                        GetAllNonMemberPings.NonMember(nonMemberId = 1, name = "핑핑이1", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"),
-                        GetAllNonMemberPings.NonMember(nonMemberId = 2, name = "핑핑이2", profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg")
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 1,
+                            name = "핑핑이1",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        ),
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = 2,
+                            name = "핑핑이2",
+                            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg"
+                        )
                     ),
                     url = "https://map.naver.com/p/entry/place/1946678040",
                     placeName = "호이",
                     px = 126.971178,
-                    py = 37.5302481
+                    py = 37.5302481,
+                    type = "음식점"
                 )
             )
         )
@@ -665,7 +758,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("pings[].url").description("장소 URL"),
                         fieldWithPath("pings[].placeName").description("장소 이름"),
                         fieldWithPath("pings[].px").description("경도"),
-                        fieldWithPath("pings[].py").description("위도")
+                        fieldWithPath("pings[].py").description("위도"),
+                        fieldWithPath("pings[].type").description("업종"),
                     )
 
                 )
@@ -700,10 +794,56 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("pings[].url").description("장소 URL"),
                             fieldWithPath("pings[].placeName").description("장소 이름"),
                             fieldWithPath("pings[].px").description("경도"),
-                            fieldWithPath("pings[].py").description("위도")
+                            fieldWithPath("pings[].py").description("위도"),
+                            fieldWithPath("pings[].type").description("업종"),
                         )
 
                 )
             )
     }
+
+    @Test
+    @DisplayName("비회원 프로필 불러오기")
+    fun getNonMemberProfile() {
+        // given
+        val nonMemberId = 1L
+        val response = GetNonMemberProfile.Response(
+            name = "쏘야",
+            profileSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1.svg",
+            profileLockSvg = "https://kr.object.ncloudstorage.com/moping-image/profile1-lock.svg"
+        )
+        given(nonMemberService.getNonMemberProfile(nonMemberId)).willReturn(response)
+
+        // when
+        val result: ResultActions = mockMvc.perform(
+            RestDocumentationRequestBuilders.get(NonMemberApi.NONMEMBER_ID, nonMemberId)
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // rest docs
+                resultHandler.document(
+                    responseFields(
+                        fieldWithPath("name").description("비회원 이름"),
+                        fieldWithPath("profileSvg").description("프로필 svg"),
+                        fieldWithPath("profileLockSvg").description("프로필 잠금 svg"),
+                    )
+                )
+            )
+            .andDo( // swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "비회원 프로필 불러오기",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("비회원 프로필 불러오기")
+                        .responseFields(
+                            fieldWithPath("name").description("비회원 이름"),
+                            fieldWithPath("profileSvg").description("프로필 svg"),
+                            fieldWithPath("profileLockSvg").description("프로필 잠금 svg"),
+                        )
+                )
+            )
+    }
+
 }
