@@ -11,5 +11,6 @@ interface GetRecommendPings {
         val url: String,
         val px: Double,
         val py: Double,
+        val type: String,
     )
 }

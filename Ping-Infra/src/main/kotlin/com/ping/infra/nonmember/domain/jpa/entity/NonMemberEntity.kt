@@ -19,6 +19,9 @@ class NonMemberEntity(
     @Column(nullable = false)
     val profileSvg: String,
 
+    @Column(nullable = false)
+    val profileLockSvg: String,
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     val shareUrl: ShareUrlEntity

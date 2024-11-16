@@ -10,5 +10,6 @@ data class ProfileEntity(
     @Id
     @Indexed(unique = true)
     val id: String,
-    val url: String
+    val svgUrl: String,
+    val lockSvgUrl: String,
 ): BaseTimeMongoEntity()

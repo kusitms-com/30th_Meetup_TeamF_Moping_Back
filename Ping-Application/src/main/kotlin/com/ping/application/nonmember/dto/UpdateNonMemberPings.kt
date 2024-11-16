@@ -1,6 +1,6 @@
 package com.ping.application.nonmember.dto
 
-class UpdateNonMemberPings {
+interface UpdateNonMemberPings {
     data class Request(
         val nonMemberId: Long,
         val bookmarkUrls: List<String>,

@@ -9,9 +9,8 @@ import com.ping.domain.nonmember.repository.*
 import com.ping.domain.ping.PingService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.RequestParam
-import java.time.LocalDateTime
 import java.time.Duration
+import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Service
@@ -60,8 +59,14 @@ class NonMemberService(
         nonMemberRepository.findByShareUrlIdAndName(shareUrl.id, request.name)?.let {
             throw CustomException(ExceptionContent.NON_MEMBER_ALREADY_EXISTS)
         }
-
-        val nonMemberDomain = NonMemberDomain.of(request.name, request.password, getRandomProfileSvg(), shareUrl)
+        val profile = getRandomProfileSvg()
+        val nonMemberDomain = NonMemberDomain.of(
+            name = request.name,
+            password = request.password,
+            profileSvg = profile.first,
+            profileLockSvg = profile.second,
+            shareUrlDomain = shareUrl
+        )
         val savedNonMember = nonMemberRepository.save(nonMemberDomain)
 
         val nonMemberBookmarkUrlDomains = NonMemberBookmarkUrlDomain.of(savedNonMember, request.bookmarkUrls)
@@ -98,9 +103,10 @@ class NonMemberService(
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
     }
 
-    private fun getRandomProfileSvg(): String {
+    private fun getRandomProfileSvg(): Pair<String, String> {
         val profiles = profileRepository.findAll()
-        return profiles[Random.nextInt(profiles.size)].url
+        val index = Random.nextInt(profiles.size)
+        return Pair(profiles[index].svgUrl, profiles[index].svgLockUrl)
     }
 
     fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
@@ -114,15 +120,26 @@ class NonMemberService(
     }
 
     fun getNonMemberPing(nonMemberId: Long): GetNonMemberPing.Response {
+        val nonMember = nonMemberRepository.findById(nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
         val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
         return GetNonMemberPing.Response(
             pings = bookmarks.map {
-                GetNonMemberPing.Ping(
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 0,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = nonMemberId,
+                            name = nonMember.name,
+                            profileSvg = nonMember.profileSvg,
+                        )
+                    ),
                     url = it.url,
                     placeName = it.name,
                     px = it.px,
-                    py = it.py
+                    py = it.py,
+                    type = it.mcidName,
                 )
             }
         )
@@ -135,7 +152,7 @@ class NonMemberService(
         val nonMemberIds = nonMemberRepository.findAllByShareUrl(shareUrl.id).map { it.id }
         val excludedSids = nonMemberPlaceRepository.findAllByNonMemberIdIn(nonMemberIds).map { it.sid }.toSet()
 
-        val bookmarks =  bookmarkRepository.findAllByLocationNear(shareUrl.px, shareUrl.py, radiusInKm)
+        val bookmarks = bookmarkRepository.findAllByLocationNear(shareUrl.px, shareUrl.py, radiusInKm)
         val nearbySids = bookmarks.map { it.sid }
 
         val sidCounts = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
@@ -154,7 +171,8 @@ class NonMemberService(
                     placeName = bookmark.name,
                     url = bookmark.url,
                     px = bookmark.px,
-                    py = bookmark.py
+                    py = bookmark.py,
+                    type = bookmark.mcidName,
                 )
             }
         }
@@ -198,6 +216,16 @@ class NonMemberService(
         val savedRecommendPlaces = recommendPlaceRepository.findAllByShareUrlId(shareUrl.id)
 
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
+    }
+
+    fun getNonMemberProfile(nonmemberId: Long): GetNonMemberProfile.Response {
+        val nonMember = nonMemberRepository.findById(nonmemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+        return GetNonMemberProfile.Response(
+            name = nonMember.name,
+            profileSvg = nonMember.profileSvg,
+            profileLockSvg = nonMember.profileLockSvg
+        )
     }
 
     private fun handleBookmarkUrls(
@@ -292,14 +320,14 @@ class NonMemberService(
         recommendPlaces: List<RecommendPlaceDomain>,
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
-        val pingLastUpdateTime = caculateTimeDifference(shareUrl)
+        val pingLastUpdateTime = calculateTimeDifference(shareUrl)
 
         val recommendSids = recommendPlaces.map { it.sid }
         val recommendBookmarks = bookmarkRepository.findAllBySidIn(recommendSids)
 
         val bookmarkMap = recommendBookmarks.associateBy { it.sid }
 
-        val recommendPings = recommendPlaces.map { recommendPlace ->
+        val recommendPings = recommendPlaces.mapNotNull { recommendPlace ->
             val bookmark = bookmarkMap[recommendPlace.sid]
             bookmark?.let {
                 GetRecommendPings.RecommendPing(
@@ -308,6 +336,7 @@ class NonMemberService(
                     url = it.url,
                     px = it.px,
                     py = it.py,
+                    type = it.mcidName
                 )
             }
         }
@@ -333,6 +362,7 @@ class NonMemberService(
                     placeName = bookmarkPair.first.name,
                     px = bookmarkPair.first.px,
                     py = bookmarkPair.first.py,
+                    type = bookmarkPair.first.mcidName
                 )
             }
         }
@@ -388,7 +418,7 @@ class NonMemberService(
         return nonMemberPlaces
     }
 
-    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String? {
+    private fun calculateTimeDifference(shareUrl: ShareUrlDomain): String? {
         val pingLastUpdateTime: String? = shareUrl.pingUpdateTime?.let {
             val timeDifference = Duration.between(shareUrl.pingUpdateTime, LocalDateTime.now())
             when {

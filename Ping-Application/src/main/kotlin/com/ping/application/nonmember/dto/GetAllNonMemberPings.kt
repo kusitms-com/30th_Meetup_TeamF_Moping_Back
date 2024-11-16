@@ -1,15 +1,13 @@
 package com.ping.application.nonmember.dto
 
-import java.time.LocalDateTime
-
-class GetAllNonMemberPings {
+interface GetAllNonMemberPings {
     data class Response(
         val eventName: String,
         val neighborhood: String,
         val px: Double,
         val py: Double,
         val pingLastUpdateTime: String?,
-        val recommendPings: List<GetRecommendPings.RecommendPing?>,
+        val recommendPings: List<GetRecommendPings.RecommendPing>,
         val nonMembers: List<NonMember>,
         val pings: List<Ping>,
     )
@@ -27,5 +25,6 @@ class GetAllNonMemberPings {
         val placeName: String,
         val px: Double,
         val py: Double,
+        val type: String,
     )
 }
