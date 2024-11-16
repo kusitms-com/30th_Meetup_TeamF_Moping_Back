@@ -299,7 +299,7 @@ class NonMemberService(
 
         val bookmarkMap = recommendBookmarks.associateBy { it.sid }
 
-        val recommendPings = recommendPlaces.map { recommendPlace ->
+        val recommendPings = recommendPlaces.mapNotNull { recommendPlace ->
             val bookmark = bookmarkMap[recommendPlace.sid]
             bookmark?.let {
                 GetRecommendPings.RecommendPing(

@@ -9,7 +9,7 @@ class GetAllNonMemberPings {
         val px: Double,
         val py: Double,
         val pingLastUpdateTime: String?,
-        val recommendPings: List<GetRecommendPings.RecommendPing?>,
+        val recommendPings: List<GetRecommendPings.RecommendPing>,
         val nonMembers: List<NonMember>,
         val pings: List<Ping>,
     )
