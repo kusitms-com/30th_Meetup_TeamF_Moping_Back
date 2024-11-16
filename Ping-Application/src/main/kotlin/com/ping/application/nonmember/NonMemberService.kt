@@ -333,6 +333,7 @@ class NonMemberService(
                     placeName = bookmarkPair.first.name,
                     px = bookmarkPair.first.px,
                     py = bookmarkPair.first.py,
+                    type = bookmarkPair.first.mcidName
                 )
             }
         }

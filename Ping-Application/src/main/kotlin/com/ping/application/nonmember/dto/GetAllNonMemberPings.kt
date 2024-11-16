@@ -27,5 +27,6 @@ class GetAllNonMemberPings {
         val placeName: String,
         val px: Double,
         val py: Double,
+        val type: String,
     )
 }
