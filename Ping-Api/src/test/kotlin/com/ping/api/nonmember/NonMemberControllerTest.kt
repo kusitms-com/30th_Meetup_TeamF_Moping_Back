@@ -159,6 +159,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     url = "https://map.naver.com/p/entry/place/1445446311",
                     px = 127.0548454,
                     py = 37.2938313,
+                    type = "음식점",
                 ),
                 GetRecommendPings.RecommendPing(
                     sid = "1250904288",
@@ -166,7 +167,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     url = "https://map.naver.com/p/entry/place/1250904288",
                     px = 127.0505683,
                     py = 37.2903113,
-                )
+                    type = "음식점",
+                    )
             ),
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(
@@ -247,6 +249,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                         fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                         fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                        fieldWithPath("recommendPings[].type").description("업종"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -283,6 +286,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                             fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                             fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                            fieldWithPath("recommendPings[].type").description("업종"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -318,14 +322,16 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     url = "https://map.naver.com/p/entry/place/1445446311",
                     px = 127.0548454,
                     py = 37.2938313,
-                ),
+                    type = "음식점",
+                    ),
                 GetRecommendPings.RecommendPing(
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
                     px = 127.0505683,
                     py = 37.2903113,
-                )
+                    type = "음식점",
+                    )
             ),
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(
@@ -405,6 +411,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                         fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                         fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                        fieldWithPath("recommendPings[].type").description("업종"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -440,6 +447,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                             fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                             fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                            fieldWithPath("recommendPings[].type").description("업종"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -557,14 +565,16 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     url = "https://map.naver.com/p/entry/place/1445446311",
                     px = 127.0548454,
                     py = 37.2938313,
-                ),
+                    type = "음식점",
+                    ),
                 GetRecommendPings.RecommendPing(
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
                     px = 127.0505683,
                     py = 37.2903113,
-                )
+                    type = "음식점",
+                    )
             ),
         )
         given(nonMemberService.getRecommendPings(uuid, radiusInKm)).willReturn(response)
@@ -591,7 +601,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                         fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                         fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
-                    )
+                        fieldWithPath("recommendPings[].type").description("업종"),
+                        )
                 )
             )
             .andDo( // swagger
@@ -610,7 +621,8 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                             fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                             fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
-                        )
+                            fieldWithPath("recommendPings[].type").description("업종"),
+                            )
                 )
             )
     }
@@ -674,14 +686,16 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     url = "https://map.naver.com/p/entry/place/1445446311",
                     px = 127.0548454,
                     py = 37.2938313,
-                ),
+                    type = "음식점",
+                    ),
                 GetRecommendPings.RecommendPing(
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
                     px = 127.0505683,
                     py = 37.2903113,
-                )
+                    type = "음식점",
+                    )
             ),
             nonMembers = listOf(
                 GetAllNonMemberPings.NonMember(
@@ -748,6 +762,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                         fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                         fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                        fieldWithPath("recommendPings[].type").description("업종"),
                         fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
@@ -784,6 +799,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
                             fieldWithPath("recommendPings[].px").description("추천 장소 경도"),
                             fieldWithPath("recommendPings[].py").description("추천 장소 위도"),
+                            fieldWithPath("recommendPings[].type").description("업종"),
                             fieldWithPath("nonMembers[].nonMemberId").description("비회원의 id"),
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),

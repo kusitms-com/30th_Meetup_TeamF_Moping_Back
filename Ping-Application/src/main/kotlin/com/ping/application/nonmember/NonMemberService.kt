@@ -171,7 +171,8 @@ class NonMemberService(
                     placeName = bookmark.name,
                     url = bookmark.url,
                     px = bookmark.px,
-                    py = bookmark.py
+                    py = bookmark.py,
+                    type = bookmark.mcidName,
                 )
             }
         }
@@ -335,6 +336,7 @@ class NonMemberService(
                     url = it.url,
                     px = it.px,
                     py = it.py,
+                    type = it.mcidName
                 )
             }
         }
