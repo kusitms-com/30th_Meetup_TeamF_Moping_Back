@@ -1,8 +1,6 @@
 package com.ping.application.nonmember.dto
 
-import java.time.LocalDateTime
-
-class GetAllNonMemberPings {
+interface GetAllNonMemberPings {
     data class Response(
         val eventName: String,
         val neighborhood: String,

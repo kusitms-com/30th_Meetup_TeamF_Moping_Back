@@ -1,6 +1,6 @@
 package com.ping.application.nonmember.dto
 
-class CreateNonMember {
+interface CreateNonMember {
     data class Request(
         val uuid: String,
         val name: String,

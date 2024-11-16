@@ -1,6 +1,6 @@
 package com.ping.application.nonmember.dto
 
-class LoginNonMember {
+interface LoginNonMember {
     data class Request(
         val nonMemberId: Long,
         val password: String

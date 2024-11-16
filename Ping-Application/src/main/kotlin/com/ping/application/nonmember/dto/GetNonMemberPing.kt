@@ -1,6 +1,6 @@
 package com.ping.application.nonmember.dto
 
-class GetNonMemberPing {
+interface GetNonMemberPing {
     data class Response(
         val pings: List<GetAllNonMemberPings.Ping>
     )
