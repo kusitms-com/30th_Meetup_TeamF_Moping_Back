@@ -9,9 +9,8 @@ import com.ping.domain.nonmember.repository.*
 import com.ping.domain.ping.PingService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.web.bind.annotation.RequestParam
-import java.time.LocalDateTime
 import java.time.Duration
+import java.time.LocalDateTime
 import kotlin.random.Random
 
 @Service
@@ -114,15 +113,26 @@ class NonMemberService(
     }
 
     fun getNonMemberPing(nonMemberId: Long): GetNonMemberPing.Response {
+        val nonMember = nonMemberRepository.findById(nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMemberId)
         val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
         return GetNonMemberPing.Response(
             pings = bookmarks.map {
-                GetNonMemberPing.Ping(
+                GetAllNonMemberPings.Ping(
+                    iconLevel = 0,
+                    nonMembers = listOf(
+                        GetAllNonMemberPings.NonMember(
+                            nonMemberId = nonMemberId,
+                            name = nonMember.name,
+                            profileSvg = nonMember.profileSvg,
+                        )
+                    ),
                     url = it.url,
                     placeName = it.name,
                     px = it.px,
-                    py = it.py
+                    py = it.py,
+                    type = it.mcidName,
                 )
             }
         )
@@ -135,7 +145,7 @@ class NonMemberService(
         val nonMemberIds = nonMemberRepository.findAllByShareUrl(shareUrl.id).map { it.id }
         val excludedSids = nonMemberPlaceRepository.findAllByNonMemberIdIn(nonMemberIds).map { it.sid }.toSet()
 
-        val bookmarks =  bookmarkRepository.findAllByLocationNear(shareUrl.px, shareUrl.py, radiusInKm)
+        val bookmarks = bookmarkRepository.findAllByLocationNear(shareUrl.px, shareUrl.py, radiusInKm)
         val nearbySids = bookmarks.map { it.sid }
 
         val sidCounts = nonMemberPlaceRepository.findCountBySidIn(nearbySids)
