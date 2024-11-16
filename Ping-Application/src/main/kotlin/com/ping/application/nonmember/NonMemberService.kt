@@ -292,7 +292,7 @@ class NonMemberService(
         recommendPlaces: List<RecommendPlaceDomain>,
         nonMemberList: List<NonMemberDomain>
     ): GetAllNonMemberPings.Response {
-        val pingLastUpdateTime = caculateTimeDifference(shareUrl)
+        val pingLastUpdateTime = calculateTimeDifference(shareUrl)
 
         val recommendSids = recommendPlaces.map { it.sid }
         val recommendBookmarks = bookmarkRepository.findAllBySidIn(recommendSids)
@@ -388,7 +388,7 @@ class NonMemberService(
         return nonMemberPlaces
     }
 
-    private fun caculateTimeDifference(shareUrl: ShareUrlDomain): String? {
+    private fun calculateTimeDifference(shareUrl: ShareUrlDomain): String? {
         val pingLastUpdateTime: String? = shareUrl.pingUpdateTime?.let {
             val timeDifference = Duration.between(shareUrl.pingUpdateTime, LocalDateTime.now())
             when {
