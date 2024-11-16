@@ -7,11 +7,13 @@ object ProfileMapper {
 
     fun toDomain(profileEntity: ProfileEntity) = ProfileDomain(
         profileEntity.id,
-        profileEntity.url
+        profileEntity.svgUrl,
+        profileEntity.lockSvgUrl
     )
 
     fun toEntity(profileDomain: ProfileDomain) = ProfileEntity(
         profileDomain.id,
-        profileDomain.url
+        profileDomain.svgUrl,
+        profileDomain.svgLockUrl
     )
 }

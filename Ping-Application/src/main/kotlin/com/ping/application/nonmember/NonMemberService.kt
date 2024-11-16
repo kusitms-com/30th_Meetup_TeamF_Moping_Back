@@ -59,8 +59,14 @@ class NonMemberService(
         nonMemberRepository.findByShareUrlIdAndName(shareUrl.id, request.name)?.let {
             throw CustomException(ExceptionContent.NON_MEMBER_ALREADY_EXISTS)
         }
-
-        val nonMemberDomain = NonMemberDomain.of(request.name, request.password, getRandomProfileSvg(), shareUrl)
+        val profile = getRandomProfileSvg()
+        val nonMemberDomain = NonMemberDomain.of(
+            name = request.name,
+            password = request.password,
+            profileSvg = profile.first,
+            profileLockSvg = profile.second,
+            shareUrlDomain = shareUrl
+        )
         val savedNonMember = nonMemberRepository.save(nonMemberDomain)
 
         val nonMemberBookmarkUrlDomains = NonMemberBookmarkUrlDomain.of(savedNonMember, request.bookmarkUrls)
@@ -97,9 +103,10 @@ class NonMemberService(
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
     }
 
-    private fun getRandomProfileSvg(): String {
+    private fun getRandomProfileSvg(): Pair<String, String> {
         val profiles = profileRepository.findAll()
-        return profiles[Random.nextInt(profiles.size)].url
+        val index = Random.nextInt(profiles.size)
+        return Pair(profiles[index].svgUrl, profiles[index].svgLockUrl)
     }
 
     fun getAllNonMemberPings(uuid: String): GetAllNonMemberPings.Response {
@@ -208,6 +215,16 @@ class NonMemberService(
         val savedRecommendPlaces = recommendPlaceRepository.findAllByShareUrlId(shareUrl.id)
 
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
+    }
+
+    fun getNonMemberProfile(nonmemberId: Long): GetNonMemberProfile.Response {
+        val nonMember = nonMemberRepository.findById(nonmemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+        return GetNonMemberProfile.Response(
+            name = nonMember.name,
+            profileSvg = nonMember.profileSvg,
+            profileLockSvg = nonMember.profileLockSvg
+        )
     }
 
     private fun handleBookmarkUrls(
