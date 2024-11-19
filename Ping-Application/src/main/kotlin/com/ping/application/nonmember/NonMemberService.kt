@@ -248,7 +248,7 @@ class NonMemberService(
         storeUrls.forEach {
             bookmarks.add(pingService.storeUrlToBookmark(it))
         }
-
+        bookmarkRepository.saveAll(bookmarks)
         return bookmarks.map { it.sid }.toSet()
     }
 
