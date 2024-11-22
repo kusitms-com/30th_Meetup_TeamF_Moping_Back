@@ -126,15 +126,15 @@ class NonMemberService(
         val bookmarks = bookmarkRepository.findAllBySidIn(nonMemberPlaces.map { it.sid })
         return GetNonMemberPing.Response(
             pings = bookmarks.map {
+                val nonMembers = nonMemberRepository.findAllBySidAndShareUrlId(it.sid, nonMember.shareUrlDomain.id)
                 GetAllNonMemberPings.Ping(
                     iconLevel = 0,
-                    nonMembers = listOf(
+                    nonMembers = nonMembers.map { nonMember->
                         GetAllNonMemberPings.NonMember(
-                            nonMemberId = nonMemberId,
+                            nonMemberId = nonMember.id,
                             name = nonMember.name,
                             profileSvg = nonMember.profileSvg,
-                        )
-                    ),
+                        )},
                     url = it.url,
                     placeName = it.name,
                     px = it.px,

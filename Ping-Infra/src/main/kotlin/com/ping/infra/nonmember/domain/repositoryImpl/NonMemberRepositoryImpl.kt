@@ -29,4 +29,8 @@ class NonMemberRepositoryImpl(
             NonMemberMapper.toDomain(it)
         }
     }
+
+    override fun findAllBySidAndShareUrlId(sid: String, sharedUrlId: Long): List<NonMemberDomain> {
+        return nonMemberJpaRepository.findAllBySidAndShareUrlId(sid, sharedUrlId).map { NonMemberMapper.toDomain(it) }
+    }
 }

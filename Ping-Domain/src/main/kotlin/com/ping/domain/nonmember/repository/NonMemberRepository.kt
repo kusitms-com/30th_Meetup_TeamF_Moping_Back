@@ -10,4 +10,6 @@ interface NonMemberRepository {
     fun findAllByShareUrl(shareUrlId: Long): List<NonMemberDomain>
 
     fun findById(nonMemberId: Long): NonMemberDomain?
+
+    fun findAllBySidAndShareUrlId(sid: String, sharedUrlId: Long): List<NonMemberDomain>
 }
