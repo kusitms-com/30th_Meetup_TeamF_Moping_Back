@@ -3,10 +3,10 @@
 
 # ERD
 ### MySQL
-<img width="853" alt="image" src="https://github.com/user-attachments/assets/6a6fe19e-06ab-4784-894f-09ff2019ccc8">
+<img width="853" alt="image" src="https://github.com/user-attachments/assets/a9f6a74c-465f-4450-a47c-356ff4fcd5fe">
 
 ### MongoDB
-<img width="1159" alt="image" src="https://github.com/user-attachments/assets/e4545cb2-5662-490b-af02-0b072df38f61">
+<img width="1159" alt="image" src="https://github.com/user-attachments/assets/f330553d-d28f-47d5-b757-f9ed8827fbf6">
 
 # 시스템 아키텍처
 ![image](https://github.com/user-attachments/assets/8c64a505-22b4-466b-a527-5d4092854e95)
