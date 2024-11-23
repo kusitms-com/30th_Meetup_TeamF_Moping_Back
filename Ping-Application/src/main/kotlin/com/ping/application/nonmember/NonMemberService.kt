@@ -167,6 +167,7 @@ class NonMemberService(
         val recommendPings = recommendSids.mapNotNull { sid ->
             bookmarks.find { it.sid == sid }?.let { bookmark ->
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = bookmark.sid,
                     placeName = bookmark.name,
                     url = bookmark.url,
@@ -331,6 +332,7 @@ class NonMemberService(
             val bookmark = bookmarkMap[recommendPlace.sid]
             bookmark?.let {
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = recommendPlace.sid,
                     placeName = it.name,
                     url = it.url,

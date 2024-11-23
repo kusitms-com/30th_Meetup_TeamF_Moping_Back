@@ -6,6 +6,7 @@ interface GetRecommendPings {
     )
 
     data class RecommendPing(
+        val iconLevel: Int,
         val sid: String,
         val placeName: String,
         val url: String,
