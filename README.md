@@ -19,7 +19,7 @@
 - issue 생성 및 PR을 통해 본인이 구현한 부분에 대한 기록을 남겨야 합니다.
 - 테스트 및 원할한 서버 운영을 위한 로그를 작성해야 합니다.(에러나 운영에 필요한 로그. 검색시 검색어와 같은 로그)
 - 예외처리는 항상 잘 만들어두기 (code, message, data)
-- 개발 기간 : 9/30 ~ 11/24
+- 개발 기간 : 9/30 ~ 11/28
 - 스프린트 (3일간격) 진행 (해올 것을 정해서 해오기)
     - 수요일, 토요일
 
@@ -32,52 +32,26 @@
   ![Springboot](https://img.shields.io/badge/Springboot-6DB33F?style=flat-square&logo=springboot&logoColor=white)
   ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=flat-square&logo=Gradle&logoColor=white)
   ![Spring Data JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=flat-square&logo=spring&logoColor=white)
-  ![Spring Security](https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=Spring%20Security&logoColor=white)
-  ![QueryDSL](https://img.shields.io/badge/QueryDSL-4096EE?style=flat-square&logo=QueryDSL&logoColor=white)
-    - Kotlin은 간결하고 직관적인 문법으로 코드 생산성을 높이며, Null 안정성을 제공하여 오류를 사전에 방지
-    - Spring Security는 강력한 인증 및 권한 부여 기능을 제공하며, 다양한 보안 요구사항을 쉽게 적용 가능
-    - QueryDSL은 타입 안전한 쿼리 작성이 가능해, SQL 쿼리를 컴파일 시점에 검증하고, 코드 가독성을 높이는 동시에 유지보수성을 향상
+    - Kotlin은 간결하고 직관적인 문법으로 코드 생산성을 높이며, Null 안정성을 제공하여 오류를 사전에 방지.
+    - JPA를 통해 SQL을 직접 작성하지 않아도 되므로 데이터베이스 작업에 소요되는 시간을 줄이고, 비즈니스 로직 구현에 집중 가능.
 
 - #### Test
-  ![Kotest](https://img.shields.io/badge/Kotest-5D3FD3?style=flat-square&logo=Kotest&logoColor=white)
+  ![JUnit](https://img.shields.io/badge/JUnit-25A162?style=flat-square&logo=JUnit5&logoColor=white)
   ![MockK](https://img.shields.io/badge/MockK-FFCA28?style=flat-square&logo=MockK&logoColor=white)
-    - Kotest는 직관적이고 가독성 높은 테스트 DSL을 제공하여, 테스트 코드를 읽기 쉽게 작성할 수 있으며 다양한 테스트 스타일을 지원.
+    - JUnit은 간단한 어노테이션 기반 설정으로 테스트 작성과 실행을 직관적이고 효율적으로 만들어줌.
     - MockK는 코틀린에 특화된 모킹 라이브러리로, 코루틴과 같은 코틀린 고유 기능을 쉽게 모킹할 수 있어 비동기 코드 테스트에 강점이 있음.
-
 
 - #### CICD
   ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)
-  ![Jacoco](https://img.shields.io/badge/Jacoco-CC6699?style=flat-square&logo=Jacoco&logoColor=white)
-  ![SonarQube](https://img.shields.io/badge/SonarQube-4E9BCD?style=flat-square&logo=SonarQube&logoColor=white)
-  ![Trivy](https://img.shields.io/badge/Trivy-0091E2?style=flat-square&logo=Trivy&logoColor=white)
-  ![ArgoCD](https://img.shields.io/badge/ArgoCD-EF7B4D?style=flat-square&logo=ArgoCD&logoColor=white)
   ![Docker](https://img.shields.io/badge/docker-%230db7ed.svg?style=flat-square&logo=docker&logoColor=white)
     - Jenkins를 사용한 CI/CD 파이프라인은 자동화된 테스트, 빌드, 배포를 통해 개발 프로세스를 효율적으로 관리
-    - Jacoco, SonarQube, TrivyScan은 각각 코드 커버리지, 코드 품질, 보안 취약점을 점검하여 안정적인 코드 배포를 지원
-    - ArgoCD는 GitOps 방식으로 애플리케이션을 Kubernetes 환경에 쉽게 배포 및 관리할 수 있어, 전체적인 개발과 운영의 일관성을 보장
-
-- #### Infra
-  ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=Kubernetes&logoColor=white)
-  ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat-square&logo=Grafana&logoColor=white)
-  ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat-square&logo=Prometheus&logoColor=white)
-  ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=Elasticsearch&logoColor=white)
-  ![Logstash](https://img.shields.io/badge/Logstash-005571?style=flat-square&logo=Logstash&logoColor=white)
-  ![Kibana](https://img.shields.io/badge/Kibana-005571?style=flat-square&logo=Kibana&logoColor=white)
-  ![Filebeat](https://img.shields.io/badge/Filebeat-005571?style=flat-square&logo=Filebeat&logoColor=white)
-  ![Vault](https://img.shields.io/badge/Vault-000000?style=flat-square&logo=Vault&logoColor=white)
-  ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat-square&logo=Apache%20Kafka&logoColor=white)
-    - Kubernetes는 컨테이너화된 애플리케이션의 배포와 확장을 자동화하여, 대규모 인프라 관리가 용이
-    - Grafana, Prometheus는 모니터링과 알림 시스템을 구축해 시스템 성능 및 상태를 실시간으로 추적하고 대응
-    - Elasticsearch, Logstash, Kibana, Filebeat(ELK 스택)는 로그 수집, 분석, 시각화를 통해 애플리케이션 상태 및 문제를 쉽게 파악하고 대응
-    - Kafka는 대용량의 데이터를 실시간으로 처리하고, 분산 환경에서 높은 확장성과 안정성을 제공하는 메시징 플랫폼
-
+    - Docker는 애플리케이션을 컨테이너로 패키징하여 일관된 실행 환경을 제공하고, 배포를 빠르고 효율적으로 수행 가능
 
 - #### Database
-  ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=Elasticsearch&logoColor=white)
   ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=flat-square&logo=mysql&logoColor=white)
-  ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=flat-square&logo=redis&logoColor=white)
-    - Elasticsearch는 대규모 데이터에서 빠른 검색과 분석을 지원하며, 실시간 로그 분석 및 검색에 탁월한 성능을 발휘
-    - Redis는 인메모리 데이터 구조 저장소로, 매우 빠른 읽기/쓰기 성능을 제공하여 캐싱, 세션 관리, 실시간 데이터 처리 가능
+  ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=MongoDB&logoColor=white)
+    - MySQL은 뛰어난 성능과 확장성을 제공하며, 광범위한 커뮤니티 지원과 다양한 플랫폼에서의 안정성을 보장  
+    - MongoDB는 유연한 스키마 설계를 통해 다양한 데이터를 효율적으로 저장하고, 빠른 쿼리 성능을 제공합니다.
 
 - #### API 테스트, 명세서
   ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=flat-square&logo=notion&logoColor=white)
@@ -324,3 +298,21 @@ develop & main branch로 merge할 때에는 pull request가 필요합니다. pul
 
 </div>
 </details>
+
+
+<!--
+- #### Infra
+  ![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?style=flat-square&logo=Kubernetes&logoColor=white)
+  ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=flat-square&logo=Grafana&logoColor=white)
+  ![Prometheus](https://img.shields.io/badge/Prometheus-E6522C?style=flat-square&logo=Prometheus&logoColor=white)
+  ![Elasticsearch](https://img.shields.io/badge/Elasticsearch-005571?style=flat-square&logo=Elasticsearch&logoColor=white)
+  ![Logstash](https://img.shields.io/badge/Logstash-005571?style=flat-square&logo=Logstash&logoColor=white)
+  ![Kibana](https://img.shields.io/badge/Kibana-005571?style=flat-square&logo=Kibana&logoColor=white)
+  ![Filebeat](https://img.shields.io/badge/Filebeat-005571?style=flat-square&logo=Filebeat&logoColor=white)
+  ![Vault](https://img.shields.io/badge/Vault-000000?style=flat-square&logo=Vault&logoColor=white)
+  ![Kafka](https://img.shields.io/badge/Apache%20Kafka-231F20?style=flat-square&logo=Apache%20Kafka&logoColor=white)
+    - Kubernetes는 컨테이너화된 애플리케이션의 배포와 확장을 자동화하여, 대규모 인프라 관리가 용이
+    - Grafana, Prometheus는 모니터링과 알림 시스템을 구축해 시스템 성능 및 상태를 실시간으로 추적하고 대응
+    - Elasticsearch, Logstash, Kibana, Filebeat(ELK 스택)는 로그 수집, 분석, 시각화를 통해 애플리케이션 상태 및 문제를 쉽게 파악하고 대응
+    - Kafka는 대용량의 데이터를 실시간으로 처리하고, 분산 환경에서 높은 확장성과 안정성을 제공하는 메시징 플랫폼
+-->
