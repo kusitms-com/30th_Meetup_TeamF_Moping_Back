@@ -154,6 +154,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             pingLastUpdateTime = "16분",
             recommendPings = listOf(
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1445446311",
                     placeName = "꾸아 광교점",
                     url = "https://map.naver.com/p/entry/place/1445446311",
@@ -162,6 +163,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     type = "음식점",
                 ),
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
@@ -244,6 +246,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("px").description("중심 경도"),
                         fieldWithPath("py").description("중심 위도"),
                         fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                         fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                         fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -281,6 +284,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("px").description("중심 경도"),
                             fieldWithPath("py").description("중심 위도"),
                             fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                             fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                             fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -317,6 +321,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             pingLastUpdateTime = "16분",
             recommendPings = listOf(
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1445446311",
                     placeName = "꾸아 광교점",
                     url = "https://map.naver.com/p/entry/place/1445446311",
@@ -325,6 +330,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     type = "음식점",
                     ),
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
@@ -406,6 +412,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("px").description("중심 경도"),
                         fieldWithPath("py").description("중심 위도"),
                         fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                         fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                         fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -442,6 +449,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("px").description("중심 경도"),
                             fieldWithPath("py").description("중심 위도"),
                             fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                             fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                             fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -560,6 +568,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         val response = GetRecommendPings.Response(
             recommendPings = listOf(
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1445446311",
                     placeName = "꾸아 광교점",
                     url = "https://map.naver.com/p/entry/place/1445446311",
@@ -568,6 +577,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     type = "음식점",
                     ),
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
@@ -596,6 +606,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         RequestDocumentation.parameterWithName("radiusInKm").description("추천 반경 범위 (km)"),
                     ),
                     responseFields(
+                        fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                         fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                         fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -616,6 +627,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             parameterWithName("radiusInKm").description("추천 반경 범위 (km)")
                         )
                         .responseFields(
+                            fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                             fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                             fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -681,6 +693,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
             neighborhood = "수원 광교",
             recommendPings = listOf(
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1445446311",
                     placeName = "꾸아 광교점",
                     url = "https://map.naver.com/p/entry/place/1445446311",
@@ -689,6 +702,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     type = "음식점",
                     ),
                 GetRecommendPings.RecommendPing(
+                    iconLevel = 10,
                     sid = "1250904288",
                     placeName = "옴레스토랑 광교점",
                     url = "https://map.naver.com/p/entry/place/1250904288",
@@ -757,6 +771,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         fieldWithPath("px").description("중심 경도"),
                         fieldWithPath("py").description("중심 위도"),
                         fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                        fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                         fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                         fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                         fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
@@ -794,6 +809,7 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                             fieldWithPath("px").description("중심 경도"),
                             fieldWithPath("py").description("중심 위도"),
                             fieldWithPath("pingLastUpdateTime").description("마지막 핑 업데이트 시간"),
+                            fieldWithPath("recommendPings[].iconLevel").description("추천 장소 아이콘 레벨"),
                             fieldWithPath("recommendPings[].sid").description("추천 장소 ID"),
                             fieldWithPath("recommendPings[].placeName").description("추천 장소 이름"),
                             fieldWithPath("recommendPings[].url").description("추천 장소 URL"),
