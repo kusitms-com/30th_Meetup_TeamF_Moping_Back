@@ -32,14 +32,14 @@
   ![Springboot](https://img.shields.io/badge/Springboot-6DB33F?style=flat-square&logo=springboot&logoColor=white)
   ![Gradle](https://img.shields.io/badge/Gradle-02303A.svg?style=flat-square&logo=Gradle&logoColor=white)
   ![Spring Data JPA](https://img.shields.io/badge/Spring%20Data%20JPA-6DB33F?style=flat-square&logo=spring&logoColor=white)
-    - Kotlin은 간결하고 직관적인 문법으로 코드 생산성을 높이며, Null 안정성을 제공하여 오류를 사전에 방지.
-    - JPA를 통해 SQL을 직접 작성하지 않아도 되므로 데이터베이스 작업에 소요되는 시간을 줄이고, 비즈니스 로직 구현에 집중 가능.
+    - Kotlin은 간결하고 직관적인 문법으로 코드 생산성을 높이며, Null 안정성을 제공하여 오류를 사전에 방지
+    - JPA를 통해 SQL을 직접 작성하지 않아도 되므로 데이터베이스 작업에 소요되는 시간을 줄이고, 비즈니스 로직 구현에 집중 가능
 
 - #### Test
   ![JUnit](https://img.shields.io/badge/JUnit-25A162?style=flat-square&logo=JUnit5&logoColor=white)
   ![MockK](https://img.shields.io/badge/MockK-FFCA28?style=flat-square&logo=MockK&logoColor=white)
-    - JUnit은 간단한 어노테이션 기반 설정으로 테스트 작성과 실행을 직관적이고 효율적으로 만들어줌.
-    - MockK는 코틀린에 특화된 모킹 라이브러리로, 코루틴과 같은 코틀린 고유 기능을 쉽게 모킹할 수 있어 비동기 코드 테스트에 강점이 있음.
+    - JUnit은 간단한 어노테이션 기반 설정으로 테스트 작성과 실행을 직관적이고 효율적으로 만들어줌
+    - MockK는 코틀린에 특화된 모킹 라이브러리로, 코루틴과 같은 코틀린 고유 기능을 쉽게 모킹할 수 있어 비동기 코드 테스트에 강점이 있음
 
 - #### CICD
   ![Jenkins](https://img.shields.io/badge/Jenkins-D24939?style=flat-square&logo=Jenkins&logoColor=white)
@@ -50,8 +50,10 @@
 - #### Database
   ![MySQL](https://img.shields.io/badge/mysql-%2300f.svg?style=flat-square&logo=mysql&logoColor=white)
   ![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=flat-square&logo=MongoDB&logoColor=white)
+  ![Redis](https://img.shields.io/badge/redis-%23DD0031.svg?style=flat-square&logo=redis&logoColor=white)
     - MySQL은 뛰어난 성능과 확장성을 제공하며, 광범위한 커뮤니티 지원과 다양한 플랫폼에서의 안정성을 보장  
-    - MongoDB는 유연한 스키마 설계를 통해 다양한 데이터를 효율적으로 저장하고, 빠른 쿼리 성능을 제공합니다.
+    - MongoDB는 유연한 스키마 설계를 통해 다양한 데이터를 효율적으로 저장하고, 빠른 쿼리 성능을 제공
+    - Redis는 인메모리 데이터 저장소로 초고속 데이터 접근과 다양한 데이터 구조를 지원
 
 - #### API 테스트, 명세서
   ![Notion](https://img.shields.io/badge/Notion-%23000000.svg?style=flat-square&logo=notion&logoColor=white)
