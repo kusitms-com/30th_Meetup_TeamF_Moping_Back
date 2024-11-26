@@ -2,6 +2,7 @@ package com.ping.application.ping.service
 
 import com.ping.application.member.dto.CreateNonMember
 import com.ping.application.ping.dto.*
+import com.ping.common.enums.PlaceType
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
 import com.ping.common.util.ValidationUtil
@@ -13,6 +14,8 @@ import com.ping.domain.member.repository.ProfileRepository
 import com.ping.domain.ping.aggregate.*
 import com.ping.domain.ping.repository.*
 import com.ping.domain.ping.service.PingUrlService
+import com.ping.support.jwt.JwtProvider
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
@@ -31,6 +34,7 @@ class PingService(
     private val profileRepository: ProfileRepository,
     private val recommendPlaceRepository: RecommendPlaceRepository,
     private val pingUrlService: PingUrlService,
+    private val jwtProvider: JwtProvider,
 ) {
 
     @Transactional
@@ -68,8 +72,27 @@ class PingService(
             shareUrlRepository.save(updatedShareUrl)
         }
 
-        val nonMemberPlaces = allSids.map { sid -> NonMemberPlaceDomain.of(savedNonMember, sid) }
+        val nonMemberPlaces = allSids.map { sid -> NonMemberPlaceDomain.of(savedNonMember, sid, PlaceType.CRAWLED) }
         nonMemberPlaceRepository.saveAll(nonMemberPlaces)
+    }
+
+    @Transactional
+    fun saveMemberPing(request: SaveMemberPing.Request, httpRequest: HttpServletRequest) {
+        jwtProvider.validateToken(httpRequest)
+
+        val nonMemberId = request.nonMemberId
+        val sid = request.sid
+
+        val nonMember = NonMemberDomain.validateExists(request.nonMemberId, nonMemberRepository)
+        BookmarkDomain.validateSidExists(sid, bookmarkRepository)
+        NonMemberPlaceDomain.validateNoDuplicate(nonMemberId, sid, nonMemberPlaceRepository)
+
+        val newPlace = NonMemberPlaceDomain.of(
+            nonMember = nonMember,
+            sid = sid,
+            placeType = PlaceType.MEMBER_ADDED
+        )
+        nonMemberPlaceRepository.save(newPlace)
     }
 
     @Transactional
@@ -230,23 +253,28 @@ class PingService(
 
     private fun updateNonMemberPlacesIfNeeded(nonMember: NonMemberDomain, newSids: Set<String>) {
         val nonMemberPlaces = nonMemberPlaceRepository.findAllByNonMemberId(nonMember.id)
-        val existingSids = nonMemberPlaces.map { it.sid }.toSet()
+        val existingSids = NonMemberPlaceDomain.filterCrawledPlaces(nonMemberPlaces)
 
         if (existingSids != newSids) {
             val sidsToAdd = newSids - existingSids
             val sidsToDelete = existingSids - newSids
 
-            val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(nonMember, sid) }
+            val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(
+                nonMember = nonMember,
+                sid = sid,
+                placeType = PlaceType.CRAWLED)
+            }
             nonMemberPlaceRepository.saveAll(placesToAdd)
 
-            val placesIdToDelete = nonMemberPlaces
-                .filter { it.nonMember == nonMember && it.sid in sidsToDelete }
-                .map { it.id }
+            val placesIdToDelete = NonMemberPlaceDomain.filterIdsToDelete(
+                domains = nonMemberPlaces,
+                nonMember = nonMember,
+                sidsToDelete = sidsToDelete)
             nonMemberPlaceRepository.deleteAll(placesIdToDelete)
 
-            val updatedShareUrl = nonMember.shareUrlDomain.copy(pingUpdateTime = LocalDateTime.now())
+            val updatedShareUrl = nonMember.shareUrlDomain.copy(
+                pingUpdateTime = LocalDateTime.now())
             shareUrlRepository.save(updatedShareUrl)
-
         }
     }
 
@@ -257,8 +285,7 @@ class PingService(
             existingUrls = existingBookmarks,
             newUrls = bookmarkUrls,
             getUrl = { it.bookmarkUrl },
-            getId = { it.id }
-        )
+            getId = { it.id })
 
         nonMemberBookmarkUrlRepository.saveAll(NonMemberBookmarkUrlDomain.of(nonMember, urlsToAdd))
         nonMemberBookmarkUrlRepository.deleteAllByIds(idsToDelete)
