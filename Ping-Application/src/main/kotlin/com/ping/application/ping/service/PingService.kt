@@ -1,12 +1,18 @@
-package com.ping.application.nonmember
+package com.ping.application.ping.service
 
-import com.ping.application.nonmember.dto.*
+import com.ping.application.member.dto.CreateNonMember
+import com.ping.application.ping.dto.*
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
 import com.ping.common.util.ValidationUtil
-import com.ping.domain.nonmember.aggregate.*
-import com.ping.domain.nonmember.repository.*
-import com.ping.domain.ping.PingService
+import com.ping.domain.event.aggregate.ShareUrlDomain
+import com.ping.domain.event.repository.ShareUrlRepository
+import com.ping.domain.member.aggregate.NonMemberDomain
+import com.ping.domain.member.repository.NonMemberRepository
+import com.ping.domain.member.repository.ProfileRepository
+import com.ping.domain.ping.aggregate.*
+import com.ping.domain.ping.repository.*
+import com.ping.domain.ping.service.PingUrlService
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
@@ -15,7 +21,7 @@ import kotlin.random.Random
 
 @Service
 @Transactional(readOnly = true)
-class NonMemberService(
+class PingService(
     private val nonMemberRepository: NonMemberRepository,
     private val shareUrlRepository: ShareUrlRepository,
     private val bookmarkRepository: BookmarkRepository,
@@ -24,29 +30,8 @@ class NonMemberService(
     private val nonMemberStoreUrlRepository: NonMemberStoreUrlRepository,
     private val profileRepository: ProfileRepository,
     private val recommendPlaceRepository: RecommendPlaceRepository,
-    private val pingService: PingService,
+    private val pingUrlService: PingUrlService,
 ) {
-    fun login(request: LoginNonMember.Request): LoginNonMember.Response {
-        ValidationUtil.validatePassword(request.password)
-
-        val nonMember = nonMemberRepository.findById(request.nonMemberId)
-            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
-
-        if (request.password != nonMember.password) {
-            throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
-        }
-
-        val savedBookmarkUrls =
-            nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
-        val savedStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.storeUrl }
-
-        return LoginNonMember.Response(
-            nonMemberId = nonMember.id,
-            name = nonMember.name,
-            bookmarkUrls = savedBookmarkUrls,
-            storeUrls = savedStoreUrls
-        )
-    }
 
     @Transactional
     fun createNonMemberPings(request: CreateNonMember.Request) {
@@ -219,23 +204,13 @@ class NonMemberService(
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
     }
 
-    fun getNonMemberProfile(nonmemberId: Long): GetNonMemberProfile.Response {
-        val nonMember = nonMemberRepository.findById(nonmemberId)
-            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
-        return GetNonMemberProfile.Response(
-            name = nonMember.name,
-            profileSvg = nonMember.profileSvg,
-            profileLockSvg = nonMember.profileLockSvg
-        )
-    }
-
     private fun handleBookmarkUrls(
         bookmarkUrls: List<String>
     ): Set<String> {
         val bookmarks = mutableListOf<BookmarkDomain>()
 
         bookmarkUrls.forEach {
-            bookmarks.addAll(pingService.bookmarkUrlToBookmarks(it))
+            bookmarks.addAll(pingUrlService.bookmarkUrlToBookmarks(it))
         }
         bookmarkRepository.saveAll(bookmarks)
         return bookmarks.map { it.sid }.toSet()
@@ -247,7 +222,7 @@ class NonMemberService(
         val bookmarks = mutableListOf<BookmarkDomain>()
 
         storeUrls.forEach {
-            bookmarks.add(pingService.storeUrlToBookmark(it))
+            bookmarks.add(pingUrlService.storeUrlToBookmark(it))
         }
         bookmarkRepository.saveAll(bookmarks)
         return bookmarks.map { it.sid }.toSet()
