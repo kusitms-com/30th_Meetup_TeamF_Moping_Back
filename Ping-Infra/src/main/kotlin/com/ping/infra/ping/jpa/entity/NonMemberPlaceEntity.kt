@@ -16,5 +16,9 @@ class NonMemberPlaceEntity(
     val nonMember: NonMemberEntity,
 
     @Column(nullable = false)
-    val sid: String
+    val sid: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    val placeType: PlaceType,
 ) : BaseTimeEntity()

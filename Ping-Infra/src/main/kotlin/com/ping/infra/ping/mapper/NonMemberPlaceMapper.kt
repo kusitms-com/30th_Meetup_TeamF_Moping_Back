@@ -7,15 +7,16 @@ import com.ping.infra.ping.jpa.entity.NonMemberPlaceEntity
 object NonMemberPlaceMapper {
 
     fun toDomain(nonMemberPlaceEntity: NonMemberPlaceEntity) = NonMemberPlaceDomain(
-        nonMemberPlaceEntity.id,
-        NonMemberMapper.toDomain(nonMemberPlaceEntity.nonMember),
-        nonMemberPlaceEntity.sid
+        id = nonMemberPlaceEntity.id,
+        nonMember = NonMemberMapper.toDomain(nonMemberPlaceEntity.nonMember),
+        sid = nonMemberPlaceEntity.sid,
+        placeType = nonMemberPlaceEntity.placeType
     )
 
-
     fun toEntity(nonMemberPlaceDomain: NonMemberPlaceDomain) = NonMemberPlaceEntity(
-        nonMemberPlaceDomain.id,
-        NonMemberMapper.toEntity(nonMemberPlaceDomain.nonMember),
-        nonMemberPlaceDomain.sid
+        id = nonMemberPlaceDomain.id,
+        nonMember = NonMemberMapper.toEntity(nonMemberPlaceDomain.nonMember),
+        sid = nonMemberPlaceDomain.sid,
+        placeType = nonMemberPlaceDomain.placeType
     )
 }
