@@ -5,9 +5,9 @@ interface CreateEvent {
         val neighborhood: String,
         val px: Double,
         val py: Double,
-        val eventName: String
+        val eventName: String,
     )
     data class Response(
-        val shareUrl: String
+        val shareUrl: String,
     )
 }

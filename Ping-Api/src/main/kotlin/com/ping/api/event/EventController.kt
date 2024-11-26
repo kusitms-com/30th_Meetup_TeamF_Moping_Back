@@ -1,6 +1,6 @@
 package com.ping.api.event
 
-import com.ping.application.event.EventService
+import com.ping.application.event.service.EventService
 import com.ping.application.event.dto.CreateEvent
 import com.ping.common.exception.SuccessResponse
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -8,13 +8,11 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
-@Tag(name = "이벤트")
 @RestController
 class EventController(
-    private val eventService: EventService
+    private val eventService: EventService,
 ) {
     @PostMapping(EventApi.BASE_URL)
     fun create(@RequestBody request: CreateEvent.Request): ResponseEntity<SuccessResponse<CreateEvent.Response>> {

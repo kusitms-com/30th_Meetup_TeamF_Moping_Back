@@ -16,7 +16,8 @@ import org.springframework.scheduling.annotation.EnableScheduling
         "com.ping.common",
         "com.ping.domain",
         "com.ping.infra",
-        "com.ping.client"
+        "com.ping.client",
+        "com.ping.support",
     ]
 )
 class PingApplication
