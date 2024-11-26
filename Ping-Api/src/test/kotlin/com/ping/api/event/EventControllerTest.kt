@@ -3,7 +3,7 @@ package com.ping.api.event
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper
 import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder
 import com.ping.api.global.BaseRestDocsTest
-import com.ping.application.event.EventService
+import com.ping.application.event.service.EventService
 import com.ping.application.event.dto.CreateEvent
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

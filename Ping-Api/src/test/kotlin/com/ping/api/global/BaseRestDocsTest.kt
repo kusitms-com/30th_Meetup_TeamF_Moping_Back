@@ -1,9 +1,9 @@
 package com.ping.api.global
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.ping.infra.nonmember.domain.mongo.repository.BookmarkMongoRepository
-import com.ping.infra.nonmember.domain.mongo.repository.ProfileMongoRepository
-import com.ping.infra.nonmember.domain.mongo.repository.SubwayMongoRepository
+import com.ping.infra.ping.mongo.repository.BookmarkMongoRepository
+import com.ping.infra.member.mongo.repository.ProfileMongoRepository
+import com.ping.infra.event.mongo.repository.SubwayMongoRepository
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.extension.ExtendWith
 import org.springframework.beans.factory.annotation.Autowired
