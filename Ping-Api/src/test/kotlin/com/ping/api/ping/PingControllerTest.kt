@@ -11,6 +11,8 @@ import com.ping.domain.ping.service.PingUrlService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito
+import org.mockito.Mockito.doNothing
+import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
@@ -98,6 +100,55 @@ class PingControllerTest : BaseRestDocsTest() {
                         .description("유효한 가게 ")
                         .requestFields(
                             fieldWithPath("url").description("가게 url")
+                        )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("회원 핑 저장")
+    fun saveMemberPing() {
+        // given
+        val request = SaveMemberPing.Request(
+            nonMemberId = 1L,
+            sid = "testSid"
+        )
+        val jsonRequest = """
+            {
+                "nonMemberId": ${request.nonMemberId},
+                "sid": "${request.sid}"
+            }
+        """.trimIndent()
+
+        doNothing().`when`(pingService).saveMemberPing(any(), any())
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post(PingApi.PING_MEMBER)
+                .header("Authorization", "Bearer validAccessToken123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // REST Docs
+                resultHandler.document(
+                    requestFields(
+                        fieldWithPath("nonMemberId").description("비회원 ID"),
+                        fieldWithPath("sid").description("장소 ID")
+                    )
+                )
+            )
+            .andDo( // Swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "멤버 핑 저장",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("멤버의 핑을 저장하는 API")
+                        .requestFields(
+                            fieldWithPath("nonMemberId").description("비회원 ID"),
+                            fieldWithPath("sid").description("장소 ID")
                         )
                 )
             )
