@@ -7,4 +7,5 @@ object PingApi {
     const val PING_NONMEMBER_ID = "$BASE_URL/{nonMemberId}"
     const val PING_REFRESH_ALL = "$BASE_URL/refresh-all"
     const val PING_RECOMMEND = "$BASE_URL/recommend"
+    const val PING_MEMBER = "$BASE_URL/member"
 }
