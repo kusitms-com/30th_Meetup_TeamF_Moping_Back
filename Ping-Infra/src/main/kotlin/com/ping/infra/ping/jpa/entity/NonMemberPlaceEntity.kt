@@ -1,5 +1,6 @@
 package com.ping.infra.ping.jpa.entity
 
+import com.ping.common.enums.PlaceType
 import com.ping.infra.config.jpa.BaseTimeEntity
 import com.ping.infra.member.jpa.entity.NonMemberEntity
 import jakarta.persistence.*
