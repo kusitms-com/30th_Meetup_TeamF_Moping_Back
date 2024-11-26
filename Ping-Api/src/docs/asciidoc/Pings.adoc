@@ -13,6 +13,10 @@ operation::PingControllerTest/isCorrectStoreUrl[snippets='http-request,http-resp
 === 비회원 핑 생성
 operation::PingControllerTest/createNonMemberPings[snippets='http-request,request-fields,http-response']
 
+[[Post-SaveMemberPing]]
+=== 회원 핑 저장
+operation::PingControllerTest/saveMemberPing[snippets='http-request,http-response,request-fields']
+
 [[Post-RecommendPings]]
 === 추천 핑 저장
 operation::PingControllerTest/saveRecommendPings[snippets='http-request,http-response,request-fields,response-fields']
