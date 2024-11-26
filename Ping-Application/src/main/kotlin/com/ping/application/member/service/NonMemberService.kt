@@ -2,6 +2,7 @@ package com.ping.application.member.service
 
 import com.ping.application.member.dto.GetNonMemberProfile
 import com.ping.application.member.dto.LoginNonMember
+import com.ping.application.member.dto.LoginTokenNonMember
 import com.ping.common.exception.CustomException
 import com.ping.common.exception.ExceptionContent
 import com.ping.common.util.ValidationUtil
@@ -30,8 +31,6 @@ class NonMemberService(
             throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
         }
 
-        val accessToken = jwtProvider.issue(nonMember.id)
-
         val savedBookmarkUrls =
             nonMemberBookmarkUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.bookmarkUrl }
         val savedStoreUrls = nonMemberStoreUrlRepository.findAllByNonMemberId(request.nonMemberId).map { it.storeUrl }
@@ -39,9 +38,27 @@ class NonMemberService(
         return LoginNonMember.Response(
             nonMemberId = nonMember.id,
             name = nonMember.name,
-            accessToken = accessToken,
             bookmarkUrls = savedBookmarkUrls,
-            storeUrls = savedStoreUrls
+            storeUrls = savedStoreUrls,
+        )
+    }
+
+    fun loginWithToken(request: LoginNonMember.Request): LoginTokenNonMember.Response {
+        ValidationUtil.validatePassword(request.password)
+
+        val nonMember = nonMemberRepository.findById(request.nonMemberId)
+            ?: throw CustomException(ExceptionContent.NON_MEMBER_NOT_FOUND)
+
+        if (request.password != nonMember.password) {
+            throw CustomException(ExceptionContent.NON_MEMBER_LOGIN_FAILED)
+        }
+
+        val token = jwtProvider.issue(nonMember.id)
+
+        return LoginTokenNonMember.Response(
+            nonMemberId = nonMember.id,
+            name = nonMember.name,
+            accessToken = token,
         )
     }
 

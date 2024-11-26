@@ -8,7 +8,6 @@ interface LoginNonMember {
     data class Response(
         val nonMemberId: Long,
         val name: String,
-        val accessToken: String,
         val bookmarkUrls: List<String>,
         val storeUrls: List<String>,
     )
