@@ -9,14 +9,11 @@ import jakarta.annotation.PostConstruct
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import io.github.oshai.kotlinlogging.KotlinLogging
 import io.jsonwebtoken.*
 import org.springframework.data.redis.core.RedisTemplate
 import java.time.Duration
 import java.util.*
 import javax.crypto.SecretKey
-
-private val log = KotlinLogging.logger {}
 
 @Component
 class JwtProvider(
@@ -115,9 +112,7 @@ class JwtProvider(
             .issuedAt(now)
             .expiration(Date(now.time + accessTokenTime.toMillis()))
             .signWith(secretKey)
-            .compact().also {
-                log.info { "[createToken] memberId = $memberId 액세스 토큰 생성 완료" }
-            }
+            .compact()
     }
 
     private fun createRefreshToken(memberId: Long): String {
@@ -128,10 +123,8 @@ class JwtProvider(
             .claims(claims.build())
             .issuedAt(now)
             .expiration(Date(now.time + refreshTokenTime.toMillis()))
-        .signWith(secretKey)
-            .compact().also {
-                log.info { "[createToken] memberId = $memberId 리프레쉬 토큰 생성 완료" }
-            }
+            .signWith(secretKey)
+            .compact()
     }
 
     private fun saveTokensToRedis(memberId: String, accessToken: String, refreshToken: String) {
@@ -140,7 +133,6 @@ class JwtProvider(
     }
 
     private fun resolveToken(request: HttpServletRequest): String {
-        log.info { "[resolveToken] HTTP 헤더에서 Token 값 추출" }
         val jwtToken = request.getHeader("Authorization") ?: throw CustomException(ExceptionContent.TOKEN_MISSING)
 
         return if (jwtToken.startsWith("Bearer ")) {
