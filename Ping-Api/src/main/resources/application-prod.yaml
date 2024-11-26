@@ -20,12 +20,22 @@ spring:
   data:
     mongodb:
       uri: mongodb+srv://${MONGODB_USER}:${MONGODB_PASSWORD}@${MONGODB_HOST}/${MONGODB_SCHEMA}?retryWrites=true&w=majority&appName=${MONGODB_SCHEMA}
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 10
+      password: ${REDIS_PASSWORD}
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
       ddl-auto: update
     open-in-view: false
+
+jwt:
+  secret_key: ${JWT_SECRET}
+  access-token-validity-in-seconds: 3600
+  refresh-token-validity-in-seconds: 86400
 
 naver:
   client:
