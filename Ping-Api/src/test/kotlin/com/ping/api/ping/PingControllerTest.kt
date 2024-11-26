@@ -31,7 +31,7 @@ class PingControllerTest : BaseRestDocsTest() {
     @MockBean
     private lateinit var pingService: PingService
 
-    private val tag = "핑 링크"
+    private val tag = "핑"
 
     @Test
     @DisplayName("유효한 북마크 링크")

@@ -24,9 +24,9 @@ enum class ExceptionContent(
     INVALID_URL(HttpStatus.BAD_REQUEST,"BOOKMARK",3,"유효한 링크가 아니에요"),
 
     // token
-    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN",1,"유효하지 않은 토큰입니다."),
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN",1,"유효하지 않은 토큰입니다. 다시 로그인해 주세요."),
     TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "TOKEN",2,"토큰이 요청 헤더에 없습니다."),
-    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "TOKEN",3,"블랙리스트에 등록된 토큰입니다."),
-    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",4,"엑세스 토큰이 만료되었습니다."),
-    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",5,"리프레시 토큰이 만료되었습니다.")
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "TOKEN",3,"해당 토큰은 사용이 금지되었습니다. 다시 로그인해 주세요."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",4,"토큰이 만료되었습니다. 새로운 토큰을 발급받으세요."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",5,"세션이 만료되었습니다. 다시 로그인해 주세요.")
 }
