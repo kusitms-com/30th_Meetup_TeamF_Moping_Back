@@ -5,6 +5,7 @@ import com.epages.restdocs.apispec.ResourceSnippetParametersBuilder
 import com.ping.api.global.BaseRestDocsTest
 import com.ping.application.member.dto.GetNonMemberProfile
 import com.ping.application.member.dto.LoginNonMember
+import com.ping.application.member.dto.LoginTokenNonMember
 import com.ping.application.member.service.NonMemberService
 import com.ping.application.ping.dto.*
 import org.junit.jupiter.api.DisplayName
@@ -34,7 +35,6 @@ class NonMemberControllerTest : BaseRestDocsTest() {
         val response = LoginNonMember.Response(
             nonMemberId = 1L,
             name = "테스트 사용자",
-            accessToken = "abc123",
             bookmarkUrls = listOf("bookmarkUrl1", "bookmarkUrl2"),
             storeUrls = listOf("storeUrl1")
         )
@@ -59,7 +59,6 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                     responseFields(
                         fieldWithPath("nonMemberId").description("로그인한 비회원의 ID"),
                         fieldWithPath("name").description("비회원의 이름"),
-                        fieldWithPath("accessToken").description("엑세스 토큰"),
                         fieldWithPath("bookmarkUrls").description("비회원의 북마크 URL 목록"),
                         fieldWithPath("storeUrls").description("비회원의 스토어 URL 목록")
                     )
@@ -78,9 +77,62 @@ class NonMemberControllerTest : BaseRestDocsTest() {
                         .responseFields(
                             fieldWithPath("nonMemberId").description("로그인한 비회원의 ID"),
                             fieldWithPath("name").description("비회원의 이름"),
-                            fieldWithPath("accessToken").description("엑세스 토큰"),
                             fieldWithPath("bookmarkUrls").description("비회원의 북마크 URL 목록"),
                             fieldWithPath("storeUrls").description("비회원의 스토어 URL 목록")
+                        )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("비회원 로그인 (토큰 발급)")
+    fun loginNonMemberWithToken() {
+        // given
+        val request = LoginNonMember.Request(nonMemberId = 1L, password = "1234")
+        val response = LoginTokenNonMember.Response(
+            nonMemberId = 1L,
+            name = "테스트 사용자",
+            accessToken = "abc123"
+        )
+
+        given(nonMemberService.loginWithToken(request)).willReturn(response)
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post(NonMemberApi.LOGIN_TOKEN)
+                .content(objectMapper.writeValueAsString(request))
+                .contentType(MediaType.APPLICATION_JSON)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // REST Docs 생성
+                resultHandler.document(
+                    requestFields(
+                        fieldWithPath("nonMemberId").description("비회원 ID"),
+                        fieldWithPath("password").description("비회원 비밀번호")
+                    ),
+                    responseFields(
+                        fieldWithPath("nonMemberId").description("로그인한 비회원의 ID"),
+                        fieldWithPath("name").description("비회원의 이름"),
+                        fieldWithPath("accessToken").description("로그인 후 발급된 Access Token")
+                    )
+                )
+            )
+            .andDo( // Swagger 문서화
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "비회원 로그인 (토큰 발급)",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("비회원이 ID와 비밀번호를 사용하여 로그인하고 Access Token을 발급받는 API")
+                        .requestFields(
+                            fieldWithPath("nonMemberId").description("비회원 ID"),
+                            fieldWithPath("password").description("비회원 비밀번호")
+                        )
+                        .responseFields(
+                            fieldWithPath("nonMemberId").description("로그인한 비회원의 ID"),
+                            fieldWithPath("name").description("비회원의 이름"),
+                            fieldWithPath("accessToken").description("로그인 후 발급된 Access Token")
                         )
                 )
             )
