@@ -11,13 +11,20 @@ import org.springframework.stereotype.Repository
 class NonMemberPlaceRepositoryImpl(
     private val nonMemberPlaceJpaRepository: NonMemberPlaceJpaRepository
 ) : NonMemberPlaceRepository {
+    override fun save(nonMemberPlaceDomain: NonMemberPlaceDomain) {
+        val entity = NonMemberPlaceMapper.toEntity(nonMemberPlaceDomain)
+        nonMemberPlaceJpaRepository.save(entity)
+    }
+
     override fun saveAll(nonMemberPlaceDomains: List<NonMemberPlaceDomain>): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.saveAll(nonMemberPlaceDomains.map { NonMemberPlaceMapper.toEntity(it) })
                 .map { NonMemberPlaceMapper.toDomain(it) }
     }
+
     override fun findAllByNonMemberId(nonMemberId: Long): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.findAllByNonMemberId(nonMemberId).map { NonMemberPlaceMapper.toDomain(it) }
     }
+
     override fun deleteAll(ids: List<Long>) {
         nonMemberPlaceJpaRepository.deleteAllById(ids)
     }
@@ -29,5 +36,10 @@ class NonMemberPlaceRepositoryImpl(
     override fun findAllByNonMemberIdIn(nonMemberIds: List<Long>): List<NonMemberPlaceDomain> {
         return nonMemberPlaceJpaRepository.findAllByNonMemberIdIn(nonMemberIds)
                 .map { NonMemberPlaceMapper.toDomain(it) }
+    }
+
+    override fun findByNonMemberIdAndSid(nonMemberId: Long, sid: String): NonMemberPlaceDomain? {
+        return nonMemberPlaceJpaRepository.findByNonMemberIdAndSid(nonMemberId, sid)
+            ?.let { NonMemberPlaceMapper.toDomain(it) }
     }
 }
