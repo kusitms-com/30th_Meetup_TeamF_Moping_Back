@@ -8,9 +8,6 @@ enum class ExceptionContent(
     val errorNum: Int,
     val message: String
 ) {
-    //user
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER", 1, "해당 사용자를 찾을 수 없습니다."),
-
     // NonMember 관련 예외
     NON_MEMBER_ALREADY_EXISTS(HttpStatus.CONFLICT, "NONMEMBER",1,"비회원 생성 실패: 이미 존재하는 비회원입니다."),
     NON_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "NONMEMBER",2,"비회원 로그인 실패: 해당 비회원 정보를 찾을 수 없습니다."),
@@ -24,5 +21,12 @@ enum class ExceptionContent(
     //북마크 관련 예외
     INVALID_BOOKMARK_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",1,"북마크 링크가 아니에요"),
     INVALID_STORE_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",2,"가게 링크가 아니에요"),
-    INVALID_URL(HttpStatus.BAD_REQUEST,"BOOKMARK",3,"유효한 링크가 아니에요")
+    INVALID_URL(HttpStatus.BAD_REQUEST,"BOOKMARK",3,"유효한 링크가 아니에요"),
+
+    // token
+    TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN",1,"유효하지 않은 토큰입니다."),
+    TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "TOKEN",2,"토큰이 요청 헤더에 없습니다."),
+    TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "TOKEN",3,"블랙리스트에 등록된 토큰입니다."),
+    TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",4,"엑세스 토큰이 만료되었습니다."),
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",5,"리프레시 토큰이 만료되었습니다.")
 }
