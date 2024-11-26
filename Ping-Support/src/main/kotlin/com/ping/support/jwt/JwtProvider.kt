@@ -93,11 +93,13 @@ class JwtProvider(
         }
     }
 
-    private fun handleTokenExceptions(exception: Throwable): Boolean {
-        return when (exception) {
+    private fun handleTokenExceptions(exception: Throwable): Nothing {
+        when (exception) {
+            is CustomException -> throw exception
             is ExpiredJwtException -> throw CustomException(ExceptionContent.TOKEN_EXPIRED)
             is UnsupportedJwtException, is MalformedJwtException -> throw CustomException(ExceptionContent.TOKEN_INVALID)
-            else -> false
+            else -> throw CustomException(ExceptionContent.TOKEN_INVALID)
         }
     }
+
 }
