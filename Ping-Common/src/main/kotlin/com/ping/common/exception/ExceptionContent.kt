@@ -28,5 +28,10 @@ enum class ExceptionContent(
     TOKEN_MISSING(HttpStatus.UNAUTHORIZED, "TOKEN",2,"토큰이 요청 헤더에 없습니다."),
     TOKEN_BLACKLISTED(HttpStatus.UNAUTHORIZED, "TOKEN",3,"해당 토큰은 사용이 금지되었습니다. 다시 로그인해 주세요."),
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",4,"토큰이 만료되었습니다. 새로운 토큰을 발급받으세요."),
-    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",5,"세션이 만료되었습니다. 다시 로그인해 주세요.")
+    REFRESH_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN",5,"세션이 만료되었습니다. 다시 로그인해 주세요."),
+
+    // NonMemberPlace 관련 예외
+    NON_MEMBER_PLACE_ALREADY_EXISTS(HttpStatus.CONFLICT, "NONMEMBERPLACE", 1, "이미 저장된 장소입니다. 다른 장소를 추가해주세요"),
+    NON_MEMBER_PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "NONMEMBERPLACE", 2, "해당 장소 정보는 존재하지 않습니다. 다른 장소를 추가해주세요."),
+
 }

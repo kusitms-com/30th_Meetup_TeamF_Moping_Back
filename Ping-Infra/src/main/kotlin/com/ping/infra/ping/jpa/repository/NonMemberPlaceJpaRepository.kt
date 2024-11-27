@@ -12,4 +12,6 @@ interface NonMemberPlaceJpaRepository : JpaRepository<NonMemberPlaceEntity, Long
     fun findCountBySidIn(sids: List<String>): List<SidCount>
 
     fun findAllByNonMemberIdIn(nonMemberIds: List<Long>): List<NonMemberPlaceEntity>
+
+    fun findByNonMemberIdAndSid(nonMemberId: Long, sid: String): NonMemberPlaceEntity?
 }

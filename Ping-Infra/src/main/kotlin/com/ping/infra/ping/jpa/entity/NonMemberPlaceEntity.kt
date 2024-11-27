@@ -1,5 +1,6 @@
 package com.ping.infra.ping.jpa.entity
 
+import com.ping.common.enums.PlaceType
 import com.ping.infra.config.jpa.BaseTimeEntity
 import com.ping.infra.member.jpa.entity.NonMemberEntity
 import jakarta.persistence.*
@@ -16,5 +17,9 @@ class NonMemberPlaceEntity(
     val nonMember: NonMemberEntity,
 
     @Column(nullable = false)
-    val sid: String
+    val sid: String,
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    val placeType: PlaceType,
 ) : BaseTimeEntity()

@@ -30,4 +30,7 @@ class BookmarkRepositoryImpl(
             }
     }
 
+    override fun existsBySid(sid: String): Boolean {
+        return bookmarkMongoRepository.existsBySid(sid)
+    }
 }

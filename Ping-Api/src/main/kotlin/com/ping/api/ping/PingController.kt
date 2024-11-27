@@ -4,6 +4,7 @@ import com.ping.application.member.dto.CreateNonMember
 import com.ping.application.ping.dto.*
 import com.ping.application.ping.service.PingService
 import com.ping.domain.ping.service.PingUrlService
+import jakarta.servlet.http.HttpServletRequest
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -14,6 +15,14 @@ class PingController(
     @PostMapping(PingApi.BASE_URL)
     fun createNonMemberPings(@RequestBody request: CreateNonMember.Request) {
         return pingService.createNonMemberPings(request)
+    }
+
+    @PostMapping(PingApi.PING_MEMBER)
+    fun saveMemberPing(
+        @RequestBody request: SaveMemberPing.Request,
+        httpRequest: HttpServletRequest,
+    ) {
+        pingService.saveMemberPing(request, httpRequest)
     }
 
     @PostMapping(PingApi.PING_RECOMMEND)

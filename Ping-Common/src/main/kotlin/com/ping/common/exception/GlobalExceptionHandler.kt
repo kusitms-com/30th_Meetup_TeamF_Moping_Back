@@ -64,18 +64,6 @@ class GlobalExceptionHandler {
         return logAndGenerateErrorResponse(e, HttpStatus.NOT_FOUND, "Resource not found")
     }
 
-    // EmptyResultDataAccessException 처리
-    @ExceptionHandler(EmptyResultDataAccessException::class)
-    fun handleEmptyResultDataAccessException(e: EmptyResultDataAccessException): ResponseEntity<ErrorResponse<Nothing?>> {
-        return logAndGenerateErrorResponse(e, HttpStatus.NOT_FOUND, "Resource not found")
-    }
-
-    // HttpMessageNotReadableException 처리
-    @ExceptionHandler(HttpMessageNotReadableException::class)
-    fun handleJsonException(e: HttpMessageNotReadableException): ResponseEntity<ErrorResponse<Nothing?>> {
-        return logAndGenerateErrorResponse(e, HttpStatus.BAD_REQUEST, "Invalid JSON format")
-    }
-
     // HttpRequestMethodNotSupportedException 처리
     @ExceptionHandler(HttpRequestMethodNotSupportedException::class)
     fun handleRequestMethodException(e: HttpRequestMethodNotSupportedException): ResponseEntity<ErrorResponse<Nothing?>> {

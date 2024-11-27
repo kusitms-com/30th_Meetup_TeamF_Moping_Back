@@ -11,9 +11,13 @@ import com.ping.domain.ping.service.PingUrlService
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.mockito.BDDMockito
+import org.mockito.Mockito.doNothing
+import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
@@ -27,7 +31,7 @@ class PingControllerTest : BaseRestDocsTest() {
 
     @MockBean
     private lateinit var pingUrlService: PingUrlService
-    
+
     @MockBean
     private lateinit var pingService: PingService
 
@@ -70,7 +74,7 @@ class PingControllerTest : BaseRestDocsTest() {
 
     @Test
     @DisplayName("유효한 가게 링크")
-    fun isCorrectStoreUrl(){
+    fun isCorrectStoreUrl() {
         // given
         val request = IsCorrectUrl.Request("https://naver.me/xecfaJTy")
 
@@ -98,6 +102,57 @@ class PingControllerTest : BaseRestDocsTest() {
                         .description("유효한 가게 ")
                         .requestFields(
                             fieldWithPath("url").description("가게 url")
+                        )
+                )
+            )
+    }
+
+    @Test
+    @DisplayName("회원 핑 저장")
+    fun saveMemberPing() {
+        // given
+        val request = SaveMemberPing.Request(
+            sid = "testSid"
+        )
+        val jsonRequest = """
+            {
+                "sid": "${request.sid}"
+            }
+        """.trimIndent()
+
+        doNothing().`when`(pingService).saveMemberPing(any(), any())
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.post(PingApi.PING_MEMBER)
+                .header("Authorization", "Bearer validAccessToken123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // REST Docs
+                resultHandler.document(
+                    requestHeaders(
+                        headerWithName("Authorization").description("Access Token")
+                    ),
+                    requestFields(
+                        fieldWithPath("sid").description("장소 ID")
+                    )
+                )
+            )
+            .andDo( // Swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "멤버 핑 저장",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("멤버의 핑을 저장하는 API")
+                        .requestHeaders(
+                            headerWithName("Authorization").description("Access Token")
+                        )
+                        .requestFields(
+                            fieldWithPath("sid").description("장소 ID")
                         )
                 )
             )
