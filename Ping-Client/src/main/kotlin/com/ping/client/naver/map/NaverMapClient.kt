@@ -17,7 +17,7 @@ class NaverMapClient(
     }
 
     fun bookmarkUrlToBookmarkLists(url: String): NaverBookmarkResponse.BookmarkLists {
-        if(url.contains(STORE_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
+        if (url.contains(STORE_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_BOOKMARK_URL)
 
         try {
             val shareId = url.split("/").lastOrNull()?.split("?")?.firstOrNull()?.replace("%", "")
@@ -36,7 +36,7 @@ class NaverMapClient(
     }
 
     fun storeUrlToBookmark(url: String): NaverBookmarkResponse.Bookmark {
-        if(url.contains(BOOKMARK_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_STORE_URL)
+        if (url.contains(BOOKMARK_URL_PATTERN)) throw CustomException(ExceptionContent.INVALID_STORE_URL)
 
         try {
             val shareId = url.split("place/").lastOrNull()?.split("/home")?.firstOrNull()?.split("?")?.firstOrNull()
@@ -52,19 +52,18 @@ class NaverMapClient(
                 .get()
 
             val place = Regex("\"x\":\"([0-9.]+)\",\"y\":\"([0-9.]+)\"").find(document.html())!!
-            val roadAddress = Regex("\"roadAddress\":\"([^\"]+)\"").find(document.html())
-
+            val address = Regex("\"roadAddress\":\"([^\"]+)\"").find(document.html())?.groups?.get(1)?.value!!
+            val mcidName = Regex("\"category\":\"([^\"]+)\"").find(document.html())?.groups?.get(1)?.value!!
             val placeName = document.selectFirst(".GHAhO")?.text()!!
             val px = place.groupValues[1]
             val py = place.groupValues[2]
-            val address = roadAddress?.groups?.get(1)?.value!!
             return NaverBookmarkResponse.Bookmark(
                 name = placeName,
                 px = px.toDouble(),
                 py = py.toDouble(),
                 sid = shareId,
                 address = address,
-                mcidName = ""
+                mcidName = mcidName,
             )
         } catch (e: Exception) {
             throw CustomException(ExceptionContent.INVALID_URL)
