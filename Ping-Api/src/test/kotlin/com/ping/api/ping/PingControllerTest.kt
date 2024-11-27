@@ -260,6 +260,7 @@ class PingControllerTest : BaseRestDocsTest() {
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
+                    sid = "1445446311",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = 1,
@@ -280,6 +281,7 @@ class PingControllerTest : BaseRestDocsTest() {
                 ),
                 GetAllNonMemberPings.Ping(
                     iconLevel = 1,
+                    sid = "1445446311",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = 1,
@@ -330,6 +332,7 @@ class PingControllerTest : BaseRestDocsTest() {
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                        fieldWithPath("pings[].sid").description("장소 sid"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -368,6 +371,7 @@ class PingControllerTest : BaseRestDocsTest() {
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                            fieldWithPath("pings[].sid").description("장소 sid"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -427,6 +431,7 @@ class PingControllerTest : BaseRestDocsTest() {
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
+                    sid = "1005227941",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = 1,
@@ -447,6 +452,7 @@ class PingControllerTest : BaseRestDocsTest() {
                 ),
                 GetAllNonMemberPings.Ping(
                     iconLevel = 1,
+                    sid = "1005227941",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = 1,
@@ -496,6 +502,7 @@ class PingControllerTest : BaseRestDocsTest() {
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                        fieldWithPath("pings[].sid").description("장소 sid"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -533,6 +540,7 @@ class PingControllerTest : BaseRestDocsTest() {
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                            fieldWithPath("pings[].sid").description("장소 sid"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -555,6 +563,7 @@ class PingControllerTest : BaseRestDocsTest() {
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 0,
+                    sid = "1005227941",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = nonMemberId,
@@ -570,6 +579,7 @@ class PingControllerTest : BaseRestDocsTest() {
                 ),
                 GetAllNonMemberPings.Ping(
                     iconLevel = 0,
+                    sid = "1005227941",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = nonMemberId,
@@ -600,6 +610,7 @@ class PingControllerTest : BaseRestDocsTest() {
                 resultHandler.document(
                     PayloadDocumentation.responseFields(
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨: 0"),
+                        fieldWithPath("pings[].sid").description("장소 sid"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -619,6 +630,7 @@ class PingControllerTest : BaseRestDocsTest() {
                         .description("개별 핑 불러오기")
                         .responseFields(
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨: 0"),
+                            fieldWithPath("pings[].sid").description("장소 sid"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -802,6 +814,7 @@ class PingControllerTest : BaseRestDocsTest() {
             pings = listOf(
                 GetAllNonMemberPings.Ping(
                     iconLevel = 2,
+                    sid = "1445446311",
                     nonMembers = listOf(
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = 1,
@@ -855,6 +868,7 @@ class PingControllerTest : BaseRestDocsTest() {
                         fieldWithPath("nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                         fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                        fieldWithPath("pings[].sid").description("장소 sid"),
                         fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                         fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                         fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),
@@ -893,6 +907,7 @@ class PingControllerTest : BaseRestDocsTest() {
                             fieldWithPath("nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("nonMembers[].profileSvg").description("프로필 svg url"),
                             fieldWithPath("pings[].iconLevel").description("아이콘 레벨\n4:가장 많이 겹침\n3:그다음\n2:그다음\n1:나머지"),
+                            fieldWithPath("pings[].sid").description("장소 sid"),
                             fieldWithPath("pings[].nonMembers[].nonMemberId").description("비회원 id"),
                             fieldWithPath("pings[].nonMembers[].name").description("비회원 이름"),
                             fieldWithPath("pings[].nonMembers[].profileSvg").description("프로필 svg url"),

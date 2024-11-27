@@ -14,12 +14,13 @@ interface GetAllNonMemberPings {
 
     data class NonMember(
         val nonMemberId: Long,
-        val name : String,
+        val name: String,
         val profileSvg: String,
     )
 
     data class Ping(
         val iconLevel: Int,
+        val sid: String,
         val nonMembers: List<NonMember>,
         val url: String,
         val placeName: String,
