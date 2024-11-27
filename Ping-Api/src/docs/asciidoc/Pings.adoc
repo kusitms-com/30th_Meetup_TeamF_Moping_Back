@@ -15,7 +15,7 @@ operation::PingControllerTest/createNonMemberPings[snippets='http-request,reques
 
 [[Post-SaveMemberPing]]
 === 회원 핑 저장
-operation::PingControllerTest/saveMemberPing[snippets='http-request,http-response,request-fields']
+operation::PingControllerTest/saveMemberPing[snippets='http-request,http-response,request-headers,request-fields']
 
 [[Post-RecommendPings]]
 === 추천 핑 저장

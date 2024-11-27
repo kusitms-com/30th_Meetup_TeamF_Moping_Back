@@ -16,6 +16,8 @@ import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
@@ -29,7 +31,7 @@ class PingControllerTest : BaseRestDocsTest() {
 
     @MockBean
     private lateinit var pingUrlService: PingUrlService
-    
+
     @MockBean
     private lateinit var pingService: PingService
 
@@ -72,7 +74,7 @@ class PingControllerTest : BaseRestDocsTest() {
 
     @Test
     @DisplayName("유효한 가게 링크")
-    fun isCorrectStoreUrl(){
+    fun isCorrectStoreUrl() {
         // given
         val request = IsCorrectUrl.Request("https://naver.me/xecfaJTy")
 
@@ -110,12 +112,10 @@ class PingControllerTest : BaseRestDocsTest() {
     fun saveMemberPing() {
         // given
         val request = SaveMemberPing.Request(
-            nonMemberId = 1L,
             sid = "testSid"
         )
         val jsonRequest = """
             {
-                "nonMemberId": ${request.nonMemberId},
                 "sid": "${request.sid}"
             }
         """.trimIndent()
@@ -134,8 +134,10 @@ class PingControllerTest : BaseRestDocsTest() {
         result.andExpect(status().isOk)
             .andDo( // REST Docs
                 resultHandler.document(
+                    requestHeaders(
+                        headerWithName("Authorization").description("Access Token")
+                    ),
                     requestFields(
-                        fieldWithPath("nonMemberId").description("비회원 ID"),
                         fieldWithPath("sid").description("장소 ID")
                     )
                 )
@@ -146,8 +148,10 @@ class PingControllerTest : BaseRestDocsTest() {
                     resourceDetails = ResourceSnippetParametersBuilder()
                         .tag(tag)
                         .description("멤버의 핑을 저장하는 API")
+                        .requestHeaders(
+                            headerWithName("Authorization").description("Access Token")
+                        )
                         .requestFields(
-                            fieldWithPath("nonMemberId").description("비회원 ID"),
                             fieldWithPath("sid").description("장소 ID")
                         )
                 )
