@@ -3,6 +3,8 @@ package com.ping.application.event.service
 import com.ping.application.event.dto.GeocodePlace
 import com.ping.application.event.dto.SearchPlace
 import com.ping.client.naver.place.NaverApiClient
+import com.ping.client.naver.place.NaverApiResponse
+import com.ping.common.util.AlternativeQueryProvider
 import com.ping.domain.event.repository.SubwayRepository
 import org.springframework.stereotype.Service
 
@@ -13,9 +15,29 @@ class PlaceService(
 ) {
 
     fun searchPlace(keyword: String): List<SearchPlace.Response> {
-        var query = keyword
-        subwayRepository.findByStation(keyword)?.let { query = "${keyword}역" }
-        return naverApiClient.searchPlaces(query).map {
+        val queryList = AlternativeQueryProvider.getQueries(keyword)
+
+        val resultsPerQuery = queryList.map { query ->
+            var modifiedQuery = query
+            subwayRepository.findByStation(query)?.let { modifiedQuery = "${query}역" }
+            naverApiClient.searchPlaces(modifiedQuery)
+        }
+
+        val combinedResults = mutableListOf<NaverApiResponse.NaverPlace>()
+
+        val maxSize = resultsPerQuery.maxOfOrNull { it.size } ?: 0
+        for (i in 0 until maxSize) {
+            for (resultList in resultsPerQuery) {
+                if (i < resultList.size) {
+                    combinedResults.add(resultList[i])
+                }
+            }
+        }
+
+        val uniqueResults = combinedResults.distinctBy { it.title }
+        val limitedResults = uniqueResults.take(5)
+
+        return limitedResults.map {
             SearchPlace.Response(
                 name = it.title.replace("<b>", "").replace("</b>", ""),
                 address = it.address,
