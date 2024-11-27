@@ -49,13 +49,13 @@
 <br>
 
 # 🗺️ 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/d7bb4832-21b6-4389-93f7-483f38895a23)
+![image](https://github.com/user-attachments/assets/ef58b9e5-1f48-4a02-9fd8-48a2f9599ce9)
 
 <br>
 
 # 👍 공통 사항
 
-- 단위 테스트 작성(service 메소드 별로) : Kotest 사용
+- 단위 테스트 작성(service 메소드 별로) : Junit 사용
 - 다른 사람이 알아보기 쉽도록 주석처리해야 합니다. (controller, service 메서드마다)
     - javadoc 형식 https://jake-seo-dev.tistory.com/59
 - issue 생성 및 PR을 통해 본인이 구현한 부분에 대한 기록을 남겨야 합니다.
