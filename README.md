@@ -1,4 +1,4 @@
-# 📌 모일때 맵핀, MOPING
+# 📌 모일 때 맵핀, MOPING
 ![모핑 메인](https://github.com/user-attachments/assets/a1bd3835-2a42-481f-93c8-e7c6694be1f6)
 
 <br>
@@ -18,6 +18,18 @@
 | 개발 | 최서희 | 📱 프론트엔드 | 화면 UI 구현, 서버 연동 |
 | 개발 | 문희상 | 💻 백엔드 리드 | DB 및 API 구축, 서버 배포 |
 | 개발 | 윤소민 | 💻 백엔드 | DB 및 API 구축, 서버 배포 |
+
+<br>
+
+# 📱 서비스 기능
+![모핑 기능1](https://github.com/user-attachments/assets/925b1d01-71fb-4a44-8fef-2d5d174309dd)
+
+![모핑 기능2](https://github.com/user-attachments/assets/480055d4-cb68-4918-bc68-bcf62bae9fa4)
+
+![모핑 기능3](https://github.com/user-attachments/assets/3c74868c-a653-4114-a34a-29dd17200bdb)
+
+![모핑 기능4](https://github.com/user-attachments/assets/1c8c93b2-a61e-447e-8040-4e5bc43dfaf6)
+
 
 <br>
 
