@@ -83,7 +83,7 @@ class JwtProvider(
         return true
     }
 
-    private fun resolveToken(request: HttpServletRequest): String {
+    fun resolveToken(request: HttpServletRequest): String {
         val jwtToken = request.getHeader("Authorization") ?: throw CustomException(ExceptionContent.TOKEN_MISSING)
 
         return if (jwtToken.startsWith("Bearer ")) {
