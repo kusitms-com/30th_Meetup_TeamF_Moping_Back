@@ -138,12 +138,14 @@ class PingService(
                 val nonMembers = nonMemberRepository.findAllBySidAndShareUrlId(it.sid, nonMember.shareUrlDomain.id)
                 GetAllNonMemberPings.Ping(
                     iconLevel = 0,
-                    nonMembers = nonMembers.map { nonMember->
+                    sid = it.sid,
+                    nonMembers = nonMembers.map { nonMember ->
                         GetAllNonMemberPings.NonMember(
                             nonMemberId = nonMember.id,
                             name = nonMember.name,
                             profileSvg = nonMember.profileSvg,
-                        )},
+                        )
+                    },
                     url = it.url,
                     placeName = it.name,
                     px = it.px,
@@ -260,21 +262,25 @@ class PingService(
             val sidsToAdd = newSids - existingSids
             val sidsToDelete = existingSids - newSids
 
-            val placesToAdd = sidsToAdd.map { sid -> NonMemberPlaceDomain.of(
-                nonMember = nonMember,
-                sid = sid,
-                placeType = PlaceType.CRAWLED)
+            val placesToAdd = sidsToAdd.map { sid ->
+                NonMemberPlaceDomain.of(
+                    nonMember = nonMember,
+                    sid = sid,
+                    placeType = PlaceType.CRAWLED
+                )
             }
             nonMemberPlaceRepository.saveAll(placesToAdd)
 
             val placesIdToDelete = NonMemberPlaceDomain.filterIdsToDelete(
                 domains = nonMemberPlaces,
                 nonMember = nonMember,
-                sidsToDelete = sidsToDelete)
+                sidsToDelete = sidsToDelete
+            )
             nonMemberPlaceRepository.deleteAll(placesIdToDelete)
 
             val updatedShareUrl = nonMember.shareUrlDomain.copy(
-                pingUpdateTime = LocalDateTime.now())
+                pingUpdateTime = LocalDateTime.now()
+            )
             shareUrlRepository.save(updatedShareUrl)
         }
     }
@@ -360,6 +366,7 @@ class PingService(
             nonMemberPlace.value.map { bookmarkPair ->
                 GetAllNonMemberPings.Ping(
                     iconLevel = level,
+                    sid = bookmarkPair.first.sid,
                     nonMembers = bookmarkPair.second.map {
                         GetAllNonMemberPings.NonMember(nonMemberId = it.id, name = it.name, profileSvg = it.profileSvg)
                     },
