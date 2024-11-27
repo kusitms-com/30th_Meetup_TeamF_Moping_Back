@@ -15,7 +15,6 @@ import com.ping.domain.ping.aggregate.*
 import com.ping.domain.ping.repository.*
 import com.ping.domain.ping.service.PingUrlService
 import com.ping.support.jwt.JwtProvider
-import com.ping.support.jwt.JwtTokenManager
 import com.ping.support.jwt.JwtUtil
 import jakarta.servlet.http.HttpServletRequest
 import org.springframework.stereotype.Service
