@@ -1,15 +1,45 @@
-# API 명세서
+# 📌 모일때 맵핀, MOPING
+![모핑 메인](https://github.com/user-attachments/assets/a1bd3835-2a42-481f-93c8-e7c6694be1f6)
+
+<br>
+
+# 👨‍👧‍👦 팀 소개
+
+### **팀명 : 핑핑이들**
+
+| **분야** | **이름** | **포지션** | **내용** |
+| :---: | :---: | --- | --- |
+| 기획 | 박가은 | 📈 PM, 서비스 기획 | 유저 리서치, 와이어프레임 작성, 서비스 정책 확립, <br /> 비즈니스 모델 구축  |
+| 기획 | 김규리 | 📋 서비스 기획 | 유저 리서치, 와이어프레임 작성, 서비스 정책 확립, <br /> 비즈니스 모델 구축, 서비스 마케팅 리드 |
+| 기획 | 안재형 | 📊 서비스 기획 | 유저 리서치, 와이어프레임 작성, 서비스 정책 확립, <br /> 비즈니스 모델 구축, 서비스 마케팅 리드 |
+| 디자인 | 김윤서 | 🎨 디자인 리드 | ux/ui디자인, gui 디자인 |
+| 디자인 | 이어령 | 🎨 디자인 | ux/ui디자인, gui 디자인 |
+| 개발 | 최호 | 📱  프론트엔드 리드 | 화면 UI 구현, 서버 연동 |
+| 개발 | 최서희 | 📱 프론트엔드 | 화면 UI 구현, 서버 연동 |
+| 개발 | 문희상 | 💻 백엔드 리드 | DB 및 API 구축, 서버 배포 |
+| 개발 | 윤소민 | 💻 백엔드 | DB 및 API 구축, 서버 배포 |
+
+<br>
+
+# 📜 API 명세서
 [moping API 명세서 다운로드](https://github.com/user-attachments/files/17610402/Moping-Backend.API.Docs.pdf)
 
-# ERD
+<br>
+
+# 📁 ERD
 ### MySQL
-<img width="853" alt="image" src="https://github.com/user-attachments/assets/a9f6a74c-465f-4450-a47c-356ff4fcd5fe">
+![image](https://github.com/user-attachments/assets/f1e44e08-739c-4a63-8d58-3fa763f85a66)
 
 ### MongoDB
-<img width="1159" alt="image" src="https://github.com/user-attachments/assets/f330553d-d28f-47d5-b757-f9ed8827fbf6">
+![image](https://github.com/user-attachments/assets/5dcfc6e4-5371-4538-bdfe-1f819b465bff)
 
-# 시스템 아키텍처
-![image](https://github.com/user-attachments/assets/8c64a505-22b4-466b-a527-5d4092854e95)
+
+<br>
+
+# 🗺️ 시스템 아키텍처
+![image](https://github.com/user-attachments/assets/d7bb4832-21b6-4389-93f7-483f38895a23)
+
+<br>
 
 # 👍 공통 사항
 
