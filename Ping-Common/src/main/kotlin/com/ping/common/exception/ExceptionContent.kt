@@ -22,6 +22,7 @@ enum class ExceptionContent(
     INVALID_BOOKMARK_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",1,"북마크 링크가 아니에요"),
     INVALID_STORE_URL(HttpStatus.BAD_REQUEST, "BOOKMARK",2,"가게 링크가 아니에요"),
     INVALID_URL(HttpStatus.BAD_REQUEST,"BOOKMARK",3,"유효한 링크가 아니에요"),
+    BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND,"BOOKMARK",4,"해당 장소의 정보가 존재하지 않습니다."),
 
     // token
     TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "TOKEN",1,"유효하지 않은 토큰입니다. 다시 로그인해 주세요."),
@@ -32,6 +33,5 @@ enum class ExceptionContent(
 
     // NonMemberPlace 관련 예외
     NON_MEMBER_PLACE_ALREADY_EXISTS(HttpStatus.CONFLICT, "NONMEMBERPLACE", 1, "이미 저장된 장소입니다. 다른 장소를 추가해주세요"),
-    NON_MEMBER_PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "NONMEMBERPLACE", 2, "해당 장소 정보는 존재하지 않습니다. 다른 장소를 추가해주세요."),
-
+    NON_MEMBER_PLACE_NOT_FOUND(HttpStatus.NOT_FOUND, "NONMEMBERPLACE", 2, "사용자가 저장하지 않은 장소입니다."),
 }
