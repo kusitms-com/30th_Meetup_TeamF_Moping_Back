@@ -1,7 +1,7 @@
 package com.ping.application.ping.dto
 
-interface SaveMemberPing {
+interface MemberPing {
     data class Request(
-        val sid: String
+        val sid: String,
     )
 }

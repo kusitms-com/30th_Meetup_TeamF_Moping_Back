@@ -38,6 +38,11 @@ data class NonMemberPlaceDomain(
                 .map { it.id }
         }
 
+        fun validateExists(nonMemberId: Long, sid: String, nonMemberPlaceRepository: NonMemberPlaceRepository): NonMemberPlaceDomain {
+            return nonMemberPlaceRepository.findByNonMemberIdAndSid(nonMemberId, sid)
+                ?: throw CustomException(ExceptionContent.NON_MEMBER_PLACE_NOT_FOUND)
+        }
+
         fun validateNoDuplicate(nonMemberId: Long, sid: String, nonMemberPlaceRepository: NonMemberPlaceRepository) {
             val existingPlace = nonMemberPlaceRepository.findByNonMemberIdAndSid(nonMemberId, sid)
             if (existingPlace != null) {
