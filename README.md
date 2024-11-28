@@ -34,7 +34,7 @@
 <br>
 
 # 📜 API 명세서
-[moping API 명세서 다운로드](https://github.com/user-attachments/files/17610402/Moping-Backend.API.Docs.pdf)
+[moping API 명세서 다운로드](https://github.com/user-attachments/files/17946614/Moping-Backend.API.Docs.pdf)
 
 <br>
 

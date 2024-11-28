@@ -12,6 +12,8 @@ import org.mockito.kotlin.any
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
+import org.springframework.restdocs.headers.HeaderDocumentation.headerWithName
+import org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders
 import org.springframework.restdocs.payload.PayloadDocumentation.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -45,6 +47,9 @@ class AuthControllerTest : BaseRestDocsTest() {
         result.andExpect(status().isOk)
             .andDo( // REST Docs
                 resultHandler.document(
+                    requestHeaders(
+                        headerWithName("Authorization").description("Access Token")
+                    ),
                     responseFields(
                         fieldWithPath("accessToken").description("새로운 액세스 토큰")
                     )
@@ -56,6 +61,9 @@ class AuthControllerTest : BaseRestDocsTest() {
                     resourceDetails = ResourceSnippetParametersBuilder()
                         .tag(tag)
                         .description("만료된 액세스 토큰을 갱신하기 위한 API")
+                        .requestHeaders(
+                            headerWithName("Authorization").description("Access Token")
+                        )
                         .responseFields(
                             fieldWithPath("accessToken").description("새로운 액세스 토큰")
                         )
