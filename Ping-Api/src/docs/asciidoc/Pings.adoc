@@ -40,3 +40,7 @@ operation::PingControllerTest/updateNonMemberPings[snippets='http-request,reques
 [[Get-RefreshAllNonMemberPings]]
 === 비회원 모든 핑 갱신
 operation::PingControllerTest/refreshAllNonMemberPings[snippets='http-request,http-response,query-parameters,response-fields']
+
+[[Delete-MemberPing]]
+=== 회원 핑 삭제
+operation::PingControllerTest/deletePing[snippets='http-request,http-response,request-headers,request-fields']
