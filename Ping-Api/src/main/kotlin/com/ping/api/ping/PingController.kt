@@ -18,10 +18,7 @@ class PingController(
     }
 
     @PostMapping(PingApi.PING_MEMBER)
-    fun saveMemberPing(
-        @RequestBody request: SaveMemberPing.Request,
-        httpRequest: HttpServletRequest,
-    ) {
+    fun saveMemberPing(@RequestBody request: MemberPing.Request, httpRequest: HttpServletRequest) {
         pingService.saveMemberPing(request, httpRequest)
     }
 
@@ -63,5 +60,10 @@ class PingController(
     @PutMapping(PingApi.STORE)
     fun isCorrectStoreUrl(@RequestBody isCorrectUrl: IsCorrectUrl.Request) {
         pingUrlService.storeUrlToBookmark(isCorrectUrl.url)
+    }
+
+    @DeleteMapping(PingApi.PING_MEMBER)
+    fun deletePing(@RequestBody request: MemberPing.Request, httpRequest: HttpServletRequest) {
+        pingService.deletePing(request, httpRequest)
     }
 }

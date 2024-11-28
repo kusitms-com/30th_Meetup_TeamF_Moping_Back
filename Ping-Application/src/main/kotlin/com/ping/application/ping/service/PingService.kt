@@ -79,7 +79,7 @@ class PingService(
     }
 
     @Transactional
-    fun saveMemberPing(request: SaveMemberPing.Request, httpRequest: HttpServletRequest) {
+    fun saveMemberPing(request: MemberPing.Request, httpRequest: HttpServletRequest) {
         jwtProvider.validateToken(httpRequest)
         val nonMemberId = jwtUtil.getNonMemberId(httpRequest)
         val sid = request.sid
@@ -228,6 +228,17 @@ class PingService(
         val savedRecommendPlaces = recommendPlaceRepository.findAllByShareUrlId(shareUrl.id)
 
         return createPingResponse(shareUrl, savedRecommendPlaces, nonMemberList)
+    }
+
+    @Transactional
+    fun deletePing(request: MemberPing.Request, httpRequest: HttpServletRequest) {
+        jwtProvider.validateToken(httpRequest)
+        val nonMemberId = jwtUtil.getNonMemberId(httpRequest)
+
+        NonMemberDomain.validateExists(nonMemberId, nonMemberRepository)
+        val nonMemberPlace = NonMemberPlaceDomain.validateExists(nonMemberId, request.sid, nonMemberPlaceRepository)
+
+        nonMemberPlaceRepository.delete(nonMemberPlace.id)
     }
 
     private fun handleBookmarkUrls(

@@ -111,7 +111,7 @@ class PingControllerTest : BaseRestDocsTest() {
     @DisplayName("회원 핑 저장")
     fun saveMemberPing() {
         // given
-        val request = SaveMemberPing.Request(
+        val request = MemberPing.Request(
             sid = "testSid"
         )
         val jsonRequest = """
@@ -878,7 +878,6 @@ class PingControllerTest : BaseRestDocsTest() {
                         fieldWithPath("pings[].py").description("위도"),
                         fieldWithPath("pings[].type").description("업종"),
                     )
-
                 )
             )
             .andDo( //swagger
@@ -917,7 +916,57 @@ class PingControllerTest : BaseRestDocsTest() {
                             fieldWithPath("pings[].py").description("위도"),
                             fieldWithPath("pings[].type").description("업종"),
                         )
+                )
+            )
+    }
 
+    @Test
+    @DisplayName("회원 핑 삭제")
+    fun deletePing() {
+        // given
+        val request = MemberPing.Request(
+            sid = "testSid"
+        )
+        val jsonRequest = """
+        {
+            "sid": "${request.sid}"
+        }
+    """.trimIndent()
+
+        doNothing().`when`(pingService).deletePing(any(), any())
+
+        // when
+        val result = mockMvc.perform(
+            RestDocumentationRequestBuilders.delete(PingApi.PING_MEMBER)
+                .header("Authorization", "Bearer validAccessToken123")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonRequest)
+        )
+
+        // then
+        result.andExpect(status().isOk)
+            .andDo( // REST Docs
+                resultHandler.document(
+                    requestHeaders(
+                        headerWithName("Authorization").description("Access Token")
+                    ),
+                    requestFields(
+                        fieldWithPath("sid").description("삭제할 장소 ID")
+                    )
+                )
+            )
+            .andDo( // Swagger
+                MockMvcRestDocumentationWrapper.document(
+                    identifier = "멤버 핑 삭제",
+                    resourceDetails = ResourceSnippetParametersBuilder()
+                        .tag(tag)
+                        .description("멤버의 핑을 삭제하는 API")
+                        .requestHeaders(
+                            headerWithName("Authorization").description("Access Token")
+                        )
+                        .requestFields(
+                            fieldWithPath("sid").description("삭제할 장소 ID")
+                        )
                 )
             )
     }

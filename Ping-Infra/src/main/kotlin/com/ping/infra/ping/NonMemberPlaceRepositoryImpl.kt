@@ -25,10 +25,6 @@ class NonMemberPlaceRepositoryImpl(
         return nonMemberPlaceJpaRepository.findAllByNonMemberId(nonMemberId).map { NonMemberPlaceMapper.toDomain(it) }
     }
 
-    override fun deleteAll(ids: List<Long>) {
-        nonMemberPlaceJpaRepository.deleteAllById(ids)
-    }
-
     override fun findCountBySidIn(sids: List<String>): List<SidCount> {
         return nonMemberPlaceJpaRepository.findCountBySidIn(sids)
     }
@@ -41,5 +37,13 @@ class NonMemberPlaceRepositoryImpl(
     override fun findByNonMemberIdAndSid(nonMemberId: Long, sid: String): NonMemberPlaceDomain? {
         return nonMemberPlaceJpaRepository.findByNonMemberIdAndSid(nonMemberId, sid)
             ?.let { NonMemberPlaceMapper.toDomain(it) }
+    }
+
+    override fun delete(id: Long) {
+        nonMemberPlaceJpaRepository.deleteById(id)
+    }
+
+    override fun deleteAll(ids: List<Long>) {
+        nonMemberPlaceJpaRepository.deleteAllById(ids)
     }
 }
